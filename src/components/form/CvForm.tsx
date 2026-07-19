@@ -10,6 +10,19 @@ import type {
   SkillGroup,
 } from '@/types/cv'
 import { DEFAULT_SECTION_ORDER } from '@/types/cv'
+import { CvIcon } from '@/components/icons'
+import {
+  CONTACT_TYPE_DEFAULTS,
+  applyContactTypeChange,
+  applyContactValueChange,
+  createBlankContact,
+  isLinkContact,
+} from '@/lib/contactFields'
+import {
+  CONTACT_ICON_OPTIONS,
+  isKnownContactIcon,
+  resolveContactIcon,
+} from '@/lib/contactIcons'
 import { createId } from '@/lib/ids'
 
 type Props = {
@@ -67,6 +80,12 @@ export function CvForm({ cv, onChange }: Props) {
     })
   }
 
+  function replaceContact(id: string, next: ContactItem) {
+    patchIdentity({
+      contact: cv.identity.contact.map((item) => (item.id === id ? next : item)),
+    })
+  }
+
   function removeContact(id: string) {
     patchIdentity({
       contact: cv.identity.contact.filter((item) => item.id !== id),
@@ -75,16 +94,7 @@ export function CvForm({ cv, onChange }: Props) {
 
   function addContact() {
     patchIdentity({
-      contact: [
-        ...cv.identity.contact,
-        {
-          id: createId('contact'),
-          type: 'link',
-          label: 'Link',
-          value: '',
-          icon: 'globe',
-        },
-      ],
+      contact: [...cv.identity.contact, createBlankContact(createId('contact'))],
     })
   }
 
@@ -151,62 +161,105 @@ export function CvForm({ cv, onChange }: Props) {
 
       <section className="form-section">
         <h2>Contact</h2>
-        {cv.identity.contact.map((item) => (
-          <div key={item.id} className="form-card">
-            <div className="form-grid">
-              <Field label="Type">
-                <select
-                  value={item.type}
-                  onChange={(e) =>
-                    updateContact(item.id, {
-                      type: e.target.value as ContactItem['type'],
-                    })
-                  }
-                >
-                  <option value="email">email</option>
-                  <option value="phone">phone</option>
-                  <option value="location">location</option>
-                  <option value="link">link</option>
-                </select>
-              </Field>
-              <Field label="Label">
-                <input
-                  value={item.label}
-                  onChange={(e) => updateContact(item.id, { label: e.target.value })}
-                />
-              </Field>
-              <Field label="Value">
-                <input
-                  value={item.value}
-                  onChange={(e) => updateContact(item.id, { value: e.target.value })}
-                />
-              </Field>
-              <Field label="Href">
-                <input
-                  value={item.href ?? ''}
-                  onChange={(e) =>
-                    updateContact(item.id, { href: e.target.value || undefined })
-                  }
-                />
-              </Field>
-              <Field label="Icon">
-                <input
-                  value={item.icon ?? ''}
-                  onChange={(e) =>
-                    updateContact(item.id, { icon: e.target.value || undefined })
-                  }
-                />
-              </Field>
+        {cv.identity.contact.map((item) => {
+          const linkRow = isLinkContact(item.type)
+          const placeholders = CONTACT_TYPE_DEFAULTS[item.type]
+          return (
+            <div key={item.id} className="form-card">
+              <div className="form-grid">
+                <Field label="Type">
+                  <select
+                    value={item.type}
+                    onChange={(e) =>
+                      replaceContact(
+                        item.id,
+                        applyContactTypeChange(
+                          item,
+                          e.target.value as ContactItem['type'],
+                        ),
+                      )
+                    }
+                  >
+                    <option value="email">email</option>
+                    <option value="phone">phone</option>
+                    <option value="location">location</option>
+                    <option value="link">link</option>
+                  </select>
+                </Field>
+                <Field label="Value">
+                  <input
+                    value={item.value}
+                    placeholder={placeholders.valuePlaceholder}
+                    onChange={(e) =>
+                      replaceContact(
+                        item.id,
+                        applyContactValueChange(item, e.target.value),
+                      )
+                    }
+                  />
+                </Field>
+                {linkRow ? (
+                  <Field label="Label">
+                    <input
+                      value={item.label}
+                      onChange={(e) =>
+                        updateContact(item.id, { label: e.target.value })
+                      }
+                    />
+                  </Field>
+                ) : null}
+                {linkRow ? (
+                  <Field label="URL">
+                    <input
+                      value={item.href ?? ''}
+                      placeholder="https://…"
+                      onChange={(e) =>
+                        updateContact(item.id, {
+                          href: e.target.value || undefined,
+                        })
+                      }
+                    />
+                  </Field>
+                ) : null}
+                <Field label="Icon">
+                  <span className="icon-select">
+                    <CvIcon
+                      name={resolveContactIcon(item.icon)}
+                      className="icon-select__preview"
+                      size={16}
+                    />
+                    <select
+                      value={resolveContactIcon(item.icon)}
+                      onChange={(e) =>
+                        updateContact(item.id, {
+                          icon: e.target.value || undefined,
+                        })
+                      }
+                    >
+                      {!isKnownContactIcon(item.icon) ? (
+                        <option value={resolveContactIcon(item.icon)}>
+                          {resolveContactIcon(item.icon)} (custom)
+                        </option>
+                      ) : null}
+                      {CONTACT_ICON_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                </Field>
+              </div>
+              <button
+                type="button"
+                className="btn btn--danger"
+                onClick={() => removeContact(item.id)}
+              >
+                Remove contact
+              </button>
             </div>
-            <button
-              type="button"
-              className="btn btn--danger"
-              onClick={() => removeContact(item.id)}
-            >
-              Remove contact
-            </button>
-          </div>
-        ))}
+          )
+        })}
         <ListActions onAdd={addContact} addLabel="Add contact" />
       </section>
 
