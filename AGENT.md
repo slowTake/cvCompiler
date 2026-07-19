@@ -58,12 +58,12 @@ See [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md).
 
 ## Definition of done (v1)
 
-- [ ] `npm run dev` shows split form + A4 preview
-- [ ] Editing fields updates the preview
-- [ ] Public/private dataset toggle works; private file gitignored
-- [ ] Print CSS yields a usable multi-page PDF via browser print
-- [ ] Public demo data is fictional
-- [ ] README documents local setup
+- [x] `npm run dev` shows split form + A4 preview
+- [x] Editing fields updates the preview
+- [x] Public/private dataset toggle works; private file gitignored
+- [x] Print CSS yields a usable multi-page PDF via browser print
+- [x] Public demo data is fictional
+- [x] README documents local setup
 
 ## Cursor skills (in this repo)
 
