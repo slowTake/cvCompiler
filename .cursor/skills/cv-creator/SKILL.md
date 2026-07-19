@@ -22,6 +22,8 @@ metadata:
 
 # CV Creator
 
+> **In this repo (cvStudio):** see [PROJECT.md](./PROJECT.md). Use for copy quality; default visual export follows the `cv-studio` skill, not ATS single-column.
+
 Professional resume builder that transforms structured career data into ATS-optimized, professionally formatted resumes.
 
 ## Integrations

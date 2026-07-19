@@ -65,6 +65,18 @@ See [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md).
 - [ ] Public demo data is fictional
 - [ ] README documents local setup
 
+## Cursor skills (in this repo)
+
+See [.cursor/skills/README.md](./.cursor/skills/README.md).
+
+| Skill | Role |
+|-------|------|
+| **cv-studio** | Default for this codebase — schema, preview, print, conventions |
+| **cv-creator** | Resume *copy* quality only (not the v1 visual template); see `.cursor/skills/cv-creator/PROJECT.md` |
+| **prototype** | Throwaway UI/layout experiments |
+
+Invoke **cv-studio** (and read this file + `docs/`) before scaffolding or changing product behavior.
+
 ## Optional follow-ups (not v1)
 
 - Rename GitHub repo to `cvStudio`

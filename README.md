@@ -28,6 +28,16 @@ See [AGENT.md](./AGENT.md) for the build brief (cloud- and local-agent ready).
 | [docs/DESIGN.md](./docs/DESIGN.md) | Visual / page layout targets |
 | [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md) | Explicit non-goals for v1 |
 
+## Cursor skills
+
+Project skills (cloud- and local-agent usable) live under [`.cursor/skills/`](./.cursor/skills/README.md):
+
+| Skill | Purpose |
+|-------|---------|
+| `cv-studio` | How to build this app (schema, preview, print, privacy) |
+| `cv-creator` | Resume copy / bullet quality (ATS content rules; not v1 layout) |
+| `prototype` | Throwaway UI/layout experiments |
+
 ## Privacy
 
 Never commit real phone numbers, private emails, or other sensitive contact details in `cv.public.json`. Keep those in `cv.private.json` only (gitignored).
