@@ -55,6 +55,7 @@ See [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md).
 - Do not rename the GitHub repo unless the human explicitly asks in the cloud session
 - Prefer small, reviewable commits only if the human asks you to commit
 - If the repo has no commits yet, docs-first then scaffold is fine
+- Target **Node 18.18+** (see `.nvmrc` / `package.json` `engines`). Do **not** bump to Vite 8+ unless the owner is on Node 20+ — Vite 8’s Rolldown needs `util.styleText`.
 
 ## Definition of done (v1)
 

@@ -8,6 +8,10 @@ Personal CV studio: edit structured career data in a form, preview an A4 layout 
 
 **v1 app scaffolded** — form + live A4 preview + print CSS. See [AGENT.md](./AGENT.md) for product constraints.
 
+## Requirements
+
+- **Node.js 18.18+** (Vite 6). Node 18.19 works; Vite 8+ does not (needs Node 20+).
+
 ## Quick start
 
 ```bash
