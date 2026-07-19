@@ -12,8 +12,8 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 
 ### Page 1 — Sidebar + main
 
-- **Left (~1/3):** name, role, contact list with simple line icons, about, skills (grouped)
-- **Right (~2/3):** education, projects
+- **Left (~40%):** name, role, contact list with simple line icons, about, skills (grouped) — wide enough that about text isn’t a skinny strip
+- **Right (~60%):** education, projects
 - Section headers: small icon + ALL CAPS label + light pink bar / underline
 - External-link affordance on orgs/projects when `href` is set
 - Typography: monospaced throughout the CV document

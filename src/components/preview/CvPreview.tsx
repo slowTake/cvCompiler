@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { CvDocument } from '@/types/cv'
 import { isSectionEnabled } from '@/types/cv'
 import { CvIcon } from '@/components/icons'
@@ -13,7 +14,14 @@ function formatRange(start?: string, end?: string) {
   return start || end || ''
 }
 
-export function CvPreview({ cv }: { cv: CvDocument }) {
+export function CvPreview({
+  cv,
+  scale = 1,
+}: {
+  cv: CvDocument
+  /** Multiplier for type/spacing density (1 = default). Affects print too. */
+  scale?: number
+}) {
   const showAbout = isSectionEnabled(cv, 'about')
   const showSkills = isSectionEnabled(cv, 'skills')
   const showEducation = isSectionEnabled(cv, 'education')
@@ -22,7 +30,10 @@ export function CvPreview({ cv }: { cv: CvDocument }) {
   const showLanguages = isSectionEnabled(cv, 'languages')
 
   return (
-    <div className="cv-preview-stack">
+    <div
+      className="cv-preview-stack"
+      style={{ '--cv-scale': String(scale) } as CSSProperties}
+    >
       <article className="cv-page cv-page--cover">
         <aside className="cv-sidebar">
           <div className="cv-identity">
@@ -113,9 +124,9 @@ export function CvPreview({ cv }: { cv: CvDocument }) {
                   <article key={item.id} className="cv-entry">
                     <div className="cv-entry__top">
                       <div>
-                        <LinkedText href={item.href} className="cv-entry__title">
-                          {item.title}
-                        </LinkedText>
+                        <h3 className="cv-entry__title">
+                          <LinkedText href={item.href}>{item.title}</LinkedText>
+                        </h3>
                       </div>
                       <div className="cv-entry__meta">
                         <span>{formatRange(item.start, item.end)}</span>

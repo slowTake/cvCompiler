@@ -2,6 +2,7 @@ import { CvForm } from '@/components/form/CvForm'
 import { CvPreview } from '@/components/preview/CvPreview'
 import { Toolbar } from '@/components/Toolbar'
 import { useCvDocument } from '@/hooks/useCvDocument'
+import { usePreviewScale } from '@/hooks/usePreviewScale'
 
 export default function App() {
   const {
@@ -15,6 +16,8 @@ export default function App() {
     save,
     resetToSeed,
   } = useCvDocument()
+  const { scalePercent, scaleFactor, setScalePercent, resetScale } =
+    usePreviewScale()
 
   if (!ready || !cv) {
     return (
@@ -30,6 +33,9 @@ export default function App() {
         dataset={dataset}
         dirty={dirty}
         status={status}
+        scalePercent={scalePercent}
+        onScaleChange={setScalePercent}
+        onScaleReset={resetScale}
         onDatasetChange={switchDataset}
         onSave={save}
         onReset={resetToSeed}
@@ -41,7 +47,7 @@ export default function App() {
           <CvForm cv={cv} onChange={updateCv} />
         </aside>
         <section className="app-preview-pane" aria-label="A4 preview">
-          <CvPreview cv={cv} />
+          <CvPreview cv={cv} scale={scaleFactor} />
         </section>
       </div>
     </div>

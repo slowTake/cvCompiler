@@ -1,9 +1,17 @@
 import type { DatasetId } from '@/types/cv'
+import {
+  PREVIEW_SCALE_DEFAULT,
+  PREVIEW_SCALE_MAX,
+  PREVIEW_SCALE_MIN,
+} from '@/hooks/usePreviewScale'
 
 type Props = {
   dataset: DatasetId
   dirty: boolean
   status: string | null
+  scalePercent: number
+  onScaleChange: (value: number) => void
+  onScaleReset: () => void
   onDatasetChange: (dataset: DatasetId) => void
   onSave: () => void
   onReset: () => void
@@ -14,6 +22,9 @@ export function Toolbar({
   dataset,
   dirty,
   status,
+  scalePercent,
+  onScaleChange,
+  onScaleReset,
   onDatasetChange,
   onSave,
   onReset,
@@ -43,6 +54,31 @@ export function Toolbar({
             Public
           </button>
         </div>
+
+        <label className="scale-control" title="Shrink or grow CV type for print fit">
+          <span className="scale-control__label">Type size</span>
+          <input
+            type="range"
+            min={PREVIEW_SCALE_MIN}
+            max={PREVIEW_SCALE_MAX}
+            step={1}
+            value={scalePercent}
+            onChange={(e) => onScaleChange(Number(e.target.value))}
+            aria-valuemin={PREVIEW_SCALE_MIN}
+            aria-valuemax={PREVIEW_SCALE_MAX}
+            aria-valuenow={scalePercent}
+            aria-label="CV type size percent"
+          />
+          <span className="scale-control__value">{scalePercent}%</span>
+          <button
+            type="button"
+            className="btn btn--ghost scale-control__reset"
+            disabled={scalePercent === PREVIEW_SCALE_DEFAULT}
+            onClick={onScaleReset}
+          >
+            Reset
+          </button>
+        </label>
 
         <button type="button" className="btn" onClick={onSave}>
           Save JSON{dirty ? ' *' : ''}
