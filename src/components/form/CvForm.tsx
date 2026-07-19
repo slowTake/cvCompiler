@@ -10,6 +10,12 @@ import type {
   SkillGroup,
 } from '@/types/cv'
 import { DEFAULT_SECTION_ORDER } from '@/types/cv'
+import { CvIcon } from '@/components/icons'
+import {
+  CONTACT_ICON_OPTIONS,
+  isKnownContactIcon,
+  resolveContactIcon,
+} from '@/lib/contactIcons'
 import { createId } from '@/lib/ids'
 
 type Props = {
@@ -190,12 +196,32 @@ export function CvForm({ cv, onChange }: Props) {
                 />
               </Field>
               <Field label="Icon">
-                <input
-                  value={item.icon ?? ''}
-                  onChange={(e) =>
-                    updateContact(item.id, { icon: e.target.value || undefined })
-                  }
-                />
+                <span className="icon-select">
+                  <CvIcon
+                    name={resolveContactIcon(item.icon)}
+                    className="icon-select__preview"
+                    size={16}
+                  />
+                  <select
+                    value={resolveContactIcon(item.icon)}
+                    onChange={(e) =>
+                      updateContact(item.id, {
+                        icon: e.target.value || undefined,
+                      })
+                    }
+                  >
+                    {!isKnownContactIcon(item.icon) ? (
+                      <option value={resolveContactIcon(item.icon)}>
+                        {resolveContactIcon(item.icon)} (custom)
+                      </option>
+                    ) : null}
+                    {CONTACT_ICON_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </span>
               </Field>
             </div>
             <button

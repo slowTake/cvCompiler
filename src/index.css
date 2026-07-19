@@ -286,6 +286,18 @@ a {
   background: #fff;
 }
 
+.icon-select {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.icon-select__preview {
+  color: var(--accent-strong);
+  justify-self: center;
+}
+
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
