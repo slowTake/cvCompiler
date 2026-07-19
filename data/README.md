@@ -12,4 +12,4 @@ cp data/cv.private.example.json data/cv.private.json
 
 Schema: [docs/DATA-MODEL.md](../docs/DATA-MODEL.md).
 
-`cv.public.json` is created when the app is scaffolded (fictional seed). Until then this folder may only contain the example + this README.
+Edits in the app persist to browser `localStorage`. Use **Save JSON** to download a file you can copy over `data/cv.private.json` or `data/cv.public.json`.

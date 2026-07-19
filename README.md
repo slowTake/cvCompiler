@@ -6,15 +6,46 @@ Personal CV studio: edit structured career data in a form, preview an A4 layout 
 
 ## Status
 
-**Docs + decisions locked. App not scaffolded yet.**
+**v1 app scaffolded** — form + live A4 preview + print CSS. See [AGENT.md](./AGENT.md) for product constraints.
 
-See [AGENT.md](./AGENT.md) for the build brief (cloud- and local-agent ready).
+## Requirements
+
+- **Node.js 18.18+** (Vite 6). Node 18.19 works; Vite 8+ does not (needs Node 20+).
+
+## Quick start
+
+```bash
+cp data/cv.private.example.json data/cv.private.json
+npm install
+npm run dev
+```
+
+Open the local Vite URL. The form defaults to the **private** dataset. Use the toolbar toggle to edit **public** demo data.
+
+### Export PDF
+
+1. Click **Print / Save PDF** (or use the browser print dialog).
+2. Choose **Save as PDF** / **Print to PDF**.
+3. App chrome (toolbar + form) is hidden by print CSS.
+
+### Save JSON
+
+**Save JSON** writes the active dataset to `localStorage` and downloads `cv.private.json` or `cv.public.json`. Replace the file under `data/` if you want the seed on disk to match.
+
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Local app with live preview |
+| `npm run build` | Typecheck + production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Oxlint |
 
 ## Goals (v1)
 
 - Single-user, personal tool that also doubles as a portfolio demo
 - Vite + React + TypeScript
-- Form UI writes JSON; split view (form | live A4 preview)
+- Form UI writes JSON; split view (form \| live A4 preview)
 - Styled monospace / two-column CV look (not ATS in v1)
 - `cv.public.json` (committed, fictional demo) + `cv.private.json` (gitignored)
 
@@ -23,20 +54,10 @@ See [AGENT.md](./AGENT.md) for the build brief (cloud- and local-agent ready).
 | Doc | Purpose |
 |-----|---------|
 | [AGENT.md](./AGENT.md) | Agent brief: scope, first tasks, constraints |
-| [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked product/tech decisions from grilling |
+| [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked product/tech decisions |
 | [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) | CV JSON schema |
 | [docs/DESIGN.md](./docs/DESIGN.md) | Visual / page layout targets |
 | [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md) | Explicit non-goals for v1 |
-
-## Cursor skills
-
-Project skills (cloud- and local-agent usable) live under [`.cursor/skills/`](./.cursor/skills/README.md):
-
-| Skill | Purpose |
-|-------|---------|
-| `cv-studio` | How to build this app (schema, preview, print, privacy) |
-| `cv-creator` | Resume copy / bullet quality (ATS content rules; not v1 layout) |
-| `prototype` | Throwaway UI/layout experiments |
 
 ## Privacy
 

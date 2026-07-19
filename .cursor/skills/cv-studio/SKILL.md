@@ -42,11 +42,11 @@ When `cv-creator` conflicts with this project's design (two-column, mono, pink a
 
 ## Implementation checklist
 
-- [ ] Types match `docs/DATA-MODEL.md`
-- [ ] Preview matches `docs/DESIGN.md` structure (sidebar page + experience pages)
-- [ ] `@media print` hides app chrome
-- [ ] `.gitignore` includes `data/cv.private.json`
-- [ ] Public demo data is fictional
+- [x] Types match `docs/DATA-MODEL.md`
+- [x] Preview matches `docs/DESIGN.md` structure (sidebar page + experience pages)
+- [x] `@media print` hides app chrome
+- [x] `.gitignore` includes `data/cv.private.json`
+- [x] Public demo data is fictional
 
 ## Anti-patterns
 
