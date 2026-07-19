@@ -127,16 +127,17 @@ a {
 }
 
 .btn {
-  border: 1px solid #6a615d;
-  background: #3a3331;
-  color: #f7efe9;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
   border-radius: 0.4rem;
   padding: 0.42rem 0.8rem;
   cursor: pointer;
 }
 
 .btn:hover {
-  border-color: #8a807b;
+  border-color: color-mix(in srgb, var(--ink) 35%, var(--line));
+  background: #faf6f3;
 }
 
 .btn:disabled {
@@ -146,6 +147,12 @@ a {
 
 .btn--ghost {
   background: transparent;
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 28%, var(--line));
+}
+
+.btn--ghost:hover {
+  background: #f3ebe6;
 }
 
 .btn--primary {
@@ -155,10 +162,51 @@ a {
   font-weight: 600;
 }
 
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--accent-strong) 88%, black);
+  border-color: color-mix(in srgb, var(--accent-strong) 88%, black);
+}
+
 .btn--danger {
   background: transparent;
-  border-color: color-mix(in srgb, var(--danger) 50%, white);
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--line));
   color: var(--danger);
+}
+
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--danger) 8%, white);
+}
+
+.toolbar .btn {
+  border-color: #6a615d;
+  background: #3a3331;
+  color: #f7efe9;
+}
+
+.toolbar .btn:hover {
+  border-color: #8a807b;
+  background: #463f3d;
+}
+
+.toolbar .btn--ghost {
+  background: transparent;
+  color: #f7efe9;
+  border-color: #6a615d;
+}
+
+.toolbar .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toolbar .btn--primary {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #241318;
+}
+
+.toolbar .btn--primary:hover {
+  background: color-mix(in srgb, var(--accent-strong) 88%, white);
+  border-color: color-mix(in srgb, var(--accent-strong) 88%, white);
 }
 
 .app-split {
