@@ -11,7 +11,7 @@ cvStudio is a portfolio demo and personal tool. Users need to keep CV edits with
 ## Decision
 
 - No user accounts, auth, or cloud database.
-- Persist the active document in **localStorage**.
+- Persist the active document in **localStorage** (auto-save on edit).
 - Support **Import JSON** and **Export JSON** so users can backup and move data between browsers/devices.
 - PDF is produced via browser print, not stored server-side.
 

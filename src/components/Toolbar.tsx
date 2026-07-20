@@ -10,7 +10,6 @@ import { listTemplates } from '@/templates/registry'
 type Props = {
   isDemoMode: boolean
   dataset: DatasetId
-  dirty: boolean
   status: string | null
   templateId: string
   scalePercent: number
@@ -18,7 +17,6 @@ type Props = {
   onScaleReset: () => void
   onDatasetChange: (dataset: DatasetId) => void
   onTemplateChange: (templateId: string) => void
-  onSave: () => void
   onExport: () => void
   onImportFile: (file: File) => void
   onReset: () => void
@@ -28,7 +26,6 @@ type Props = {
 export function Toolbar({
   isDemoMode,
   dataset,
-  dirty,
   status,
   templateId,
   scalePercent,
@@ -36,7 +33,6 @@ export function Toolbar({
   onScaleReset,
   onDatasetChange,
   onTemplateChange,
-  onSave,
   onExport,
   onImportFile,
   onReset,
@@ -112,9 +108,6 @@ export function Toolbar({
         </button>
         <button type="button" className="btn" onClick={onExport}>
           Export JSON
-        </button>
-        <button type="button" className="btn" onClick={onSave}>
-          Save{dirty ? ' *' : ''}
         </button>
         <button type="button" className="btn btn--ghost" onClick={onReset}>
           Reset seed

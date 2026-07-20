@@ -42,7 +42,6 @@ export function useCvDocument() {
     isProd ? 'public' : 'private',
   )
   const [docs, setDocs] = useState<Record<DatasetId, CvDocument> | null>(null)
-  const [dirty, setDirty] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
 
   useEffect(() => {
@@ -70,13 +69,15 @@ export function useCvDocument() {
     setDocs((prev) => {
       if (!prev) return prev
       const current = prev[dataset]
-      const resolved = typeof next === 'function' ? next(current) : next
+      const resolved = normalizeCvDocument(
+        typeof next === 'function' ? next(current) : next,
+      )
+      saveStoredCv(isProd ? 'demo' : dataset, resolved)
       return {
         ...prev,
-        [dataset]: normalizeCvDocument(resolved),
+        [dataset]: resolved,
       }
     })
-    setDirty(true)
     setStatus(null)
   }
 
@@ -95,13 +96,6 @@ export function useCvDocument() {
 
   function exportJson() {
     if (!docs) return
-    const current = normalizeCvDocument(docs[dataset])
-    downloadCvJson(exportFilename(storageDataset), current)
-    setStatus(`Downloaded ${exportFilename(storageDataset)}.`)
-  }
-
-  function save() {
-    if (!docs) return
     const current = normalizeCvDocument({
       ...docs[dataset],
       meta: {
@@ -112,10 +106,7 @@ export function useCvDocument() {
     saveStoredCv(storageDataset, current)
     downloadCvJson(exportFilename(storageDataset), current)
     setDocs({ ...docs, [dataset]: current })
-    setDirty(false)
-    setStatus(
-      `Saved to this browser and downloaded ${exportFilename(storageDataset)}.`,
-    )
+    setStatus(`Exported ${exportFilename(storageDataset)} (also kept in this browser).`)
   }
 
   function importJsonText(raw: string) {
@@ -127,7 +118,6 @@ export function useCvDocument() {
     const next = parsed.cv
     setDocs((prev) => (prev ? { ...prev, [dataset]: next } : prev))
     saveStoredCv(storageDataset, next)
-    setDirty(false)
     setStatus('Imported JSON and saved to this browser.')
   }
 
@@ -142,12 +132,12 @@ export function useCvDocument() {
 
   function resetToSeed() {
     const seed = isProd || dataset === 'public' ? seedPublic() : loadPrivateSeed()
+    saveStoredCv(storageDataset, seed)
     setDocs((prev) => (prev ? { ...prev, [dataset]: seed } : prev))
-    setDirty(true)
     setStatus(
       isProd
-        ? 'Reset to demo seed (not saved yet — Export or Save to keep).'
-        : `Reset ${dataset} view to seed file (not saved yet).`,
+        ? 'Reset to demo seed (Export JSON anytime for a file backup).'
+        : `Reset ${dataset} view to seed file.`,
     )
   }
 
@@ -156,12 +146,10 @@ export function useCvDocument() {
     isDemoMode: isProd,
     dataset,
     cv,
-    dirty,
     status,
     switchDataset,
     updateCv,
     setTemplateId,
-    save,
     exportJson,
     importJsonFile,
     resetToSeed,

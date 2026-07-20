@@ -12,4 +12,4 @@ cp data/cv.private.example.json data/cv.private.json
 
 Schema: [docs/DATA-MODEL.md](../docs/DATA-MODEL.md).
 
-Edits in the app persist to browser `localStorage`. Use **Save JSON** to download a file you can copy over `data/cv.private.json` or `data/cv.public.json`.
+Edits in the app auto-save to browser `localStorage`. Use **Export JSON** to download a file you can copy over `data/cv.private.json` or `data/cv.public.json`.

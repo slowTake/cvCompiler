@@ -11,12 +11,10 @@ export default function App() {
     isDemoMode,
     dataset,
     cv,
-    dirty,
     status,
     switchDataset,
     updateCv,
     setTemplateId,
-    save,
     exportJson,
     importJsonFile,
     resetToSeed,
@@ -40,7 +38,6 @@ export default function App() {
       <Toolbar
         isDemoMode={isDemoMode}
         dataset={dataset}
-        dirty={dirty}
         status={status}
         templateId={templateId}
         scalePercent={scalePercent}
@@ -48,7 +45,6 @@ export default function App() {
         onScaleReset={resetScale}
         onDatasetChange={switchDataset}
         onTemplateChange={setTemplateId}
-        onSave={save}
         onExport={exportJson}
         onImportFile={importJsonFile}
         onReset={resetToSeed}
@@ -58,8 +54,9 @@ export default function App() {
       <div className="app-split">
         <aside className="app-form-pane no-print">
           <p className="form-persistence-note">
-            Edits stay in this browser until you <strong>Export JSON</strong>.
-            Import a backup anytime.
+            Edits auto-save in this browser.{' '}
+            <strong>Export JSON</strong> downloads a backup file. Import anytime
+            to restore.
           </p>
           <CvForm cv={cv} onChange={updateCv} />
         </aside>
