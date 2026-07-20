@@ -30,10 +30,8 @@ SPA fallback: [`public/_redirects`](../public/_redirects) ships `/* /index.html 
 
 ## What production users get
 
-- Demo seed from `data/cv.public.json` (fictional).
-- Edits in **localStorage** (key `cvstudio:demo`).
-- **Import JSON** / **Export JSON** / Print → PDF.
-- No Private dataset toggle; `cv.private.json` is never bundled.
+- Demo seed from `data/cv.public.json` (fictional); localStorage + Import/Export.
+- No Public/Private toggle; `cv.private.json` is never bundled (dev-only optional seed).
 
 ## Local production check
 

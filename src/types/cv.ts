@@ -90,8 +90,6 @@ export type CvDocument = {
   sectionsEnabled?: Partial<Record<SectionId, boolean>>
 }
 
-export type DatasetId = 'private' | 'public'
-
 export const DEFAULT_TEMPLATE_ID = 'studio'
 
 export const DEFAULT_SECTION_ORDER: SectionId[] = [

@@ -19,8 +19,8 @@ See [docs/DECISIONS.md](./docs/DECISIONS.md) and [CONTEXT.md](./CONTEXT.md). Hig
 1. No accounts / no DB — localStorage + JSON import/export
 2. PDF is **print output only** (no PDF import)
 3. `meta.templateId` + registry; v1 template = `studio`
-4. Production: public DemoSeed only; never bundle `cv.private.json`
-5. Dev: private dataset default + public toggle
+4. Production: public demo seed (or imported JSON); never bundle `cv.private.json`
+5. No Public/Private toggle or Reset seed
 
 ## Out of scope
 

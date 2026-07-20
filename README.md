@@ -17,13 +17,12 @@ Deploy-ready static SPA: template registry (`studio`), JSON import/export, produ
 ## Quick start (local)
 
 ```bash
-cp data/cv.private.example.json data/cv.private.json
+cp data/cv.private.example.json data/cv.private.json   # optional, local only
 npm install
 npm run dev
 ```
 
-- **Dev:** form defaults to **private** dataset; toolbar can switch to **public**.
-- **Production build:** private toggle hidden; only demo/public seed + browser storage.
+In **dev**, if `data/cv.private.json` exists it is used as the initial seed (not shipped in production). Otherwise the public demo seed loads. Use **Import JSON** for any CV file.
 
 ### Import / Export JSON
 

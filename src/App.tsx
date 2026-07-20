@@ -8,16 +8,12 @@ import { resolveTemplateId } from '@/types/cv'
 export default function App() {
   const {
     ready,
-    isDemoMode,
-    dataset,
     cv,
     status,
-    switchDataset,
     updateCv,
     setTemplateId,
     exportJson,
     importJsonFile,
-    resetToSeed,
   } = useCvDocument()
   const { scalePercent, scaleFactor, setScalePercent, resetScale } =
     usePreviewScale()
@@ -36,18 +32,14 @@ export default function App() {
   return (
     <div className="app-shell">
       <Toolbar
-        isDemoMode={isDemoMode}
-        dataset={dataset}
         status={status}
         templateId={templateId}
         scalePercent={scalePercent}
         onScaleChange={setScalePercent}
         onScaleReset={resetScale}
-        onDatasetChange={switchDataset}
         onTemplateChange={setTemplateId}
         onExport={exportJson}
         onImportFile={importJsonFile}
-        onReset={resetToSeed}
         onPrint={() => window.print()}
       />
 

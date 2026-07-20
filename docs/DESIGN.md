@@ -5,7 +5,7 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 ## App chrome (not printed)
 
 - Split layout: **form** (editable fields, add/remove/reorder) | **live A4 preview**
-- Toolbar: dataset toggle (`private` / `public`), Print / Save PDF
+- Toolbar: Template, Import/Export JSON, type size, Print / Save PDF
 - Screen UI can be simple; the CV preview carries the brand look
 
 ## CV pages (printed)

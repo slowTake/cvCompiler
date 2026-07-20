@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import type { DatasetId } from '@/types/cv'
 import {
   PREVIEW_SCALE_DEFAULT,
   PREVIEW_SCALE_MAX,
@@ -8,34 +7,26 @@ import {
 import { listTemplates } from '@/templates/registry'
 
 type Props = {
-  isDemoMode: boolean
-  dataset: DatasetId
   status: string | null
   templateId: string
   scalePercent: number
   onScaleChange: (value: number) => void
   onScaleReset: () => void
-  onDatasetChange: (dataset: DatasetId) => void
   onTemplateChange: (templateId: string) => void
   onExport: () => void
   onImportFile: (file: File) => void
-  onReset: () => void
   onPrint: () => void
 }
 
 export function Toolbar({
-  isDemoMode,
-  dataset,
   status,
   templateId,
   scalePercent,
   onScaleChange,
   onScaleReset,
-  onDatasetChange,
   onTemplateChange,
   onExport,
   onImportFile,
-  onReset,
   onPrint,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
@@ -46,32 +37,11 @@ export function Toolbar({
       <div className="toolbar__brand">
         <span className="toolbar__logo">cvStudio</span>
         <span className="toolbar__tag">
-          {isDemoMode
-            ? 'import JSON → edit → print PDF · data stays in this browser'
-            : 'form → A4 → print PDF'}
+          import JSON → edit → print PDF · data stays in this browser
         </span>
       </div>
 
       <div className="toolbar__controls">
-        {!isDemoMode ? (
-          <div className="dataset-toggle" role="group" aria-label="Dataset">
-            <button
-              type="button"
-              className={dataset === 'private' ? 'is-active' : undefined}
-              onClick={() => onDatasetChange('private')}
-            >
-              Private
-            </button>
-            <button
-              type="button"
-              className={dataset === 'public' ? 'is-active' : undefined}
-              onClick={() => onDatasetChange('public')}
-            >
-              Public
-            </button>
-          </div>
-        ) : null}
-
         <label className="toolbar-select">
           <span className="toolbar-select__label">Template</span>
           <select
@@ -108,9 +78,6 @@ export function Toolbar({
         </button>
         <button type="button" className="btn" onClick={onExport}>
           Export JSON
-        </button>
-        <button type="button" className="btn btn--ghost" onClick={onReset}>
-          Reset seed
         </button>
 
         <label
