@@ -85,6 +85,11 @@ export function CvPreview({
         </aside>
 
         <main className="cv-main">
+          {showEducation && cv.education.length === 0 && showProjects && cv.projects.length === 0 ? (
+            <p className="cv-empty-hint no-print">
+              Add education or projects in the form — or Import JSON to load a backup.
+            </p>
+          ) : null}
           {showEducation && cv.education.length > 0 && (
             <section className="cv-block">
               <SidebarSectionHeader icon="education" label="Education" />

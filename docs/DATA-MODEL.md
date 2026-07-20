@@ -8,7 +8,7 @@ Source of truth: JSON files under `data/`.
 | `data/cv.private.json` | **Ignored** | Owner’s real CV for local PDF export |
 | `data/cv.private.example.json` | Tracked | Template to copy → `cv.private.json` |
 
-Both runtime files share the same schema.
+Both runtime files share the same schema. Default `meta.templateId` is **`studio`** ([adr/0003-template-registry.md](./adr/0003-template-registry.md)).
 
 ## Schema (v1)
 
@@ -18,6 +18,7 @@ type CvDocument = {
     title: string;          // e.g. "Software Developer"
     locale?: string;        // e.g. "en"
     updatedAt?: string;     // ISO date
+    templateId?: string;    // registry id; default "studio"
   };
   identity: {
     name: string;

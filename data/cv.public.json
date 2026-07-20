@@ -2,7 +2,8 @@
   "meta": {
     "title": "Software Developer",
     "locale": "en",
-    "updatedAt": "2026-07-19"
+    "updatedAt": "2026-07-19",
+    "templateId": "studio"
   },
   "identity": {
     "name": "Avery Quinn",
