@@ -25,9 +25,9 @@ Canonical product docs live at the repo root — **read before coding**:
 1. **Personal tool + static demo** — no auth, no multi-user backend.
 2. **Styled PDF via print CSS** — `window.print()` / Save as PDF. No PDF import. No Playwright in v1.
 3. **Data split** — `data/cv.public.json` (committed, fictional) vs `data/cv.private.json` (**never commit**; **dev-only** load).
-4. **Persistence** — localStorage + Import/Export JSON.
+4. **Persistence** — localStorage (auto-save) + Import/Export JSON.
 5. **Templates** — `meta.templateId` + registry; form stays shared.
-6. **Prod** — public/demo seed only; hide Private toggle; never bundle private JSON.
+6. **Single document** — no Public/Private toggle; private JSON is optional **dev-only** seed.
 7. **Split UI** — form | live A4 preview.
 8. **No real PII** in public seed or production `dist/`.
 

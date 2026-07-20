@@ -14,7 +14,7 @@ Locked during grill-me / grill-with-docs sessions. Change only with an explicit 
 | D08 | Profiles | Single CV profile. Section toggle/reorder OK. |
 | D09 | Visual fidelity | Close clone of studio layout; not pixel-perfect chrome. |
 | D10 | PDF UX | Browser print. Playwright optional later. |
-| D11 | Datasets | **Dev:** private default + public toggle. **Prod:** public/demo seed only. |
+| D11 | Datasets | Single document per browser. No Public/Private toggle. |
 | D12 | App layout | Split view: form \| live A4 preview. |
 | D13 | Naming | Product **cvStudio** (repo may still be `cvCompiler`). |
 | D14 | Public seed | Fictional placeholder only. |

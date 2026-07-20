@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
 import publicSeed from '@data/cv.public.json'
-import privateExample from '@data/cv.private.example.json'
-import type { CvDocument, DatasetId } from '@/types/cv'
+import type { CvDocument } from '@/types/cv'
 import {
   downloadCvJson,
-  exportFilename,
   loadStoredCv,
   normalizeCvDocument,
   parseCvJson,
   saveStoredCv,
 } from '@/lib/storage'
 
-const isProd = import.meta.env.PROD
+const STORAGE_KEY = 'cv'
 
-/** Private on-disk CV — only resolved in DEV so production builds never bundle it. */
-function loadPrivateSeed(): CvDocument {
+/** Prefer owner private file in DEV only; never bundle it for production. */
+function loadInitialSeed(): CvDocument {
   if (import.meta.env.DEV) {
     const privateDiskModules = import.meta.glob<CvDocument>(
       '@data/cv.private.json',
@@ -26,63 +24,34 @@ function loadPrivateSeed(): CvDocument {
     const fromDisk = Object.values(privateDiskModules)[0]
     if (fromDisk) return normalizeCvDocument(clone(fromDisk))
   }
-  return normalizeCvDocument(clone(privateExample as CvDocument))
+  return normalizeCvDocument(clone(publicSeed as CvDocument))
 }
 
 function clone<T>(value: T): T {
   return structuredClone(value)
 }
 
-function seedPublic(): CvDocument {
-  return normalizeCvDocument(clone(publicSeed as CvDocument))
-}
-
 export function useCvDocument() {
-  const [dataset, setDataset] = useState<DatasetId>(
-    isProd ? 'public' : 'private',
-  )
-  const [docs, setDocs] = useState<Record<DatasetId, CvDocument> | null>(null)
-  const [dirty, setDirty] = useState(false)
+  const [cv, setCv] = useState<CvDocument | null>(null)
   const [status, setStatus] = useState<string | null>(null)
 
   useEffect(() => {
-    if (isProd) {
-      const demo =
-        loadStoredCv('demo') ?? loadStoredCv('public') ?? seedPublic()
-      setDocs({
-        public: demo,
-        private: seedPublic(),
-      })
-      setDataset('public')
-      return
-    }
-
-    setDocs({
-      public: loadStoredCv('public') ?? seedPublic(),
-      private: loadStoredCv('private') ?? loadPrivateSeed(),
-    })
+    const stored =
+      loadStoredCv(STORAGE_KEY) ??
+      loadStoredCv('demo') ??
+      loadStoredCv('public')
+    setCv(stored ?? loadInitialSeed())
   }, [])
 
-  const cv = docs?.[dataset] ?? null
-  const storageDataset = isProd ? 'demo' : dataset
-
   function updateCv(next: CvDocument | ((prev: CvDocument) => CvDocument)) {
-    setDocs((prev) => {
+    setCv((prev) => {
       if (!prev) return prev
-      const current = prev[dataset]
-      const resolved = typeof next === 'function' ? next(current) : next
-      return {
-        ...prev,
-        [dataset]: normalizeCvDocument(resolved),
-      }
+      const resolved = normalizeCvDocument(
+        typeof next === 'function' ? next(prev) : next,
+      )
+      saveStoredCv(STORAGE_KEY, resolved)
+      return resolved
     })
-    setDirty(true)
-    setStatus(null)
-  }
-
-  function switchDataset(next: DatasetId) {
-    if (isProd) return
-    setDataset(next)
     setStatus(null)
   }
 
@@ -94,28 +63,18 @@ export function useCvDocument() {
   }
 
   function exportJson() {
-    if (!docs) return
-    const current = normalizeCvDocument(docs[dataset])
-    downloadCvJson(exportFilename(storageDataset), current)
-    setStatus(`Downloaded ${exportFilename(storageDataset)}.`)
-  }
-
-  function save() {
-    if (!docs) return
+    if (!cv) return
     const current = normalizeCvDocument({
-      ...docs[dataset],
+      ...cv,
       meta: {
-        ...docs[dataset].meta,
+        ...cv.meta,
         updatedAt: new Date().toISOString().slice(0, 10),
       },
     })
-    saveStoredCv(storageDataset, current)
-    downloadCvJson(exportFilename(storageDataset), current)
-    setDocs({ ...docs, [dataset]: current })
-    setDirty(false)
-    setStatus(
-      `Saved to this browser and downloaded ${exportFilename(storageDataset)}.`,
-    )
+    saveStoredCv(STORAGE_KEY, current)
+    downloadCvJson('cv.json', current)
+    setCv(current)
+    setStatus('Exported cv.json (also kept in this browser).')
   }
 
   function importJsonText(raw: string) {
@@ -125,9 +84,8 @@ export function useCvDocument() {
       return
     }
     const next = parsed.cv
-    setDocs((prev) => (prev ? { ...prev, [dataset]: next } : prev))
-    saveStoredCv(storageDataset, next)
-    setDirty(false)
+    setCv(next)
+    saveStoredCv(STORAGE_KEY, next)
     setStatus('Imported JSON and saved to this browser.')
   }
 
@@ -140,30 +98,13 @@ export function useCvDocument() {
     }
   }
 
-  function resetToSeed() {
-    const seed = isProd || dataset === 'public' ? seedPublic() : loadPrivateSeed()
-    setDocs((prev) => (prev ? { ...prev, [dataset]: seed } : prev))
-    setDirty(true)
-    setStatus(
-      isProd
-        ? 'Reset to demo seed (not saved yet — Export or Save to keep).'
-        : `Reset ${dataset} view to seed file (not saved yet).`,
-    )
-  }
-
   return {
-    ready: docs !== null,
-    isDemoMode: isProd,
-    dataset,
+    ready: cv !== null,
     cv,
-    dirty,
     status,
-    switchDataset,
     updateCv,
     setTemplateId,
-    save,
     exportJson,
     importJsonFile,
-    resetToSeed,
   }
 }

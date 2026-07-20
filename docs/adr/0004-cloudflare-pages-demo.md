@@ -12,8 +12,8 @@ Deploy a public demo next to the portfolio without shipping private contact deta
 
 - Host on **Cloudflare Pages** (Git-connected build: `npm run build`, output `dist`).
 - Custom domain: **`cv.peternurmi.com`**.
-- Production builds load **DemoSeed** (`cv.public.json`) + visitor localStorage only.
-- Hide the Private/Public dataset toggle in production.
+- Production builds load **DemoSeed** (`cv.public.json`) + visitor localStorage only (dev may seed from local `cv.private.json` if present).
+- No Public/Private dataset toggle.
 - Never bundle `data/cv.private.json` into production assets.
 
 ## Consequences

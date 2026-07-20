@@ -116,7 +116,3 @@ export function downloadCvJson(filename: string, cv: CvDocument): void {
   a.click()
   URL.revokeObjectURL(url)
 }
-
-export function exportFilename(dataset: string): string {
-  return dataset === 'private' ? 'cv.private.json' : 'cv.json'
-}
