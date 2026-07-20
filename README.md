@@ -1,18 +1,20 @@
 # cvStudio
 
-Personal CV studio: edit structured career data in a form, preview an A4 layout live, and export a styled PDF via the browser’s **Print → Save as PDF**.
+Edit structured career data in a form, preview an A4 layout live, and export a styled PDF via the browser’s **Print → Save as PDF**. Persist with **localStorage** and **Import / Export JSON** — no accounts or database.
 
-> **Repo note:** Local folder and GitHub remote may still be named `cvCompiler`. Product name is **cvStudio**; rename the GitHub repo when ready (`gh repo rename cvStudio`).
+> Product name **cvStudio**. GitHub remote may still be `cvCompiler`.
+
+**Live demo (planned):** [https://cv.peternurmi.com](https://cv.peternurmi.com) — see [docs/DEPLOY.md](./docs/DEPLOY.md).
 
 ## Status
 
-**v1 app scaffolded** — form + live A4 preview + print CSS. See [AGENT.md](./AGENT.md) for product constraints.
+Deploy-ready static SPA: template registry (`studio`), JSON import/export, production demo mode (public seed only).
 
 ## Requirements
 
-- **Node.js 18.18+** (Vite 6). Node 18.19 works; Vite 8+ does not (needs Node 20+).
+- **Node.js 18.18+** (Vite 6). See `.nvmrc`.
 
-## Quick start
+## Quick start (local)
 
 ```bash
 cp data/cv.private.example.json data/cv.private.json
@@ -20,17 +22,22 @@ npm install
 npm run dev
 ```
 
-Open the local Vite URL. The form defaults to the **private** dataset. Use the toolbar toggle to edit **public** demo data.
+- **Dev:** form defaults to **private** dataset; toolbar can switch to **public**.
+- **Production build:** private toggle hidden; only demo/public seed + browser storage.
+
+### Import / Export JSON
+
+- **Import JSON** — load a `CvDocument` backup into the editor (saved to this browser).
+- **Export JSON** — download the current document.
+- **Save** — write localStorage and download.
+
+Data stays in the browser until you export. Clearing site data drops localStorage.
 
 ### Export PDF
 
-1. Click **Print / Save PDF** (or use the browser print dialog).
-2. Choose **Save as PDF** / **Print to PDF**.
-3. App chrome (toolbar + form) is hidden by print CSS.
-
-### Save JSON
-
-**Save JSON** writes the active dataset to `localStorage` and downloads `cv.private.json` or `cv.public.json`. Replace the file under `data/` if you want the seed on disk to match.
+1. **Print / Save PDF** (or browser print).
+2. Destination: Save as PDF.
+3. Margins: **None**; enable **Background graphics**.
 
 ## Scripts
 
@@ -41,27 +48,22 @@ Open the local Vite URL. The form defaults to the **private** dataset. Use the t
 | `npm run preview` | Preview the production build |
 | `npm run lint` | Oxlint |
 
-## Goals (v1)
-
-- Single-user, personal tool that also doubles as a portfolio demo
-- Vite + React + TypeScript
-- Form UI writes JSON; split view (form \| live A4 preview)
-- Styled monospace / two-column CV look (not ATS in v1)
-- `cv.public.json` (committed, fictional demo) + `cv.private.json` (gitignored)
-
 ## Docs
 
 | Doc | Purpose |
 |-----|---------|
-| [AGENT.md](./AGENT.md) | Agent brief: scope, first tasks, constraints |
-| [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked product/tech decisions |
+| [AGENT.md](./AGENT.md) | Agent brief |
+| [CONTEXT.md](./CONTEXT.md) | Domain glossary |
+| [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked decisions |
+| [docs/adr/](./docs/adr/) | Architecture decision records |
 | [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) | CV JSON schema |
-| [docs/DESIGN.md](./docs/DESIGN.md) | Visual / page layout targets |
-| [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md) | Explicit non-goals for v1 |
+| [docs/DESIGN.md](./docs/DESIGN.md) | Visual / print targets |
+| [docs/DEPLOY.md](./docs/DEPLOY.md) | Cloudflare Pages + `cv.peternurmi.com` |
+| [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md) | Non-goals |
 
 ## Privacy
 
-Never commit real phone numbers, private emails, or other sensitive contact details in `cv.public.json`. Keep those in `cv.private.json` only (gitignored).
+Never commit real phone numbers or private emails in `cv.public.json`. Keep those in `cv.private.json` (gitignored, **not** shipped in production builds).
 
 ## License
 

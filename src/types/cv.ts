@@ -72,6 +72,8 @@ export type CvDocument = {
     title: string
     locale?: string
     updatedAt?: string
+    /** Registry template id; default `studio`. */
+    templateId?: string
   }
   identity: {
     name: string
@@ -90,6 +92,8 @@ export type CvDocument = {
 
 export type DatasetId = 'private' | 'public'
 
+export const DEFAULT_TEMPLATE_ID = 'studio'
+
 export const DEFAULT_SECTION_ORDER: SectionId[] = [
   'about',
   'skills',
@@ -101,4 +105,8 @@ export const DEFAULT_SECTION_ORDER: SectionId[] = [
 
 export function isSectionEnabled(cv: CvDocument, id: SectionId): boolean {
   return cv.sectionsEnabled?.[id] !== false
+}
+
+export function resolveTemplateId(cv: CvDocument): string {
+  return cv.meta.templateId?.trim() || DEFAULT_TEMPLATE_ID
 }

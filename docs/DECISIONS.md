@@ -1,28 +1,32 @@
 # Decisions
 
-Locked during a grill-me session (2026-07-19). Change only with an explicit product decision.
+Locked during grill-me / grill-with-docs sessions. Change only with an explicit product decision (prefer a new ADR).
 
 | ID | Topic | Decision |
 |----|--------|----------|
-| D01 | Audience | Personal only — owner’s tool + portfolio demo. No multi-user auth. |
-| D02 | MVP export | Styled visual PDF only. No ATS template in v1. |
-| D03 | Runtime | Local app for real exports; public demo deployable later. |
-| D04 | Data privacy | Two files: public (committed) + private (gitignored). |
-| D05 | Editing | Form UI is the primary editor; it writes JSON. |
-| D06 | PDF pipeline | HTML/CSS → print CSS → browser Print → Save as PDF. |
+| D01 | Audience | Personal tool + portfolio demo. No multi-user auth. |
+| D02 | MVP export | Styled visual PDF via print. No ATS template shipped yet (registry ready). |
+| D03 | Runtime | Local-first; production demo on Cloudflare Pages. |
+| D04 | Data privacy | Public seed committed; private JSON gitignored and **dev-only**. |
+| D05 | Editing | Form UI is the primary editor; writes `CvDocument` JSON. |
+| D06 | PDF pipeline | HTML/CSS → print CSS → browser Print → Save as PDF. **No PDF import.** |
 | D07 | Stack | Vite + React + TypeScript. |
-| D08 | Profiles | Single CV profile. Section toggle/reorder OK; no named variants in v1. |
-| D09 | Visual fidelity | Close clone of reference structure (not pixel-perfect side bars/chrome). |
-| D10 | PDF UX | Browser print for MVP. Playwright automation is optional later. |
-| D11 | Default dataset | Locally, form edits private JSON by default; toggle to edit public. |
-| D12 | App layout | Split view: form \| live A4 preview; print control in toolbar. |
-| D13 | Naming | Product name **cvStudio**. GitHub may still be `cvCompiler` until renamed. |
-| D14 | Public seed | Fictional placeholder person only. |
-| D15 | Deploy | Deferred. `npm run build` is enough for v1. |
+| D08 | Profiles | Single CV profile. Section toggle/reorder OK. |
+| D09 | Visual fidelity | Close clone of studio layout; not pixel-perfect chrome. |
+| D10 | PDF UX | Browser print. Playwright optional later. |
+| D11 | Datasets | **Dev:** private default + public toggle. **Prod:** public/demo seed only. |
+| D12 | App layout | Split view: form \| live A4 preview. |
+| D13 | Naming | Product **cvStudio** (repo may still be `cvCompiler`). |
+| D14 | Public seed | Fictional placeholder only. |
+| D15 | Deploy | Cloudflare Pages → **`cv.peternurmi.com`** (Git UI build). |
+| D16 | Persistence | localStorage + Import/Export JSON (ADR 0001). |
+| D17 | Templates | `meta.templateId` + registry; v1 = `studio` (ADR 0003). |
 
 ## Rationale (short)
 
-- **Styled-only MVP:** Matches the desired portfolio look; ATS can be a second template later.
-- **Public/private split:** Safe to open-source the demo without leaking contact details.
-- **Print CSS:** Best fidelity for CSS-heavy layouts without a PDF layout engine in v1.
-- **Vite:** Light static-friendly stack for form + preview.
+- **Local-only:** Keeps the demo static and private-data-safe.
+- **JSON in/out:** Portable backup without a backend.
+- **Template registry:** Expand layouts later without forking the form.
+- **Cloudflare subdomain:** Simple static deploy beside the portfolio.
+
+See also [CONTEXT.md](../CONTEXT.md) and [docs/adr/](./adr/).
