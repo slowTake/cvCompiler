@@ -23,6 +23,13 @@ describe('template registry', () => {
     }
   })
 
+  it('every entry has the fields the gallery renders (id, label)', () => {
+    for (const template of listTemplates()) {
+      expect(template.id.trim().length).toBeGreaterThan(0)
+      expect(template.label.trim().length).toBeGreaterThan(0)
+    }
+  })
+
   it('exposes the seam: a second template reuses the sidebar skeleton', () => {
     const slate = getTemplate('slate')
     const studio = getTemplate('studio')

@@ -4,7 +4,7 @@ import {
   PREVIEW_SCALE_MAX,
   PREVIEW_SCALE_MIN,
 } from '@/hooks/usePreviewScale'
-import { listTemplates } from '@/templates/registry'
+import { TemplateGallery } from '@/components/TemplateGallery'
 
 type Props = {
   status: string | null
@@ -30,7 +30,6 @@ export function Toolbar({
   onPrint,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
-  const templates = listTemplates()
 
   return (
     <header className="toolbar no-print">
@@ -42,20 +41,10 @@ export function Toolbar({
       </div>
 
       <div className="toolbar__controls">
-        <label className="toolbar-select">
-          <span className="toolbar-select__label">Template</span>
-          <select
-            value={templateId}
-            onChange={(e) => onTemplateChange(e.target.value)}
-            aria-label="CV template"
-          >
-            {templates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TemplateGallery
+          templateId={templateId}
+          onTemplateChange={onTemplateChange}
+        />
 
         <input
           ref={fileRef}
