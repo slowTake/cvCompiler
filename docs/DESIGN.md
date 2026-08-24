@@ -35,3 +35,21 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 
 **In scope:** structure, mono type, pink accents, icons, link markers, right-aligned dates.  
 **Out of scope for v1:** pixel-perfect decorative side bars, exact icon set matching any third-party PDF.
+
+## Templates & themes (ADR 0005)
+
+- A template = **LayoutSkeleton × Theme**. **Canva is inspiration only** — identify
+  styles/categories, then design original tokens. No copied layouts, assets, or fonts-by-name.
+- **No photos / no binary data.** All templates are text-only (portable, local, ATS-safe).
+- Font families vary by theme via safe system stacks (`--cv-stack-mono|sans|serif`) —
+  no bundled font files, no external hosting.
+
+### Realized lineup (10 templates, 3 skeletons)
+
+| Skeleton | Templates |
+|----------|-----------|
+| `sidebar` | Studio (mono/pink), Slate (mono/grey), Noir (mono/b&w), Forest (serif/green), Rose (sans/rose) |
+| `single` (ATS) | ATS (sans/plain), Classic (serif), Azure (sans/blue) |
+| `header-band` | Modern (sans/teal band), Bold (sans/dark band) |
+
+Source of truth: `src/templates/registry.ts` + `[data-cv-theme]` blocks in `src/index.css`.

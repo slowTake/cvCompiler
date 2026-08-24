@@ -24,12 +24,15 @@ npm run dev
 
 In **dev**, if `data/cv.private.json` exists it is used as the initial seed (not shipped in production). Otherwise the public demo seed loads. Use **Import JSON** for any CV file.
 
-### Import / Export JSON
+### Saving your CV
 
-- **Import JSON** — load a `CvDocument` backup into the editor.
-- **Export JSON** — download a backup file (also refreshes browser storage).
+Edits auto-save to this browser’s localStorage (a cache). For a durable copy:
 
-Edits auto-save to this browser’s localStorage. Clearing site data drops that unless you exported a file.
+- **Chromium (Chrome/Edge):** **Open…** binds a `.json` on disk and loads it; **Save** (or ⌘/Ctrl+S) writes the current CV back to that file. The toolbar shows the bound filename and a `•` when there are unsaved changes.
+- **Firefox / Safari (no File System Access API):** use **Import JSON** / **Export JSON** — Export downloads a backup, Import loads one.
+- **Export JSON** is always available as a plain download.
+
+Clearing site data drops the localStorage cache, but a saved/exported file survives. The bound file is not remembered across reloads — re-open it (localStorage keeps your latest edits in the meantime).
 
 ### Export PDF
 
@@ -53,6 +56,7 @@ Edits auto-save to this browser’s localStorage. Clearing site data drops that 
 | [AGENT.md](./AGENT.md) | Agent brief |
 | [CONTEXT.md](./CONTEXT.md) | Domain glossary |
 | [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked decisions |
+| [docs/SPEC-templates-nav-persistence.md](./docs/SPEC-templates-nav-persistence.md) | Build plan: templates, nav, durable persistence |
 | [docs/adr/](./docs/adr/) | Architecture decision records |
 | [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) | CV JSON schema |
 | [docs/DESIGN.md](./docs/DESIGN.md) | Visual / print targets |

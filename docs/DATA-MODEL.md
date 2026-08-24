@@ -23,7 +23,9 @@ type CvDocument = {
   identity: {
     name: string;
     role: string;
+    tagline?: string;       // optional one-liner, distinct from about (Phase 3)
     contact: ContactItem[];
+    links?: LinkItem[];     // optional social/portfolio row (Phase 3)
     about: string;
   };
   skills: SkillGroup[];
@@ -63,6 +65,12 @@ type SkillItem = {
   id: string;
   label: string;
   href?: string;
+};
+
+type LinkItem = {   // Phase 3 — optional, text-only (no binary/photo data)
+  id: string;
+  label: string;
+  href: string;
 };
 
 type EducationItem = {

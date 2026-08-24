@@ -4,7 +4,7 @@ import {
   PREVIEW_SCALE_MAX,
   PREVIEW_SCALE_MIN,
 } from '@/hooks/usePreviewScale'
-import { listTemplates } from '@/templates/registry'
+import { TemplateGallery } from '@/components/TemplateGallery'
 
 type Props = {
   status: string | null
@@ -16,6 +16,11 @@ type Props = {
   onExport: () => void
   onImportFile: (file: File) => void
   onPrint: () => void
+  fsaSupported: boolean
+  fileName: string | null
+  dirty: boolean
+  onOpenFile: () => void
+  onSaveFile: () => void
 }
 
 export function Toolbar({
@@ -28,9 +33,13 @@ export function Toolbar({
   onExport,
   onImportFile,
   onPrint,
+  fsaSupported,
+  fileName,
+  dirty,
+  onOpenFile,
+  onSaveFile,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
-  const templates = listTemplates()
 
   return (
     <header className="toolbar no-print">
@@ -42,20 +51,10 @@ export function Toolbar({
       </div>
 
       <div className="toolbar__controls">
-        <label className="toolbar-select">
-          <span className="toolbar-select__label">Template</span>
-          <select
-            value={templateId}
-            onChange={(e) => onTemplateChange(e.target.value)}
-            aria-label="CV template"
-          >
-            {templates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TemplateGallery
+          templateId={templateId}
+          onTemplateChange={onTemplateChange}
+        />
 
         <input
           ref={fileRef}
@@ -69,13 +68,36 @@ export function Toolbar({
           }}
         />
 
-        <button
-          type="button"
-          className="btn"
-          onClick={() => fileRef.current?.click()}
-        >
-          Import JSON
-        </button>
+        {fsaSupported ? (
+          <>
+            <button type="button" className="btn" onClick={onOpenFile}>
+              Open…
+            </button>
+            <button
+              type="button"
+              className="btn"
+              onClick={onSaveFile}
+              title={fileName ? `Save to ${fileName}` : 'Save to a file'}
+            >
+              {fileName ? 'Save' : 'Save…'}
+              {dirty ? <span className="toolbar__dirty" aria-hidden="true"> •</span> : null}
+            </button>
+            {fileName ? (
+              <span className="toolbar__file" title={fileName}>
+                {fileName}
+                {dirty ? ' · unsaved' : ''}
+              </span>
+            ) : null}
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn"
+            onClick={() => fileRef.current?.click()}
+          >
+            Import JSON
+          </button>
+        )}
         <button type="button" className="btn" onClick={onExport}>
           Export JSON
         </button>

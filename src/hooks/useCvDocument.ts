@@ -7,7 +7,14 @@ import {
   normalizeCvDocument,
   parseCvJson,
   saveStoredCv,
+  serializeCv,
 } from '@/lib/storage'
+import {
+  isFsaSupported,
+  pickOpenCvFile,
+  pickSaveCvFile,
+  writeCvFile,
+} from '@/lib/fileAccess'
 
 const STORAGE_KEY = 'cv'
 
@@ -34,6 +41,11 @@ function clone<T>(value: T): T {
 export function useCvDocument() {
   const [cv, setCv] = useState<CvDocument | null>(null)
   const [status, setStatus] = useState<string | null>(null)
+  // Durable file binding (ADR 0006). Held in memory for the session; not
+  // restored across reloads (localStorage is the reload cache).
+  const [fileHandle, setFileHandle] = useState<FileSystemFileHandle | null>(null)
+  const [dirty, setDirty] = useState(false)
+  const fsaSupported = isFsaSupported()
 
   useEffect(() => {
     const stored =
@@ -52,6 +64,7 @@ export function useCvDocument() {
       saveStoredCv(STORAGE_KEY, resolved)
       return resolved
     })
+    setDirty(true)
     setStatus(null)
   }
 
@@ -86,6 +99,7 @@ export function useCvDocument() {
     const next = parsed.cv
     setCv(next)
     saveStoredCv(STORAGE_KEY, next)
+    setDirty(false)
     setStatus('Imported JSON and saved to this browser.')
   }
 
@@ -98,6 +112,47 @@ export function useCvDocument() {
     }
   }
 
+  /** Bind a file and load it (File System Access API). */
+  async function openFile() {
+    const picked = await pickOpenCvFile()
+    if (!picked) return // user cancelled
+    const parsed = parseCvJson(picked.text)
+    if (!parsed.ok) {
+      setStatus(`Open failed: ${parsed.error}`)
+      return
+    }
+    setCv(parsed.cv)
+    saveStoredCv(STORAGE_KEY, parsed.cv)
+    setFileHandle(picked.handle)
+    setDirty(false)
+    setStatus(`Opened ${picked.handle.name} — Save writes back to it.`)
+  }
+
+  /** Write the current document to the bound file (or bind one via Save As). */
+  async function saveToFile() {
+    if (!cv) return
+    let handle = fileHandle
+    if (!handle) {
+      handle = await pickSaveCvFile('cv.json')
+      if (!handle) return // user cancelled
+      setFileHandle(handle)
+    }
+    const doc = normalizeCvDocument({
+      ...cv,
+      meta: { ...cv.meta, updatedAt: new Date().toISOString().slice(0, 10) },
+    })
+    try {
+      await writeCvFile(handle, serializeCv(doc))
+    } catch {
+      setStatus('Save failed: could not write to the file.')
+      return
+    }
+    saveStoredCv(STORAGE_KEY, doc)
+    setCv(doc)
+    setDirty(false)
+    setStatus(`Saved to ${handle.name}.`)
+  }
+
   return {
     ready: cv !== null,
     cv,
@@ -106,5 +161,10 @@ export function useCvDocument() {
     setTemplateId,
     exportJson,
     importJsonFile,
+    fsaSupported,
+    fileName: fileHandle?.name ?? null,
+    dirty,
+    openFile,
+    saveToFile,
   }
 }
