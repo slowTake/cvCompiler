@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { getTemplate, listTemplates } from '@/templates/registry'
+import { SKELETONS, getSkeleton } from '@/templates/skeletons'
+import { isThemeId } from '@/templates/themes'
 import { DEFAULT_TEMPLATE_ID, resolveTemplateId } from '@/types/cv'
 import type { CvDocument } from '@/types/cv'
 
@@ -14,9 +16,25 @@ describe('template registry', () => {
     expect(getTemplate('   ').id).toBe(DEFAULT_TEMPLATE_ID)
   })
 
-  it('every registry entry exposes a Preview component', () => {
+  it('every entry maps to a registered skeleton and a known theme', () => {
     for (const template of listTemplates()) {
-      expect(typeof template.Preview).toBe('function')
+      expect(SKELETONS[template.skeletonId]).toBeTypeOf('function')
+      expect(isThemeId(template.themeId)).toBe(true)
+    }
+  })
+
+  it('exposes the seam: a second template reuses the sidebar skeleton', () => {
+    const slate = getTemplate('slate')
+    const studio = getTemplate('studio')
+    expect(slate.skeletonId).toBe(studio.skeletonId)
+    expect(slate.themeId).not.toBe(studio.themeId)
+  })
+})
+
+describe('skeleton registry', () => {
+  it('resolves a skeleton component for every registered id', () => {
+    for (const id of Object.keys(SKELETONS) as (keyof typeof SKELETONS)[]) {
+      expect(getSkeleton(id)).toBeTypeOf('function')
     }
   })
 })

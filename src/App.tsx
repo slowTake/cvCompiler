@@ -1,8 +1,8 @@
 import { CvForm } from '@/components/form/CvForm'
 import { Toolbar } from '@/components/Toolbar'
+import { CvPreview } from '@/components/preview/CvPreview'
 import { useCvDocument } from '@/hooks/useCvDocument'
 import { usePreviewScale } from '@/hooks/usePreviewScale'
-import { getTemplate } from '@/templates/registry'
 import { resolveTemplateId } from '@/types/cv'
 
 export default function App() {
@@ -27,7 +27,6 @@ export default function App() {
   }
 
   const templateId = resolveTemplateId(cv)
-  const { Preview } = getTemplate(templateId)
 
   return (
     <div className="app-shell">
@@ -53,7 +52,7 @@ export default function App() {
           <CvForm cv={cv} onChange={updateCv} />
         </aside>
         <section className="app-preview-pane" aria-label="A4 preview">
-          <Preview cv={cv} scale={scaleFactor} />
+          <CvPreview cv={cv} scale={scaleFactor} />
         </section>
       </div>
     </div>
