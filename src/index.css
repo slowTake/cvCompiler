@@ -161,6 +161,21 @@ a {
   font-weight: 600;
 }
 
+.toolbar__file {
+  align-self: center;
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #cbbfb7;
+  font-size: 0.76rem;
+}
+
+.toolbar__dirty {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .toolbar-select {
   display: inline-flex;
   align-items: center;

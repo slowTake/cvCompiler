@@ -116,11 +116,13 @@ export function saveStoredCv(dataset: string, cv: CvDocument): void {
   )
 }
 
+/** Canonical pretty-printed JSON used for both file download and file-handle writes. */
+export function serializeCv(cv: CvDocument): string {
+  return JSON.stringify(normalizeCvDocument(cv), null, 2) + '\n'
+}
+
 export function downloadCvJson(filename: string, cv: CvDocument): void {
-  const blob = new Blob(
-    [JSON.stringify(normalizeCvDocument(cv), null, 2) + '\n'],
-    { type: 'application/json' },
-  )
+  const blob = new Blob([serializeCv(cv)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url

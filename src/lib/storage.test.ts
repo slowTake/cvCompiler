@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import publicSeed from '@data/cv.public.json'
 import { DEFAULT_TEMPLATE_ID } from '@/types/cv'
 import type { CvDocument } from '@/types/cv'
-import { normalizeCvDocument, parseCvJson } from '@/lib/storage'
+import { normalizeCvDocument, parseCvJson, serializeCv } from '@/lib/storage'
 
 describe('parseCvJson', () => {
   it('accepts the public demo seed', () => {
@@ -46,6 +46,17 @@ describe('normalizeCvDocument', () => {
     if (roundTripped.ok) {
       expect(roundTripped.cv).toEqual(normalized)
     }
+  })
+})
+
+describe('serializeCv (durable file write path)', () => {
+  it('produces JSON that parses back to the normalized document', () => {
+    const normalized = normalizeCvDocument(publicSeed as CvDocument)
+    const text = serializeCv(normalized)
+    expect(text.endsWith('\n')).toBe(true)
+    const parsed = parseCvJson(text)
+    expect(parsed.ok).toBe(true)
+    if (parsed.ok) expect(parsed.cv).toEqual(normalized)
   })
 })
 

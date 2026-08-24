@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { CvForm } from '@/components/form/CvForm'
 import { Toolbar } from '@/components/Toolbar'
 import { CvPreview } from '@/components/preview/CvPreview'
@@ -14,9 +15,27 @@ export default function App() {
     setTemplateId,
     exportJson,
     importJsonFile,
+    fsaSupported,
+    fileName,
+    dirty,
+    openFile,
+    saveToFile,
   } = useCvDocument()
   const { scalePercent, scaleFactor, setScalePercent, resetScale } =
     usePreviewScale()
+
+  // Cmd/Ctrl+S saves to the bound file when the File System Access API is available.
+  useEffect(() => {
+    if (!fsaSupported) return
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        void saveToFile()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [fsaSupported, saveToFile])
 
   if (!ready || !cv) {
     return (
@@ -40,14 +59,28 @@ export default function App() {
         onExport={exportJson}
         onImportFile={importJsonFile}
         onPrint={() => window.print()}
+        fsaSupported={fsaSupported}
+        fileName={fileName}
+        dirty={dirty}
+        onOpenFile={openFile}
+        onSaveFile={saveToFile}
       />
 
       <div className="app-split">
         <aside className="app-form-pane no-print">
           <p className="form-persistence-note">
             Edits auto-save in this browser.{' '}
-            <strong>Export JSON</strong> downloads a backup file. Import anytime
-            to restore.
+            {fsaSupported ? (
+              <>
+                <strong>Open</strong> a file and <strong>Save</strong> (⌘/Ctrl+S)
+                to keep a durable copy on disk.
+              </>
+            ) : (
+              <>
+                <strong>Export JSON</strong> downloads a backup file. Import
+                anytime to restore.
+              </>
+            )}
           </p>
           <CvForm cv={cv} onChange={updateCv} />
         </aside>

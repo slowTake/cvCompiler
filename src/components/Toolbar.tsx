@@ -16,6 +16,11 @@ type Props = {
   onExport: () => void
   onImportFile: (file: File) => void
   onPrint: () => void
+  fsaSupported: boolean
+  fileName: string | null
+  dirty: boolean
+  onOpenFile: () => void
+  onSaveFile: () => void
 }
 
 export function Toolbar({
@@ -28,6 +33,11 @@ export function Toolbar({
   onExport,
   onImportFile,
   onPrint,
+  fsaSupported,
+  fileName,
+  dirty,
+  onOpenFile,
+  onSaveFile,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -58,13 +68,36 @@ export function Toolbar({
           }}
         />
 
-        <button
-          type="button"
-          className="btn"
-          onClick={() => fileRef.current?.click()}
-        >
-          Import JSON
-        </button>
+        {fsaSupported ? (
+          <>
+            <button type="button" className="btn" onClick={onOpenFile}>
+              Open…
+            </button>
+            <button
+              type="button"
+              className="btn"
+              onClick={onSaveFile}
+              title={fileName ? `Save to ${fileName}` : 'Save to a file'}
+            >
+              {fileName ? 'Save' : 'Save…'}
+              {dirty ? <span className="toolbar__dirty" aria-hidden="true"> •</span> : null}
+            </button>
+            {fileName ? (
+              <span className="toolbar__file" title={fileName}>
+                {fileName}
+                {dirty ? ' · unsaved' : ''}
+              </span>
+            ) : null}
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn"
+            onClick={() => fileRef.current?.click()}
+          >
+            Import JSON
+          </button>
+        )}
         <button type="button" className="btn" onClick={onExport}>
           Export JSON
         </button>
