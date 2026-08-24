@@ -19,8 +19,12 @@ Locked during grill-me / grill-with-docs sessions. Change only with an explicit 
 | D13 | Naming | Product **cvStudio** (repo may still be `cvCompiler`). |
 | D14 | Public seed | Fictional placeholder only. |
 | D15 | Deploy | Cloudflare Pages → **`cv.peternurmi.com`** (Git UI build). |
-| D16 | Persistence | localStorage + Import/Export JSON (ADR 0001). |
-| D17 | Templates | `meta.templateId` + registry; v1 = `studio` (ADR 0003). |
+| D16 | Persistence | localStorage cache + durable **BoundFile** via File System Access API; Export JSON fallback (ADR 0001, 0006). |
+| D17 | Templates | `meta.templateId` + registry; **Template = LayoutSkeleton × Theme**, precomposed gallery (ADR 0003, 0005). |
+| D18 | Template scope | ~10 named templates from 2–3 skeletons × themes. **Inspiration-only** from Canva; original work, no clones. |
+| D19 | Schema growth | Optional **text-only** fields added as templates need them (tagline, links). **No photos / no binary data** (ADR 0005). |
+| D20 | Hosting | **Cloudflare Pages retained**; VPS self-hosting considered and declined (stays out of scope). |
+| D21 | Form navigation | Existing collapsible sections + **sticky jump-nav**; persist per-section open state. |
 
 ## Rationale (short)
 

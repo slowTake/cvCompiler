@@ -53,6 +53,7 @@ Edits auto-save to this browser’s localStorage. Clearing site data drops that 
 | [AGENT.md](./AGENT.md) | Agent brief |
 | [CONTEXT.md](./CONTEXT.md) | Domain glossary |
 | [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked decisions |
+| [docs/SPEC-templates-nav-persistence.md](./docs/SPEC-templates-nav-persistence.md) | Build plan: templates, nav, durable persistence |
 | [docs/adr/](./docs/adr/) | Architecture decision records |
 | [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) | CV JSON schema |
 | [docs/DESIGN.md](./docs/DESIGN.md) | Visual / print targets |

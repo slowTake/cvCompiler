@@ -32,6 +32,8 @@ export function CvPreview({
   return (
     <div
       className="cv-preview-stack"
+      // Phase 1: single theme. Phase 2 resolves this from the template registry.
+      data-cv-theme="studio"
       style={{ '--cv-scale': String(scale) } as CSSProperties}
     >
       <article className="cv-page cv-page--cover">

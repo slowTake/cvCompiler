@@ -5,9 +5,13 @@ Shared vocabulary for agents and contributors. Prefer these terms in code, docs,
 | Term | Meaning |
 |------|---------|
 | **CvDocument** | The structured JSON CV (identity, skills, education, projects, experience, languages, section flags). Source of truth for form + preview. |
-| **Template** | A visual renderer + styles for a `CvDocument`. Does not change the form schema. |
-| **TemplateId** | String id on `meta.templateId` (e.g. `"studio"`). Resolved via the template registry. |
-| **Persistence** | How CV data survives sessions: browser **localStorage** + optional **JSON file** import/export. No accounts or server DB. |
+| **Template** | A pairing of a **LayoutSkeleton** and a **Theme** applied to a `CvDocument`. Selected in the toolbar; resolved via the template registry. |
+| **LayoutSkeleton** | The structural arrangement of a CV (e.g. sidebar-left two-column, single-column/ATS, header-band). A small fixed set (target 2–3). Owns *structure*, not colors/fonts. |
+| **Theme** | A named set of design tokens (font family, color palette, accent, spacing/density, header treatment) applied over a LayoutSkeleton. Many themes can share one skeleton. |
+| **TemplateId** | String id on `meta.templateId`. Resolved via the template registry; a template is a precomposed (skeleton × theme) entry unless decided otherwise. |
+| **Persistence** | How CV data survives sessions: **localStorage** (fast autosave/cache) + a **BoundFile** (durable copy) + JSON import/export. No accounts or server DB. |
+| **BoundFile** | A user-chosen `.json` on disk that **Save** writes back to via the File System Access API (Chromium). The durable source of truth; localStorage is a cache. Falls back to Export JSON where the API is unavailable. |
+| **TemplateGallery** | The toolbar picker: a thumbnail grid of precomposed, named templates. Each maps internally to a (LayoutSkeleton × Theme). |
 | **Export** | Download `CvDocument` as JSON, and/or browser **Print → Save as PDF**. |
 | **Import** | Load a `CvDocument` from a JSON file into the editor (replaces current doc). |
 | **DemoSeed** | Fictional public seed (`data/cv.public.json`) shipped in production builds. |

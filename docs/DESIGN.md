@@ -35,3 +35,10 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 
 **In scope:** structure, mono type, pink accents, icons, link markers, right-aligned dates.  
 **Out of scope for v1:** pixel-perfect decorative side bars, exact icon set matching any third-party PDF.
+
+## Templates & themes (ADR 0005)
+
+- A template = **LayoutSkeleton × Theme**. `studio` above is the first skeleton + theme.
+- Target ~10 named themes across 2–3 skeletons. **Canva is inspiration only** — identify
+  styles/categories, then design original tokens. No copied layouts, assets, or fonts-by-name.
+- **No photos / no binary data.** All templates are text-only (portable, local, ATS-safe).
