@@ -34,6 +34,9 @@ export function SidebarSkeleton({ cv }: { cv: CvDocument }) {
           <div className="cv-identity">
             <h1 className="cv-name">{cv.identity.name}</h1>
             <p className="cv-role">{cv.identity.role}</p>
+            {cv.identity.tagline ? (
+              <p className="cv-tagline">{cv.identity.tagline}</p>
+            ) : null}
           </div>
 
           <ul className="cv-contact">
@@ -50,6 +53,18 @@ export function SidebarSkeleton({ cv }: { cv: CvDocument }) {
               </li>
             ))}
           </ul>
+
+          {cv.identity.links?.length ? (
+            <ul className="cv-links">
+              {cv.identity.links.map((link) => (
+                <li key={link.id}>
+                  <a href={link.href} target="_blank" rel="noreferrer">
+                    {link.label || link.href}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
 
           {showAbout && (
             <section className="cv-block">

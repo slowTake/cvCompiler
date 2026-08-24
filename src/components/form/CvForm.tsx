@@ -5,6 +5,7 @@ import type {
   EducationItem,
   ExperienceItem,
   LanguageItem,
+  LinkItem,
   ProjectItem,
   SectionId,
   SkillGroup,
@@ -33,6 +34,7 @@ type Props = {
 type FormSectionId =
   | 'identity'
   | 'contact'
+  | 'links'
   | 'visibility'
   | 'skills'
   | 'education'
@@ -43,6 +45,7 @@ type FormSectionId =
 const DEFAULT_OPEN: Record<FormSectionId, boolean> = {
   identity: true,
   contact: true,
+  links: false,
   visibility: false,
   skills: true,
   education: true,
@@ -216,6 +219,35 @@ export function CvForm({ cv, onChange }: Props) {
     patchIdentity({ contact: moveIndex(cv.identity.contact, index, direction) })
   }
 
+  function updateLink(id: string, partial: Partial<LinkItem>) {
+    patchIdentity({
+      links: (cv.identity.links ?? []).map((item) =>
+        item.id === id ? { ...item, ...partial } : item,
+      ),
+    })
+  }
+
+  function removeLink(id: string) {
+    patchIdentity({
+      links: (cv.identity.links ?? []).filter((item) => item.id !== id),
+    })
+  }
+
+  function addLink() {
+    patchIdentity({
+      links: [
+        ...(cv.identity.links ?? []),
+        { id: createId('link'), label: '', href: '' },
+      ],
+    })
+  }
+
+  function moveLink(index: number, direction: -1 | 1) {
+    patchIdentity({
+      links: moveIndex(cv.identity.links ?? [], index, direction),
+    })
+  }
+
   function updateSkillGroup(id: string, partial: Partial<SkillGroup>) {
     patch({
       skills: cv.skills.map((group) =>
@@ -260,6 +292,15 @@ export function CvForm({ cv, onChange }: Props) {
             <input
               value={cv.identity.role}
               onChange={(e) => patchIdentity({ role: e.target.value })}
+            />
+          </Field>
+          <Field label="Tagline">
+            <input
+              value={cv.identity.tagline ?? ''}
+              placeholder="One-line summary (optional)"
+              onChange={(e) =>
+                patchIdentity({ tagline: e.target.value || undefined })
+              }
             />
           </Field>
           <Field label="Document title">
@@ -386,6 +427,46 @@ export function CvForm({ cv, onChange }: Props) {
           )
         })}
         <ListActions onAdd={addContact} addLabel="Add contact" />
+      </FormSection>
+
+      <FormSection
+        title="Links"
+        open={openSections.links}
+        onToggle={() => toggleSection('links')}
+        count={cv.identity.links?.length ?? 0}
+      >
+        <p className="form-help">
+          Optional social / portfolio links, shown as a compact row by templates
+          that support it.
+        </p>
+        {(cv.identity.links ?? []).map((item, index) => (
+          <div key={item.id} className="form-card">
+            <ItemToolbar
+              index={index}
+              total={cv.identity.links?.length ?? 0}
+              onMove={(direction) => moveLink(index, direction)}
+              onRemove={() => removeLink(item.id)}
+              removeLabel="Remove link"
+            />
+            <div className="form-grid">
+              <Field label="Label">
+                <input
+                  value={item.label}
+                  placeholder="GitHub"
+                  onChange={(e) => updateLink(item.id, { label: e.target.value })}
+                />
+              </Field>
+              <Field label="URL">
+                <input
+                  value={item.href}
+                  placeholder="https://…"
+                  onChange={(e) => updateLink(item.id, { href: e.target.value })}
+                />
+              </Field>
+            </div>
+          </div>
+        ))}
+        <ListActions onAdd={addLink} addLabel="Add link" />
       </FormSection>
 
       <FormSection

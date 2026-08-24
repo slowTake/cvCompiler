@@ -28,6 +28,10 @@ export function normalizeCvDocument(cv: CvDocument): CvDocument {
       role: cv.identity.role ?? '',
       about: cv.identity.about ?? '',
       contact: Array.isArray(cv.identity.contact) ? cv.identity.contact : [],
+      // Optional fields (Phase 3): keep absent when absent, coerce to [] when malformed.
+      ...(cv.identity.links !== undefined
+        ? { links: Array.isArray(cv.identity.links) ? cv.identity.links : [] }
+        : {}),
     },
     skills: Array.isArray(cv.skills) ? cv.skills : [],
     education: Array.isArray(cv.education) ? cv.education : [],
@@ -55,6 +59,14 @@ export function parseCvJson(raw: string): ParseCvResult {
 
   if (!isRecord(data.identity) || typeof data.identity.name !== 'string') {
     return { ok: false, error: 'Missing identity.name.' }
+  }
+
+  // Optional fields (Phase 3): validated softly, never required (backward-compatible).
+  if (
+    data.identity.links !== undefined &&
+    !Array.isArray(data.identity.links)
+  ) {
+    return { ok: false, error: 'identity.links must be an array.' }
   }
 
   if (!Array.isArray(data.skills)) {

@@ -21,6 +21,13 @@ export type SkillItem = {
   href?: string
 }
 
+/** Optional social/portfolio link (Phase 3). Text-only; no binary data. */
+export type LinkItem = {
+  id: string
+  label: string
+  href: string
+}
+
 export type SkillGroup = {
   id: string
   title: string
@@ -78,7 +85,11 @@ export type CvDocument = {
   identity: {
     name: string
     role: string
+    /** Optional one-line summary, distinct from `about` (Phase 3). */
+    tagline?: string
     contact: ContactItem[]
+    /** Optional social/portfolio links row (Phase 3). */
+    links?: LinkItem[]
     about: string
   }
   skills: SkillGroup[]

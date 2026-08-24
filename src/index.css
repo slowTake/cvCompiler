@@ -614,6 +614,35 @@ a {
   line-height: 1.35;
 }
 
+.cv-tagline {
+  margin: 0.3em 0 0;
+  color: var(--cv-muted);
+  font-size: 0.82em;
+  line-height: 1.4;
+  font-style: italic;
+  text-wrap: pretty;
+}
+
+.cv-links {
+  list-style: none;
+  margin: calc(0.7rem * var(--cv-scale)) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0.8em;
+  font-size: 0.82em;
+  line-height: 1.4;
+}
+
+.cv-links a {
+  color: var(--cv-accent-strong);
+  text-decoration: none;
+}
+
+.cv-links a:hover {
+  text-decoration: underline;
+}
+
 .cv-contact {
   list-style: none;
   margin: 0 0 calc(1.25rem * var(--cv-scale));

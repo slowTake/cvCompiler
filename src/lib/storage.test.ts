@@ -48,3 +48,43 @@ describe('normalizeCvDocument', () => {
     }
   })
 })
+
+describe('optional Phase 3 fields (tagline, links)', () => {
+  it('imports a pre-Phase-3 document (no tagline/links) unchanged', () => {
+    const result = parseCvJson(JSON.stringify(publicSeed))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.cv.identity.tagline).toBeUndefined()
+      expect(result.cv.identity.links).toBeUndefined()
+    }
+  })
+
+  it('round-trips tagline and links without loss', () => {
+    const seed = publicSeed as CvDocument
+    const doc = normalizeCvDocument({
+      ...seed,
+      identity: {
+        ...seed.identity,
+        tagline: 'Builder of resilient systems',
+        links: [{ id: 'l1', label: 'GitHub', href: 'https://github.com/x' }],
+      },
+    })
+    const result = parseCvJson(JSON.stringify(doc))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.cv.identity.tagline).toBe('Builder of resilient systems')
+      expect(result.cv.identity.links).toEqual([
+        { id: 'l1', label: 'GitHub', href: 'https://github.com/x' },
+      ])
+    }
+  })
+
+  it('rejects identity.links when it is not an array', () => {
+    const seed = publicSeed as CvDocument
+    const bad = JSON.stringify({
+      ...seed,
+      identity: { ...seed.identity, links: 'nope' },
+    })
+    expect(parseCvJson(bad).ok).toBe(false)
+  })
+})
