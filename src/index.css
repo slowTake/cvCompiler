@@ -1040,15 +1040,15 @@ a {
 
 /* Header-band skeleton */
 .cv-page--band {
-  padding: 0 0 calc(16mm * var(--cv-scale));
+  padding: 0 0 calc(9mm * var(--cv-scale));
 }
 
 .cv-band {
   background: var(--cv-band-bg);
   color: var(--cv-band-ink);
-  padding: calc(15mm * var(--cv-scale)) calc(18mm * var(--cv-scale))
-    calc(12mm * var(--cv-scale));
-  margin-bottom: calc(1.1rem * var(--cv-scale));
+  padding: calc(11mm * var(--cv-scale)) calc(18mm * var(--cv-scale))
+    calc(9mm * var(--cv-scale));
+  margin-bottom: calc(0.85rem * var(--cv-scale));
 }
 
 .cv-band__name {
@@ -1444,7 +1444,9 @@ a.cv-entry__title,
     margin: 0;
   }
 
-  html,
+  /* `:root` (not bare `html`) so this beats the base `:root` background on
+     overflow pages beyond a full-bleed .cv-page. */
+  :root,
   body {
     background: white;
     print-color-adjust: exact;
