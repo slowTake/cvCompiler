@@ -36,6 +36,20 @@ describe('template registry', () => {
     expect(slate.skeletonId).toBe(studio.skeletonId)
     expect(slate.themeId).not.toBe(studio.themeId)
   })
+
+  it('spans more than one skeleton (skeleton axis is populated)', () => {
+    const skeletons = new Set(listTemplates().map((t) => t.skeletonId))
+    expect(skeletons.size).toBeGreaterThan(1)
+    expect(getTemplate('ats').skeletonId).toBe('single')
+  })
+
+  it('ships the full lineup: 10 templates across 3 skeletons, unique ids', () => {
+    const templates = listTemplates()
+    expect(templates).toHaveLength(10)
+    expect(new Set(templates.map((t) => t.skeletonId)).size).toBe(3)
+    expect(new Set(templates.map((t) => t.id)).size).toBe(10)
+    expect(new Set(templates.map((t) => t.themeId)).size).toBe(10)
+  })
 })
 
 describe('skeleton registry', () => {

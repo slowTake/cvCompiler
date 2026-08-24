@@ -2,16 +2,11 @@ import type { CvDocument } from '@/types/cv'
 import { isSectionEnabled } from '@/types/cv'
 import { CvIcon } from '@/components/icons'
 import { LinkedText } from '@/components/preview/LinkedText'
+import { formatRange } from '@/components/preview/format'
 import {
   CenterSectionHeader,
   SidebarSectionHeader,
 } from '@/components/preview/SectionHeader'
-
-function formatRange(start?: string, end?: string) {
-  if (!start && !end) return ''
-  if (start && end) return `${start} — ${end}`
-  return start || end || ''
-}
 
 /**
  * Sidebar skeleton: cover page with a ~40% sidebar (identity, contact, about,

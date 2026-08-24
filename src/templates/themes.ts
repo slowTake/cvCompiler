@@ -4,7 +4,18 @@
  * Kept as a TS source of truth so the registry and tests can validate themeIds
  * without parsing CSS. Phase 5 grows this toward ~10.
  */
-export const THEME_IDS = ['studio', 'slate'] as const
+export const THEME_IDS = [
+  'studio',
+  'slate',
+  'noir',
+  'forest',
+  'rose',
+  'plain',
+  'classic',
+  'azure',
+  'modern',
+  'bold',
+] as const
 
 export type ThemeId = (typeof THEME_IDS)[number]
 

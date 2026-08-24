@@ -4,9 +4,8 @@ import type { CvDocument } from '@/types/cv'
 /**
  * Structural arrangement of a CV. A LayoutSkeleton owns structure only — colors,
  * fonts, and accents come from the Theme (the `--cv-*` token block).
- * Phase 5 adds `'single'` and `'header-band'`.
  */
-export type LayoutSkeletonId = 'sidebar'
+export type LayoutSkeletonId = 'sidebar' | 'single' | 'header-band'
 
 /** Props every layout skeleton receives. Scale + theme are applied by the dispatcher wrapper. */
 export type SkeletonProps = { cv: CvDocument }

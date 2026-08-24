@@ -591,6 +591,49 @@ a {
   border-radius: 1px;
 }
 
+/* Single-column skeleton thumbnail: one full-width column, no sidebar. */
+.template-thumb--single {
+  grid-template-columns: 1fr;
+  background: var(--cv-paper);
+}
+
+.template-thumb--single .template-thumb__main {
+  padding: 3px;
+}
+
+/* Header-band skeleton thumbnail: colored band over a single column. */
+.template-thumb--header-band {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  background: var(--cv-paper);
+}
+
+.template-thumb__band {
+  background: var(--cv-band-bg);
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.template-thumb__band-name {
+  height: 3px;
+  width: 60%;
+  background: var(--cv-band-ink);
+  border-radius: 1px;
+}
+
+.template-thumb__band-sub {
+  height: 2px;
+  width: 40%;
+  background: var(--cv-band-muted);
+  border-radius: 1px;
+}
+
+.template-thumb--header-band .template-thumb__main {
+  padding: 3px;
+}
+
 .template-gallery {
   position: absolute;
   top: calc(100% + 6px);
@@ -663,9 +706,13 @@ a {
  * the gallery thumbnails share one theme definition. Phase 5 adds sibling blocks.
  */
 [data-cv-theme] {
-  /* Type */
-  --cv-font-body: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", Menlo,
+  /* Type — reusable system font stacks; themes switch family via --cv-font-body */
+  --cv-stack-mono: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", Menlo,
     Consolas, monospace;
+  --cv-stack-sans: "IBM Plex Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --cv-stack-serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --cv-font-body: var(--cv-stack-mono);
   --cv-font-heading: var(--cv-font-body);
 
   /* Color */
@@ -684,6 +731,15 @@ a {
 
   /* Header treatment */
   --cv-header-transform: uppercase;
+
+  /* Header-band skeleton (only the band skeleton reads these) */
+  --cv-band-bg: linear-gradient(
+    135deg,
+    var(--cv-accent-strong),
+    color-mix(in srgb, var(--cv-accent-strong) 62%, black)
+  );
+  --cv-band-ink: #ffffff;
+  --cv-band-muted: color-mix(in srgb, #ffffff 78%, transparent);
 }
 
 /*
@@ -702,6 +758,138 @@ a {
   --cv-rule: #d3dae2;
   --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 70%, #cbd5e1);
   --cv-page-shadow: 0 18px 40px rgba(30, 41, 59, 0.12);
+}
+
+/*
+ * Theme: plain — high-contrast black-on-white, minimal accents. Paired with the
+ * single-column skeleton for the ATS template: maximum parser/copy-paste clarity.
+ */
+[data-cv-theme='plain'] {
+  --cv-font-body: var(--cv-stack-sans);
+  --cv-font-heading: var(--cv-stack-sans);
+  --cv-ink: #111827;
+  --cv-muted: #374151;
+  --cv-paper: #ffffff;
+  --cv-accent: #9ca3af;
+  --cv-accent-strong: #111827;
+
+  --cv-sidebar-bg: #ffffff;
+  --cv-sidebar-border-color: #e5e7eb;
+  --cv-rule: #e5e7eb;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 30%, #d1d5db);
+  --cv-page-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Theme: noir — sidebar, monospace, stark black-on-white. */
+[data-cv-theme='noir'] {
+  --cv-ink: #0a0a0a;
+  --cv-muted: #4a4a4a;
+  --cv-paper: #ffffff;
+  --cv-accent: #cfcfcf;
+  --cv-accent-strong: #0a0a0a;
+  --cv-sidebar-bg: linear-gradient(180deg, #f2f2f2 0%, #eaeaea 100%);
+  --cv-sidebar-border-color: #d9d9d9;
+  --cv-rule: #dcdcdc;
+  --cv-center-rule: color-mix(in srgb, #0a0a0a 40%, #cccccc);
+  --cv-page-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+}
+
+/* Theme: forest — sidebar, serif, muted green, non-uppercase headers. */
+[data-cv-theme='forest'] {
+  --cv-font-body: var(--cv-stack-serif);
+  --cv-font-heading: var(--cv-stack-serif);
+  --cv-ink: #1f2a24;
+  --cv-muted: #4b5a52;
+  --cv-paper: #f6f4ee;
+  --cv-accent: #a7c4a0;
+  --cv-accent-strong: #2f6b4f;
+  --cv-sidebar-bg: linear-gradient(180deg, #e9efe4 0%, #e2ebdd 100%);
+  --cv-sidebar-border-color: #cdd8c8;
+  --cv-rule: #cdd8c8;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 60%, #b9c7ad);
+  --cv-header-transform: none;
+  --cv-page-shadow: 0 18px 40px rgba(31, 42, 36, 0.12);
+}
+
+/* Theme: rose — sidebar, sans, warm rose / burgundy. */
+[data-cv-theme='rose'] {
+  --cv-font-body: var(--cv-stack-sans);
+  --cv-font-heading: var(--cv-stack-sans);
+  --cv-ink: #3a2530;
+  --cv-muted: #7a5a67;
+  --cv-paper: #fdf6f4;
+  --cv-accent: #f0c4cd;
+  --cv-accent-strong: #b04a63;
+  --cv-sidebar-bg: linear-gradient(180deg, #f8e7e6 0%, #f4dfe0 100%);
+  --cv-sidebar-border-color: #ecd0d2;
+  --cv-rule: #ecd0d2;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 60%, #e6b8c0);
+  --cv-page-shadow: 0 18px 40px rgba(58, 37, 48, 0.12);
+}
+
+/* Theme: classic — single column, serif, traditional black, no uppercase. */
+[data-cv-theme='classic'] {
+  --cv-font-body: var(--cv-stack-serif);
+  --cv-font-heading: var(--cv-stack-serif);
+  --cv-ink: #1a1a1a;
+  --cv-muted: #444444;
+  --cv-paper: #fbfaf7;
+  --cv-accent: #c9c2b4;
+  --cv-accent-strong: #3a3a3a;
+  --cv-sidebar-border-color: #e2ddd2;
+  --cv-rule: #e2ddd2;
+  --cv-center-rule: color-mix(in srgb, #3a3a3a 30%, #cfc8ba);
+  --cv-header-transform: none;
+  --cv-page-shadow: 0 18px 40px rgba(0, 0, 0, 0.09);
+}
+
+/* Theme: azure — single column, sans, cool blue. */
+[data-cv-theme='azure'] {
+  --cv-font-body: var(--cv-stack-sans);
+  --cv-font-heading: var(--cv-stack-sans);
+  --cv-ink: #16283b;
+  --cv-muted: #4a6076;
+  --cv-paper: #ffffff;
+  --cv-accent: #bcd7ef;
+  --cv-accent-strong: #2166a8;
+  --cv-sidebar-border-color: #dbe6f0;
+  --cv-rule: #dbe6f0;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 45%, #cfe0f0);
+  --cv-page-shadow: 0 18px 40px rgba(22, 40, 59, 0.1);
+}
+
+/* Theme: modern — header-band, sans, teal band. */
+[data-cv-theme='modern'] {
+  --cv-font-body: var(--cv-stack-sans);
+  --cv-font-heading: var(--cv-stack-sans);
+  --cv-ink: #1d2b2b;
+  --cv-muted: #566b6b;
+  --cv-paper: #ffffff;
+  --cv-accent: #a9d9d2;
+  --cv-accent-strong: #0f7a6e;
+  --cv-rule: #d7e5e3;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 45%, #cfe4e0);
+  --cv-band-bg: linear-gradient(135deg, #0f7a6e, #0b5c53);
+  --cv-band-ink: #ffffff;
+  --cv-band-muted: color-mix(in srgb, #ffffff 78%, transparent);
+  --cv-page-shadow: 0 18px 40px rgba(15, 43, 43, 0.12);
+}
+
+/* Theme: bold — header-band, sans, dark band + amber accent. */
+[data-cv-theme='bold'] {
+  --cv-font-body: var(--cv-stack-sans);
+  --cv-font-heading: var(--cv-stack-sans);
+  --cv-ink: #23201a;
+  --cv-muted: #5c5548;
+  --cv-paper: #fffdf8;
+  --cv-accent: #f2d08a;
+  --cv-accent-strong: #c8871d;
+  --cv-rule: #e9e2d3;
+  --cv-center-rule: color-mix(in srgb, var(--cv-accent-strong) 50%, #e6d5b0);
+  --cv-band-bg: linear-gradient(135deg, #262019, #16120d);
+  --cv-band-ink: #ffffff;
+  --cv-band-muted: color-mix(in srgb, #f2d08a 85%, transparent);
+  --cv-page-shadow: 0 18px 40px rgba(35, 32, 26, 0.14);
 }
 
 .cv-preview-stack {
@@ -730,6 +918,121 @@ a {
 
 .cv-page--flow {
   padding: calc(14mm * var(--cv-scale)) calc(16mm * var(--cv-scale));
+}
+
+/* Single-column (ATS) skeleton */
+.cv-page--single {
+  padding: calc(16mm * var(--cv-scale)) calc(18mm * var(--cv-scale));
+}
+
+.cv-single-head {
+  margin-bottom: calc(1.1rem * var(--cv-scale));
+}
+
+.cv-single-head .cv-name {
+  font-size: 1.7em;
+}
+
+.cv-single-contact {
+  list-style: none;
+  margin: calc(0.6rem * var(--cv-scale)) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.1em;
+  font-size: 0.82em;
+  color: var(--cv-muted);
+  line-height: 1.4;
+}
+
+.cv-single-contact li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.cv-single-contact a {
+  text-decoration: none;
+}
+
+.cv-single-contact a:hover {
+  text-decoration: underline;
+}
+
+.cv-single-skillgroup + .cv-single-skillgroup {
+  margin-top: calc(0.5rem * var(--cv-scale));
+}
+
+.cv-single-skillgroup__title {
+  margin: 0.35em 0 0;
+  font-size: 0.86em;
+  font-weight: 700;
+}
+
+.cv-single-skillgroup__items {
+  margin: 0.15em 0 0;
+  font-size: 0.86em;
+  color: var(--cv-muted);
+  line-height: 1.45;
+}
+
+/* Header-band skeleton */
+.cv-page--band {
+  padding: 0 0 calc(16mm * var(--cv-scale));
+}
+
+.cv-band {
+  background: var(--cv-band-bg);
+  color: var(--cv-band-ink);
+  padding: calc(15mm * var(--cv-scale)) calc(18mm * var(--cv-scale))
+    calc(12mm * var(--cv-scale));
+  margin-bottom: calc(1.1rem * var(--cv-scale));
+}
+
+.cv-band__name {
+  margin: 0;
+  font-size: 1.8em;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--cv-band-ink);
+  font-family: var(--cv-font-heading);
+}
+
+.cv-band__role {
+  margin: 0.3em 0 0;
+  font-size: 0.95em;
+  color: var(--cv-band-muted);
+}
+
+.cv-band__tagline {
+  margin: 0.4em 0 0;
+  font-size: 0.85em;
+  color: var(--cv-band-muted);
+  text-wrap: pretty;
+}
+
+.cv-band__contact {
+  list-style: none;
+  margin: calc(0.7rem * var(--cv-scale)) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.1em;
+  font-size: 0.8em;
+  color: var(--cv-band-muted);
+}
+
+.cv-band__contact a {
+  color: var(--cv-band-ink);
+  text-decoration: none;
+}
+
+.cv-band__contact a:hover {
+  text-decoration: underline;
+}
+
+.cv-band-body {
+  padding: 0 calc(18mm * var(--cv-scale));
 }
 
 .cv-sidebar {
