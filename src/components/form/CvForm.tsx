@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type {
   ContactItem,
   CvDocument,
@@ -42,16 +42,63 @@ type FormSectionId =
   | 'experience'
   | 'languages'
 
+/** Section order + display titles — single source for the sections and the jump-nav. */
+const FORM_SECTION_ORDER: FormSectionId[] = [
+  'identity',
+  'contact',
+  'links',
+  'visibility',
+  'skills',
+  'education',
+  'projects',
+  'experience',
+  'languages',
+]
+
+const SECTION_TITLE: Record<FormSectionId, string> = {
+  identity: 'Identity',
+  contact: 'Contact',
+  links: 'Links',
+  visibility: 'Sections',
+  skills: 'Skills',
+  education: 'Education',
+  projects: 'Projects',
+  experience: 'Experience',
+  languages: 'Languages',
+}
+
+/** First load opens Identity only, so the form isn't a wall; persisted after. */
 const DEFAULT_OPEN: Record<FormSectionId, boolean> = {
   identity: true,
-  contact: true,
+  contact: false,
   links: false,
   visibility: false,
-  skills: true,
-  education: true,
-  projects: true,
-  experience: true,
-  languages: true,
+  skills: false,
+  education: false,
+  projects: false,
+  experience: false,
+  languages: false,
+}
+
+const OPEN_STATE_KEY = 'cvstudio:form-open'
+
+function loadOpenState(): Record<FormSectionId, boolean> {
+  try {
+    const raw = localStorage.getItem(OPEN_STATE_KEY)
+    if (!raw) return DEFAULT_OPEN
+    const parsed = JSON.parse(raw) as Partial<Record<FormSectionId, boolean>>
+    return { ...DEFAULT_OPEN, ...parsed }
+  } catch {
+    return DEFAULT_OPEN
+  }
+}
+
+function saveOpenState(state: Record<FormSectionId, boolean>): void {
+  try {
+    localStorage.setItem(OPEN_STATE_KEY, JSON.stringify(state))
+  } catch {
+    // ignore storage failures (private mode, quota)
+  }
 }
 
 function moveIndex<T>(items: T[], index: number, direction: -1 | 1): T[] {
@@ -94,20 +141,23 @@ function ListActions({
 }
 
 function FormSection({
-  title,
+  sectionId,
   open,
   onToggle,
   count,
   children,
 }: {
-  title: string
+  sectionId: FormSectionId
   open: boolean
   onToggle: () => void
   count?: number
   children: ReactNode
 }) {
   return (
-    <section className={`form-section${open ? '' : ' form-section--collapsed'}`}>
+    <section
+      id={`form-sec-${sectionId}`}
+      className={`form-section${open ? '' : ' form-section--collapsed'}`}
+    >
       <button
         type="button"
         className="form-section__toggle"
@@ -118,7 +168,7 @@ function FormSection({
           <span className="form-section__chevron" aria-hidden="true">
             {open ? '▾' : '▸'}
           </span>
-          {title}
+          {SECTION_TITLE[sectionId]}
         </span>
         {typeof count === 'number' ? (
           <span className="form-section__count">{count}</span>
@@ -126,6 +176,30 @@ function FormSection({
       </button>
       {open ? <div className="form-section__body">{children}</div> : null}
     </section>
+  )
+}
+
+function FormNav({
+  active,
+  onJump,
+}: {
+  active: FormSectionId
+  onJump: (id: FormSectionId) => void
+}) {
+  return (
+    <nav className="form-nav" aria-label="Jump to form section">
+      {FORM_SECTION_ORDER.map((id) => (
+        <button
+          key={id}
+          type="button"
+          className={`form-nav__chip${active === id ? ' form-nav__chip--active' : ''}`}
+          aria-current={active === id ? 'true' : undefined}
+          onClick={() => onJump(id)}
+        >
+          {SECTION_TITLE[id]}
+        </button>
+      ))}
+    </nav>
   )
 }
 
@@ -175,10 +249,46 @@ function ItemToolbar({
 export function CvForm({ cv, onChange }: Props) {
   const order = cv.sectionOrder ?? DEFAULT_SECTION_ORDER
   const [openSections, setOpenSections] =
-    useState<Record<FormSectionId, boolean>>(DEFAULT_OPEN)
+    useState<Record<FormSectionId, boolean>>(loadOpenState)
+  const [activeSection, setActiveSection] = useState<FormSectionId>('identity')
+
+  // Persist which sections are open, so the layout survives reloads.
+  useEffect(() => {
+    saveOpenState(openSections)
+  }, [openSections])
+
+  // Scroll-spy: highlight the last section whose header has scrolled past the
+  // sticky nav line. A scroll listener (not IntersectionObserver) so it stays
+  // deterministic and works even when the tab isn't compositing.
+  useEffect(() => {
+    const pane = document.querySelector<HTMLElement>('.app-form-pane')
+    if (!pane) return
+    const update = () => {
+      const paneTop = pane.getBoundingClientRect().top
+      let current: FormSectionId = FORM_SECTION_ORDER[0]
+      for (const id of FORM_SECTION_ORDER) {
+        const el = document.getElementById(`form-sec-${id}`)
+        if (!el) continue
+        if (el.getBoundingClientRect().top - paneTop <= 72) current = id
+        else break
+      }
+      setActiveSection(current)
+    }
+    pane.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => pane.removeEventListener('scroll', update)
+  }, [])
 
   function toggleSection(id: FormSectionId) {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  function jumpToSection(id: FormSectionId) {
+    setOpenSections((prev) => ({ ...prev, [id]: true }))
+    setActiveSection(id)
+    document
+      .getElementById(`form-sec-${id}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   function patch(partial: Partial<CvDocument>) {
@@ -276,8 +386,9 @@ export function CvForm({ cv, onChange }: Props) {
 
   return (
     <div className="cv-form">
+      <FormNav active={activeSection} onJump={jumpToSection} />
       <FormSection
-        title="Identity"
+        sectionId="identity"
         open={openSections.identity}
         onToggle={() => toggleSection('identity')}
       >
@@ -322,7 +433,7 @@ export function CvForm({ cv, onChange }: Props) {
       </FormSection>
 
       <FormSection
-        title="Contact"
+        sectionId="contact"
         open={openSections.contact}
         onToggle={() => toggleSection('contact')}
         count={cv.identity.contact.length}
@@ -430,7 +541,7 @@ export function CvForm({ cv, onChange }: Props) {
       </FormSection>
 
       <FormSection
-        title="Links"
+        sectionId="links"
         open={openSections.links}
         onToggle={() => toggleSection('links')}
         count={cv.identity.links?.length ?? 0}
@@ -470,7 +581,7 @@ export function CvForm({ cv, onChange }: Props) {
       </FormSection>
 
       <FormSection
-        title="Section visibility"
+        sectionId="visibility"
         open={openSections.visibility}
         onToggle={() => toggleSection('visibility')}
       >
@@ -512,7 +623,7 @@ export function CvForm({ cv, onChange }: Props) {
       </FormSection>
 
       <FormSection
-        title="Skills"
+        sectionId="skills"
         open={openSections.skills}
         onToggle={() => toggleSection('skills')}
         count={cv.skills.length}
@@ -573,7 +684,7 @@ export function CvForm({ cv, onChange }: Props) {
       </FormSection>
 
       <ArraySection
-        title="Education"
+        sectionId="education"
         open={openSections.education}
         onToggle={() => toggleSection('education')}
         items={cv.education}
@@ -658,7 +769,7 @@ export function CvForm({ cv, onChange }: Props) {
       />
 
       <ArraySection
-        title="Projects"
+        sectionId="projects"
         open={openSections.projects}
         onToggle={() => toggleSection('projects')}
         items={cv.projects}
@@ -726,7 +837,7 @@ export function CvForm({ cv, onChange }: Props) {
       />
 
       <ArraySection
-        title="Experience"
+        sectionId="experience"
         open={openSections.experience}
         onToggle={() => toggleSection('experience')}
         items={cv.experience}
@@ -809,7 +920,7 @@ export function CvForm({ cv, onChange }: Props) {
       />
 
       <ArraySection
-        title="Languages"
+        sectionId="languages"
         open={openSections.languages}
         onToggle={() => toggleSection('languages')}
         items={cv.languages}
@@ -841,7 +952,7 @@ export function CvForm({ cv, onChange }: Props) {
 }
 
 function ArraySection<T extends { id: string }>({
-  title,
+  sectionId,
   open,
   onToggle,
   items,
@@ -849,7 +960,7 @@ function ArraySection<T extends { id: string }>({
   blank,
   render,
 }: {
-  title: string
+  sectionId: FormSectionId
   open: boolean
   onToggle: () => void
   items: T[]
@@ -859,7 +970,7 @@ function ArraySection<T extends { id: string }>({
 }) {
   return (
     <FormSection
-      title={title}
+      sectionId={sectionId}
       open={open}
       onToggle={onToggle}
       count={items.length}
@@ -883,7 +994,7 @@ function ArraySection<T extends { id: string }>({
       ))}
       <ListActions
         onAdd={() => onChange([blank(), ...items])}
-        addLabel={`Add ${title.toLowerCase()} item`}
+        addLabel={`Add ${SECTION_TITLE[sectionId].toLowerCase()} item`}
       />
     </FormSection>
   )

@@ -325,6 +325,53 @@ a {
   gap: 1.25rem;
 }
 
+/* Sticky jump-nav over the collapsible form sections */
+.form-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  background: color-mix(in srgb, var(--panel) 96%, white);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-nav__chip {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-nav__chip:hover {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+  color: var(--ink);
+}
+
+.form-nav__chip--active {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #fff;
+}
+
+.form-nav__chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.form-section {
+  scroll-margin-top: 3.5rem;
+}
+
 .form-section__toggle {
   display: flex;
   width: 100%;
