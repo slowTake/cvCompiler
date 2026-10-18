@@ -1,10 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CvForm } from '@/components/form/CvForm'
 import { Toolbar } from '@/components/Toolbar'
+import { TemplateGallery } from '@/components/TemplateGallery'
 import { CvPreview } from '@/components/preview/CvPreview'
+import { DesignPanel } from '@/components/design/DesignPanel'
 import { useCvDocument } from '@/hooks/useCvDocument'
-import { usePreviewScale } from '@/hooks/usePreviewScale'
 import { resolveTemplateId } from '@/types/cv'
+
+type PaneTab = 'content' | 'design'
+
+const PANE_TAB_KEY = 'cvstudio:pane-tab'
+
+function loadPaneTab(): PaneTab {
+  try {
+    return localStorage.getItem(PANE_TAB_KEY) === 'design' ? 'design' : 'content'
+  } catch {
+    return 'content'
+  }
+}
 
 export default function App() {
   const {
@@ -13,6 +26,8 @@ export default function App() {
     status,
     updateCv,
     setTemplateId,
+    updateStyle,
+    resetDesign,
     exportJson,
     importJsonFile,
     fsaSupported,
@@ -21,8 +36,17 @@ export default function App() {
     openFile,
     saveToFile,
   } = useCvDocument()
-  const { scalePercent, scaleFactor, setScalePercent, resetScale } =
-    usePreviewScale()
+  const [paneTab, setPaneTabState] = useState<PaneTab>(loadPaneTab)
+  const [galleryOpen, setGalleryOpen] = useState(false)
+
+  function setPaneTab(next: PaneTab) {
+    setPaneTabState(next)
+    try {
+      localStorage.setItem(PANE_TAB_KEY, next)
+    } catch {
+      // ignore storage failures (private mode, quota)
+    }
+  }
 
   // Cmd/Ctrl+S saves to the bound file when the File System Access API is available.
   useEffect(() => {
@@ -52,10 +76,7 @@ export default function App() {
       <Toolbar
         status={status}
         templateId={templateId}
-        scalePercent={scalePercent}
-        onScaleChange={setScalePercent}
-        onScaleReset={resetScale}
-        onTemplateChange={setTemplateId}
+        onOpenGallery={() => setGalleryOpen(true)}
         onExport={exportJson}
         onImportFile={importJsonFile}
         onPrint={() => window.print()}
@@ -68,26 +89,50 @@ export default function App() {
 
       <div className="app-split">
         <aside className="app-form-pane no-print">
-          <p className="form-persistence-note">
-            Edits auto-save in this browser.{' '}
-            {fsaSupported ? (
-              <>
-                <strong>Open</strong> a file and <strong>Save</strong> (⌘/Ctrl+S)
-                to keep a durable copy on disk.
-              </>
+          <div className="pane-tabs" role="tablist" aria-label="Editor">
+            {(['content', 'design'] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                role="tab"
+                id={`pane-tab-${tab}`}
+                aria-selected={paneTab === tab}
+                aria-controls={`pane-panel-${tab}`}
+                className={`pane-tabs__tab${paneTab === tab ? ' pane-tabs__tab--active' : ''}`}
+                onClick={() => setPaneTab(tab)}
+              >
+                {tab === 'content' ? 'Content' : 'Design'}
+              </button>
+            ))}
+          </div>
+          <div
+            role="tabpanel"
+            id={`pane-panel-${paneTab}`}
+            aria-labelledby={`pane-tab-${paneTab}`}
+          >
+            {paneTab === 'content' ? (
+              <CvForm cv={cv} onChange={updateCv} />
             ) : (
-              <>
-                <strong>Export JSON</strong> downloads a backup file. Import
-                anytime to restore.
-              </>
+              <DesignPanel
+                cv={cv}
+                onStyleChange={updateStyle}
+                onReset={resetDesign}
+                onOpenGallery={() => setGalleryOpen(true)}
+              />
             )}
-          </p>
-          <CvForm cv={cv} onChange={updateCv} />
+          </div>
         </aside>
         <section className="app-preview-pane" aria-label="A4 preview">
-          <CvPreview cv={cv} scale={scaleFactor} />
+          <CvPreview cv={cv} />
         </section>
       </div>
+
+      <TemplateGallery
+        open={galleryOpen}
+        cv={cv}
+        onClose={() => setGalleryOpen(false)}
+        onSelect={setTemplateId}
+      />
     </div>
   )
 }

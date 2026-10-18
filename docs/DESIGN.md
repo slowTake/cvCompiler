@@ -4,8 +4,10 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 
 ## App chrome (not printed)
 
-- Split layout: **form** (editable fields, add/remove/reorder) | **live A4 preview**
-- Toolbar: Template, Import/Export JSON, type size, Print / Save PDF
+- Split layout: editor pane with **Content | Design** tabs | **live A4 preview**
+- Toolbar (one row): logo + document status · template button (opens the gallery) · **File** menu (Open / Save / Import / Export JSON) · Help popover (privacy, saving, print tips) · **Print / Save PDF** as the single primary action
+- **Template gallery**: modal grid rendering the user's own CV live in every template (page one, scaled), filterable by skeleton
+- **Design tab** (ADR 0007): accent colour (template default, presets, custom + contrast warning), font pairing, spacing density, heading case, sidebar width (sidebar skeleton only), type size, Reset to template
 - Screen UI can be simple; the CV preview carries the brand look
 
 ## CV pages (printed)
@@ -53,3 +55,12 @@ Visual reference: monospace “developer CV” with soft pink accents (screensho
 | `header-band` | Modern (sans/teal band), Bold (sans/dark band) |
 
 Source of truth: `src/templates/registry.ts` + `[data-cv-theme]` blocks in `src/index.css`.
+
+### Style overrides (ADR 0007)
+
+`meta.style` layers over any theme through the same token contract:
+`--cv-custom-accent` + `[data-cv-accent='custom']` (derived tints via `color-mix()`),
+`--cv-font-body` / `--cv-font-heading`, `--cv-density` (spacing only, combined with type
+size into `--cv-space`), `--cv-header-transform`, `--cv-sidebar-width` and `--cv-scale`.
+With no overrides every template prints pixel-identical to its theme. **Bold** keeps its
+dark band under a custom accent; the accent recolours its details.

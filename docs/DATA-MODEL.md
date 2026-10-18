@@ -19,6 +19,7 @@ type CvDocument = {
     locale?: string;        // e.g. "en"
     updatedAt?: string;     // ISO date
     templateId?: string;    // registry id; default "studio"
+    style?: CvStyle;        // optional overrides over the template (ADR 0007)
   };
   identity: {
     name: string;
@@ -36,6 +37,16 @@ type CvDocument = {
   /** Optional ordered list of section ids for toggle/reorder */
   sectionOrder?: SectionId[];
   sectionsEnabled?: Partial<Record<SectionId, boolean>>;
+};
+
+// StyleOverrides (ADR 0007). Every field optional; absent = template default.
+type CvStyle = {
+  accent?: string;        // "#rrggbb"; tints, rules and bands derive from it
+  fontPairing?: "mono" | "sans" | "serif" | "editorial" | "technical";
+  density?: "compact" | "normal" | "roomy";   // spacing only, not type size
+  headerCase?: "upper" | "normal";
+  sidebarWidth?: number;  // 30–50 (%), sidebar skeleton only
+  typeScale?: number;     // 80–145 (%), 100 = default
 };
 
 type SectionId =
@@ -119,4 +130,5 @@ type LanguageItem = {
 - IDs are stable strings (cuid/ulid/uuid); forms should not regenerate on every keystroke after create.
 - Dates are display strings for v1 (no strict date picker required).
 - `skillsDeveloped` renders as an underlined “Skills developed:” line when present.
+- `meta.style` is sanitised on load: unknown keys and invalid values are dropped (never a failed import), and an empty object is omitted. Allowed values live in `src/templates/style.ts`.
 - Public file must not contain real private phone/email unless the owner deliberately wants them public.
