@@ -5,7 +5,7 @@ Locked during grill-me / grill-with-docs sessions. Change only with an explicit 
 | ID | Topic | Decision |
 |----|--------|----------|
 | D01 | Audience | Personal tool + portfolio demo. No multi-user auth. |
-| D02 | MVP export | Styled visual PDF via print. No ATS template shipped yet (registry ready). |
+| D02 | MVP export | Styled visual PDF via print. Single-column ATS-friendly templates ship alongside (D17–D18). |
 | D03 | Runtime | Local-first; production demo on Cloudflare Pages. |
 | D04 | Data privacy | Public seed committed; private JSON gitignored and **dev-only**. |
 | D05 | Editing | Form UI is the primary editor; writes `CvDocument` JSON. |

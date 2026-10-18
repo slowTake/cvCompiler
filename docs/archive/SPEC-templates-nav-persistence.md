@@ -1,9 +1,9 @@
 # Implementation Spec — Templates, Navigation, Durable Persistence
 
-Status: Ready to build · 2026-08-24
-Owns decisions: [ADR 0005](./adr/0005-template-model-and-optional-fields.md),
-[ADR 0006](./adr/0006-durable-local-persistence.md), D18–D21 in
-[DECISIONS.md](./DECISIONS.md).
+Status: **Done** — all 7 phases shipped (merged in PR #7). Kept for history; see [AGENTS.md](../../AGENTS.md) for current state. · 2026-08-24
+Owns decisions: [ADR 0005](../adr/0005-template-model-and-optional-fields.md),
+[ADR 0006](../adr/0006-durable-local-persistence.md), D18–D21 in
+[DECISIONS.md](../DECISIONS.md).
 
 ## Goal
 
@@ -36,7 +36,7 @@ stays a flat string resolving to `{ skeletonId, themeId }` internally.
 ## Phase 1 — Preview theming refactor (PREREQUISITE, no visual change)
 
 **Why first:** all CV visual identity currently lives in ~260 lines of global `.cv-*`
-rules ([index.css](../src/index.css) from `.cv-preview-stack` onward) that reference
+rules ([index.css](../../src/index.css) from `.cv-preview-stack` onward) that reference
 the *same* `:root` tokens (`--ink`, `--accent`, `--mono`, …) used by the toolbar and
 form. Themes can't vary the CV without also restyling the app chrome until this is split.
 
@@ -122,7 +122,7 @@ has a matching token block.
 2. `normalizeCvDocument` fills safe defaults; `parseCvJson` stays backward-compatible
    (old documents without these fields still import).
 3. Add form controls under the Identity / Contact sections in
-   [CvForm.tsx](../src/components/form/CvForm.tsx).
+   [CvForm.tsx](../../src/components/form/CvForm.tsx).
 4. Skeletons render `tagline` / `links` **only where the design uses them**; absent
    fields render nothing (no layout holes).
 
@@ -137,11 +137,11 @@ export → import round-trip. **No photo/binary field is added.**
 
 **Scope**
 
-1. Replace the toolbar `<select>` ([Toolbar.tsx:45](../src/components/Toolbar.tsx))
+1. Replace the toolbar `<select>` ([Toolbar.tsx:45](../../src/components/Toolbar.tsx))
    with a **thumbnail gallery** (popover or panel) of named templates; keep a plain
    `<select>` fallback for keyboard/no-JS and as the a11y baseline.
 2. Selecting a template calls the existing `onTemplateChange(templateId)` → `setTemplateId`
-   ([useCvDocument.ts:58](../src/hooks/useCvDocument.ts)); the stored value stays a flat id.
+   ([useCvDocument.ts:58](../../src/hooks/useCvDocument.ts)); the stored value stays a flat id.
 3. Thumbnails: lightweight static previews (small pre-rendered SVG/PNG or a scaled live
    mini-preview — decide during build; static is cheaper to maintain).
 
@@ -169,10 +169,10 @@ single-column and copy-paste clean. Every theme validated in Print → Save as P
 **Scope**
 
 1. Add a **sticky jump-nav** (section rail or tab strip) over the existing
-   `FormSection` components ([CvForm.tsx:93](../src/components/form/CvForm.tsx)):
+   `FormSection` components ([CvForm.tsx:93](../../src/components/form/CvForm.tsx)):
    click scrolls to + expands a section and highlights the active one.
 2. Persist each section's open/collapsed state to localStorage (today `DEFAULT_OPEN`
-   is `useState` and resets every reload — [CvForm.tsx:43](../src/components/form/CvForm.tsx)).
+   is `useState` and resets every reload — [CvForm.tsx:43](../../src/components/form/CvForm.tsx)).
 3. Revisit defaults so first load isn't a wall (e.g. Identity open, rest collapsed).
 
 **Acceptance:** reload preserves which sections were open; jump-nav moves focus to the

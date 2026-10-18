@@ -8,7 +8,7 @@ Edit structured career data in a form, preview an A4 layout live, and export a s
 
 ## Status
 
-Deploy-ready static SPA: template registry (`studio`), JSON import/export, production demo mode (public seed only).
+Deploy-ready static SPA: 10 templates across 3 layout skeletons (gallery picker), sticky form jump-nav, durable save-to-file (Chromium) plus JSON import/export, production demo mode (public seed only).
 
 ## Requirements
 
@@ -48,20 +48,21 @@ Clearing site data drops the localStorage cache, but a saved/exported file survi
 | `npm run build` | Typecheck + production build |
 | `npm run preview` | Preview the production build |
 | `npm run lint` | Oxlint |
+| `npm test` | Vitest (registry + storage) |
 
 ## Docs
 
 | Doc | Purpose |
 |-----|---------|
-| [AGENT.md](./AGENT.md) | Agent brief |
+| [AGENTS.md](./AGENTS.md) | Guide for coding agents (Claude Code, Codex, Cursor, …); `CLAUDE.md` imports it |
 | [CONTEXT.md](./CONTEXT.md) | Domain glossary |
 | [docs/DECISIONS.md](./docs/DECISIONS.md) | Locked decisions |
-| [docs/SPEC-templates-nav-persistence.md](./docs/SPEC-templates-nav-persistence.md) | Build plan: templates, nav, durable persistence |
 | [docs/adr/](./docs/adr/) | Architecture decision records |
 | [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) | CV JSON schema |
 | [docs/DESIGN.md](./docs/DESIGN.md) | Visual / print targets |
 | [docs/DEPLOY.md](./docs/DEPLOY.md) | Cloudflare Pages + `cv.peternurmi.com` |
 | [docs/OUT-OF-SCOPE.md](./docs/OUT-OF-SCOPE.md) | Non-goals |
+| [docs/archive/](./docs/archive/) | Completed build plans (history) |
 
 ## Privacy
 

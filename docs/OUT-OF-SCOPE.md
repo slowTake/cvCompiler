@@ -3,7 +3,7 @@
 Do not implement these unless the owner expands scope with a new ADR / decision.
 
 - PDF import / OCR / reverse-engineering PDFs into `CvDocument`
-- ATS / single-column job-board export (registry may list it later; not built yet)
+- ATS keyword scoring / job-description matching (the single-column `ats` template ships; scoring does not)
 - Cover letters, LinkedIn optimization, interview prep
 - Multi-user accounts, auth, cloud sync, server database
 - Multiple named CV variants / per-job forks
