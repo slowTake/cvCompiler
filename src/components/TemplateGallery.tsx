@@ -1,114 +1,134 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import { getTemplate, listTemplates } from '@/templates/registry'
-import { TemplateThumb } from '@/components/preview/TemplateThumb'
+import { useEffect, useRef, useState } from 'react'
+import type { CvDocument } from '@/types/cv'
+import { resolveTemplateId } from '@/types/cv'
+import { listTemplates } from '@/templates/registry'
+import type { LayoutSkeletonId } from '@/templates/types'
+import { hasDesignOverrides } from '@/templates/style'
+import { CvPreview } from '@/components/preview/CvPreview'
 
 type Props = {
-  templateId: string
-  onTemplateChange: (templateId: string) => void
+  open: boolean
+  cv: CvDocument
+  onClose: () => void
+  onSelect: (templateId: string) => void
 }
 
+type Filter = 'all' | LayoutSkeletonId
+
+const FILTERS: { id: Filter; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'sidebar', label: 'Two-column' },
+  { id: 'single', label: 'Single-column · ATS-safe' },
+  { id: 'header-band', label: 'Header band' },
+]
+
 /**
- * Template picker: a trigger button showing the current template, opening a
- * panel of themed thumbnail cards. The panel is a `radiogroup` with roving
- * tabindex + arrow-key navigation, so it is the accessible baseline on its own
- * (no separate <select> needed). Selection stores a flat templateId, unchanged.
+ * TemplateGallery: a modal grid showing the user's own CV rendered live in
+ * every template (first page, scaled down), with their style overrides applied.
+ * Built on <dialog> for focus trapping, Escape and the backdrop.
  */
-export function TemplateGallery({ templateId, onTemplateChange }: Props) {
-  const templates = listTemplates()
-  const current = getTemplate(templateId)
-  const [open, setOpen] = useState(false)
-  const rootRef = useRef<HTMLDivElement>(null)
-  const groupId = useId()
+export function TemplateGallery({ open, cv, onClose, onSelect }: Props) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const [filter, setFilter] = useState<Filter>('all')
+  const currentId = resolveTemplateId(cv)
+  const templates = listTemplates().filter(
+    (t) => filter === 'all' || t.skeletonId === filter,
+  )
 
   useEffect(() => {
-    if (!open) return
-    function onPointer(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    document.addEventListener('mousedown', onPointer)
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('mousedown', onPointer)
-      document.removeEventListener('keydown', onKey)
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (open && !dialog.open) {
+      dialog.showModal()
+      dialog
+        .querySelector<HTMLButtonElement>('.gallery-card--current')
+        ?.focus()
+    } else if (!open && dialog.open) {
+      dialog.close()
     }
   }, [open])
 
-  function select(id: string) {
-    onTemplateChange(id)
-    setOpen(false)
-  }
-
-  function onCardKeyDown(e: React.KeyboardEvent, index: number) {
-    const last = templates.length - 1
-    let next = index
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = index === last ? 0 : index + 1
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = index === 0 ? last : index - 1
-    else if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault()
-      select(templates[index].id)
-      return
-    } else return
-    e.preventDefault()
-    const group = rootRef.current?.querySelector(`#${CSS.escape(groupId)}`)
-    const cards = group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-    cards?.[next]?.focus()
-    onTemplateChange(templates[next].id)
-  }
-
   return (
-    <div className="template-picker" ref={rootRef}>
-      <span className="toolbar-select__label" id={`${groupId}-label`}>
-        Template
-      </span>
-      <button
-        type="button"
-        className="template-picker__trigger"
-        aria-haspopup="true"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <TemplateThumb themeId={current.themeId} skeletonId={current.skeletonId} />
-        <span className="template-picker__name">{current.label}</span>
-        <span className="template-picker__chevron" aria-hidden="true">
-          ▾
-        </span>
-      </button>
-
+    <dialog
+      ref={dialogRef}
+      className="gallery-dialog no-print"
+      aria-labelledby="gallery-title"
+      onClose={onClose}
+      onClick={(e) => {
+        // A click on the backdrop lands on the <dialog> element itself.
+        if (e.target === e.currentTarget) onClose()
+      }}
+    >
       {open ? (
-        <div
-          className="template-gallery"
-          role="radiogroup"
-          id={groupId}
-          aria-labelledby={`${groupId}-label`}
-        >
-          {templates.map((t, index) => {
-            const selected = t.id === current.id
-            return (
+        <div className="gallery">
+          <header className="gallery__head">
+            <div>
+              <h2 id="gallery-title" className="gallery__title">
+                Choose a template
+              </h2>
+              <p className="gallery__sub">
+                Previewing your CV.{' '}
+                {hasDesignOverrides(cv.meta.style)
+                  ? 'Your Design tweaks carry over; reset them in the Design tab.'
+                  : 'Fine-tune colours and fonts afterwards in the Design tab.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="btn btn--ghost gallery__close"
+              onClick={onClose}
+              aria-label="Close template gallery"
+            >
+              ✕
+            </button>
+          </header>
+
+          <div className="gallery__filters" role="group" aria-label="Filter templates">
+            {FILTERS.map((f) => (
               <button
-                key={t.id}
+                key={f.id}
                 type="button"
-                role="radio"
-                aria-checked={selected}
-                tabIndex={selected ? 0 : -1}
-                className={`template-card${selected ? ' template-card--selected' : ''}`}
-                onClick={() => select(t.id)}
-                onKeyDown={(e) => onCardKeyDown(e, index)}
+                aria-pressed={filter === f.id}
+                className={`gallery__filter${filter === f.id ? ' gallery__filter--active' : ''}`}
+                onClick={() => setFilter(f.id)}
               >
-                <TemplateThumb themeId={t.themeId} skeletonId={t.skeletonId} />
-                <span className="template-card__label">{t.label}</span>
-                {t.description ? (
-                  <span className="template-card__desc">{t.description}</span>
-                ) : null}
+                {f.label}
               </button>
-            )
-          })}
+            ))}
+          </div>
+
+          <div className="gallery__grid">
+            {templates.map((t) => {
+              const current = t.id === currentId
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  aria-current={current ? 'true' : undefined}
+                  className={`gallery-card${current ? ' gallery-card--current' : ''}`}
+                  onClick={() => {
+                    onSelect(t.id)
+                    onClose()
+                  }}
+                >
+                  <span className="gallery-card__frame" inert>
+                    <CvPreview cv={cv} templateId={t.id} className="cv-preview-stack--mini" />
+                  </span>
+                  <span className="gallery-card__meta">
+                    <span className="gallery-card__label">
+                      {t.label}
+                      {current ? <span className="gallery-card__badge">Current</span> : null}
+                    </span>
+                    {t.description ? (
+                      <span className="gallery-card__desc">{t.description}</span>
+                    ) : null}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       ) : null}
-    </div>
+    </dialog>
   )
 }

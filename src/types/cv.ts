@@ -74,6 +74,27 @@ export type LanguageItem = {
   level: string
 }
 
+export type FontPairing = 'mono' | 'sans' | 'serif' | 'editorial' | 'technical'
+export type Density = 'compact' | 'normal' | 'roomy'
+export type HeaderCase = 'upper' | 'normal'
+
+/**
+ * StyleOverrides (ADR 0007): optional tweaks layered over the active template's
+ * Theme. Absent field = template default. Allowed values live in
+ * `@/templates/style`.
+ */
+export type CvStyle = {
+  /** `#rrggbb`; derived accent tints are computed in CSS. */
+  accent?: string
+  fontPairing?: FontPairing
+  density?: Density
+  headerCase?: HeaderCase
+  /** Sidebar skeleton only; percent of page width (30–50). */
+  sidebarWidth?: number
+  /** Type size percent (80–145); 100 = default. */
+  typeScale?: number
+}
+
 export type CvDocument = {
   meta: {
     title: string
@@ -81,6 +102,8 @@ export type CvDocument = {
     updatedAt?: string
     /** Registry template id; default `studio`. */
     templateId?: string
+    /** Optional style overrides over the template (ADR 0007). */
+    style?: CvStyle
   }
   identity: {
     name: string

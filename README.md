@@ -28,9 +28,13 @@ In **dev**, if `data/cv.private.json` exists it is used as the initial seed (not
 
 Edits auto-save to this browser’s localStorage (a cache). For a durable copy:
 
-- **Chromium (Chrome/Edge):** **Open…** binds a `.json` on disk and loads it; **Save** (or ⌘/Ctrl+S) writes the current CV back to that file. The toolbar shows the bound filename and a `•` when there are unsaved changes.
-- **Firefox / Safari (no File System Access API):** use **Import JSON** / **Export JSON** — Export downloads a backup, Import loads one.
+- **Chromium (Chrome/Edge):** **File → Open…** binds a `.json` on disk and loads it; **Save** (or ⌘/Ctrl+S) writes the current CV back to that file. The toolbar shows the bound filename and whether there are unsaved changes.
+- **Firefox / Safari (no File System Access API):** use **File → Import JSON** / **Export JSON** — Export downloads a backup, Import loads one.
 - **Export JSON** is always available as a plain download.
+
+### Templates and design
+
+Click the template button in the toolbar to see your own CV in all 10 templates. The **Design** tab then fine-tunes any template: accent colour, font pairing, spacing, heading case, sidebar width and type size. These choices are saved inside the CV JSON (`meta.style`), so they print the same on any machine.
 
 Clearing site data drops the localStorage cache, but a saved/exported file survives. The bound file is not remembered across reloads — re-open it (localStorage keeps your latest edits in the meantime).
 

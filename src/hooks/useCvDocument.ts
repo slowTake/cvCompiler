@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import publicSeed from '@data/cv.public.json'
-import type { CvDocument } from '@/types/cv'
+import type { CvDocument, CvStyle } from '@/types/cv'
 import {
+  LEGACY_TYPE_SCALE_KEY,
+  applyLegacyTypeScale,
   downloadCvJson,
   loadStoredCv,
   normalizeCvDocument,
@@ -38,6 +40,20 @@ function clone<T>(value: T): T {
   return structuredClone(value)
 }
 
+/** One-time move of the old per-browser Type size into the document (ADR 0007). */
+function migrateLegacyTypeScale(cv: CvDocument): CvDocument {
+  try {
+    const raw = localStorage.getItem(LEGACY_TYPE_SCALE_KEY)
+    if (raw === null) return cv
+    const next = applyLegacyTypeScale(cv, raw)
+    if (next !== cv) saveStoredCv(STORAGE_KEY, next)
+    localStorage.removeItem(LEGACY_TYPE_SCALE_KEY)
+    return next
+  } catch {
+    return cv
+  }
+}
+
 export function useCvDocument() {
   const [cv, setCv] = useState<CvDocument | null>(null)
   const [status, setStatus] = useState<string | null>(null)
@@ -52,7 +68,7 @@ export function useCvDocument() {
       loadStoredCv(STORAGE_KEY) ??
       loadStoredCv('demo') ??
       loadStoredCv('public')
-    setCv(stored ?? loadInitialSeed())
+    setCv(migrateLegacyTypeScale(stored ?? loadInitialSeed()))
   }, [])
 
   function updateCv(next: CvDocument | ((prev: CvDocument) => CvDocument)) {
@@ -72,6 +88,22 @@ export function useCvDocument() {
     updateCv((prev) => ({
       ...prev,
       meta: { ...prev.meta, templateId },
+    }))
+  }
+
+  /** Merge style overrides; a key set to `undefined` falls back to the template. */
+  function updateStyle(patch: Partial<CvStyle>) {
+    updateCv((prev) => ({
+      ...prev,
+      meta: { ...prev.meta, style: { ...prev.meta.style, ...patch } },
+    }))
+  }
+
+  /** Drop every visual override; Type size is kept (it has its own reset). */
+  function resetDesign() {
+    updateCv((prev) => ({
+      ...prev,
+      meta: { ...prev.meta, style: { typeScale: prev.meta.style?.typeScale } },
     }))
   }
 
@@ -159,6 +191,8 @@ export function useCvDocument() {
     status,
     updateCv,
     setTemplateId,
+    updateStyle,
+    resetDesign,
     exportJson,
     importJsonFile,
     fsaSupported,

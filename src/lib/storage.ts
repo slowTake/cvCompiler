@@ -1,5 +1,6 @@
 import type { CvDocument } from '@/types/cv'
 import { DEFAULT_TEMPLATE_ID } from '@/types/cv'
+import { normalizeCvStyle } from '@/templates/style'
 
 export type ParseCvResult =
   | { ok: true; cv: CvDocument }
@@ -15,12 +16,16 @@ function isStringArray(value: unknown): value is string[] {
 
 /** Ensure required top-level shape; fill safe defaults for missing meta.templateId. */
 export function normalizeCvDocument(cv: CvDocument): CvDocument {
+  // Style overrides (ADR 0007): sanitised softly; omitted entirely when empty.
+  const { style: rawStyle, ...meta } = cv.meta
+  const style = normalizeCvStyle(rawStyle)
   return {
     ...cv,
     meta: {
-      ...cv.meta,
+      ...meta,
       title: cv.meta.title || 'Curriculum Vitae',
       templateId: cv.meta.templateId?.trim() || DEFAULT_TEMPLATE_ID,
+      ...(style ? { style } : {}),
     },
     identity: {
       ...cv.identity,
@@ -94,6 +99,23 @@ export function parseCvJson(raw: string): ParseCvResult {
   }
 
   return { ok: true, cv: normalizeCvDocument(data as unknown as CvDocument) }
+}
+
+/**
+ * Pre-ADR-0007 builds kept Type size per browser under this key. It now lives
+ * in `meta.style.typeScale`; the hook moves it over once and deletes the key.
+ */
+export const LEGACY_TYPE_SCALE_KEY = 'cvstudio-preview-scale'
+
+/** Fold a legacy per-browser Type size into the document unless it already has one. */
+export function applyLegacyTypeScale(cv: CvDocument, raw: string | null): CvDocument {
+  if (raw === null || cv.meta.style?.typeScale !== undefined) return cv
+  const value = Number(raw)
+  if (!Number.isFinite(value)) return cv
+  return normalizeCvDocument({
+    ...cv,
+    meta: { ...cv.meta, style: { ...cv.meta.style, typeScale: value } },
+  })
 }
 
 const storageKey = (dataset: string) => `cvstudio:${dataset}`

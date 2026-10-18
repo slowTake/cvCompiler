@@ -7,15 +7,8 @@ import type { CvDocument } from '@/types/cv'
  */
 export type LayoutSkeletonId = 'sidebar' | 'single' | 'header-band'
 
-/** Props every layout skeleton receives. Scale + theme are applied by the dispatcher wrapper. */
+/** Props every layout skeleton receives. Theme + style overrides are applied by the dispatcher wrapper. */
 export type SkeletonProps = { cv: CvDocument }
-
-/** Props for the top-level preview dispatcher (`CvPreview`). */
-export type TemplatePreviewProps = {
-  cv: CvDocument
-  /** Multiplier for type/spacing density (1 = default). Affects print too. */
-  scale?: number
-}
 
 /**
  * A precomposed, named template = a LayoutSkeleton × Theme.

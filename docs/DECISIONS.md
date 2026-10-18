@@ -25,6 +25,7 @@ Locked during grill-me / grill-with-docs sessions. Change only with an explicit 
 | D19 | Schema growth | Optional **text-only** fields added as templates need them (tagline, links). **No photos / no binary data** (ADR 0005). |
 | D20 | Hosting | **Cloudflare Pages retained**; VPS self-hosting considered and declined (stays out of scope). |
 | D21 | Form navigation | Existing collapsible sections + **sticky jump-nav**; persist per-section open state. |
+| D22 | Customisation | **StyleOverrides** in `meta.style` (accent, fonts, density, heading case, sidebar width, type size) over any template; stored in the document, system font stacks only (ADR 0007). |
 
 ## Rationale (short)
 

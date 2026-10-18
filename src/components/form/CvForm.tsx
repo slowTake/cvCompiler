@@ -269,7 +269,8 @@ export function CvForm({ cv, onChange }: Props) {
       for (const id of FORM_SECTION_ORDER) {
         const el = document.getElementById(`form-sec-${id}`)
         if (!el) continue
-        if (el.getBoundingClientRect().top - paneTop <= 72) current = id
+        // Just past the section scroll-margin-top (~142px), so a jump lands active.
+        if (el.getBoundingClientRect().top - paneTop <= 150) current = id
         else break
       }
       setActiveSection(current)

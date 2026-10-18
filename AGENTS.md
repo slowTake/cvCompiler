@@ -18,6 +18,7 @@ The full list of decisions and non-goals is in [docs/DECISIONS.md](./docs/DECISI
 - `src/types/cv.ts`: the `CvDocument` schema. Keep it in sync with [docs/DATA-MODEL.md](./docs/DATA-MODEL.md).
 - `src/lib/storage.ts`: normalising, parsing and persisting documents. Import goes through `parseCvJson`.
 - `src/templates/registry.ts`: the template list. If a new template reuses an existing skeleton, it needs only a registry entry plus a `[data-cv-theme="…"]` token block in `src/index.css`. No component code changes.
+- `src/templates/style.ts`: StyleOverrides (`meta.style`, ADR 0007). It defines the allowed values, sanitises them, and maps them to `--cv-*` tokens. A new override means adding a token, a field there, and a control in `src/components/design/DesignPanel.tsx`.
 - `src/components/preview/skeletons/`: one component per layout skeleton (`sidebar`, `single`, `header-band`).
 - `src/index.css`: app chrome uses the global `:root` tokens, and CV preview rules (`.cv-*`) use only the `--cv-*` tokens. Keep the two sets separate so a theme never restyles the app.
 - `src/components/form/CvForm.tsx`: the whole editor form.
