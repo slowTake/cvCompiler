@@ -1,0 +1,46 @@
+/*
+ * Print: A4, nothing but the CV. Use the browser's Print → Save as PDF with
+ * Margins: None and Background graphics on.
+ */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.print-root {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  #root {
+    display: none !important;
+  }
+
+  .print-root {
+    display: block;
+  }
+
+  .print-root .cv-page {
+    min-height: 0 !important;
+    box-shadow: none;
+  }
+
+  /* Fixed elements repeat on every printed page, so page and sidebar
+     backgrounds run the full height of every sheet. */
+  .print-root .cv-fill {
+    position: fixed;
+  }
+
+  .print-root a {
+    text-decoration: none;
+  }
+}

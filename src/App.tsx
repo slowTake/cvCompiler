@@ -1,93 +1,289 @@
-import { useEffect } from 'react'
-import { CvForm } from '@/components/form/CvForm'
-import { Toolbar } from '@/components/Toolbar'
-import { CvPreview } from '@/components/preview/CvPreview'
-import { useCvDocument } from '@/hooks/useCvDocument'
-import { usePreviewScale } from '@/hooks/usePreviewScale'
-import { resolveTemplateId } from '@/types/cv'
+import {
+  Download,
+  FileText,
+  FolderOpen,
+  Printer,
+  RotateCcw,
+  Save,
+  Sparkles,
+  Upload,
+} from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Editor } from './editor/Editor';
+import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
+import type { CvDocument } from './model/types';
+import { chooseJsonFile, downloadText, fileNameFor } from './persistence/download';
+import {
+  ensureWritePermission,
+  pickFileToOpen,
+  saveAsNewFile,
+  supportsFileSystemAccess,
+  writeToHandle,
+} from './persistence/fileAccess';
+import { demoDocument, hasPrivateDocument, loadPrivateDocument } from './persistence/initialData';
+import { useCvDocument } from './persistence/useCvDocument';
+import { Preview } from './preview/Preview';
+import { PrintRoot } from './preview/PrintRoot';
+import { Modal } from './ui/Modal';
+import { useToast } from './ui/toast';
 
-export default function App() {
-  const {
-    ready,
-    cv,
-    status,
-    updateCv,
-    setTemplateId,
-    exportJson,
-    importJsonFile,
-    fsaSupported,
-    fileName,
-    dirty,
-    openFile,
-    saveToFile,
-  } = useCvDocument()
-  const { scalePercent, scaleFactor, setScalePercent, resetScale } =
-    usePreviewScale()
+const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
+const MOD = isMac ? '⌘' : 'Ctrl+';
 
-  // Cmd/Ctrl+S saves to the bound file when the File System Access API is available.
-  useEffect(() => {
-    if (!fsaSupported) return
-    function onKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
-        e.preventDefault()
-        void saveToFile()
-      }
+const warnBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
+
+interface ImportProblem {
+  fileName: string;
+  errors: CvIssue[];
+}
+
+export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } }) {
+  const { doc, json, dirty, source, update, replace, markSaved } = useCvDocument(initial);
+  const { notify } = useToast();
+  const [problem, setProblem] = useState<ImportProblem | null>(null);
+
+  const confirmDiscard = useCallback(
+    () => !dirty || window.confirm('You have unsaved changes. Discard them?'),
+    [dirty],
+  );
+
+  /** Parses file text; shows the error dialog and returns null when it is broken. */
+  const parseOrReport = useCallback((fileName: string, text: string) => {
+    const result = parseCvJson(text);
+    if (!result.ok) {
+      setProblem({ fileName, errors: result.errors });
+      return null;
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [fsaSupported, saveToFile])
+    return result.doc;
+  }, []);
 
-  if (!ready || !cv) {
-    return (
-      <div className="app-loading">
-        <p>Loading cvStudio…</p>
-      </div>
-    )
-  }
+  const fail = useCallback(
+    (what: string, err: unknown) => {
+      console.error(err);
+      notify(`${what} failed: ${err instanceof Error ? err.message : String(err)}`, { tone: 'error' });
+    },
+    [notify],
+  );
 
-  const templateId = resolveTemplateId(cv)
+  const open = useCallback(async () => {
+    if (!confirmDiscard()) return;
+    try {
+      const picked = await pickFileToOpen();
+      if (!picked) return;
+      const next = parseOrReport(picked.handle.name, picked.text);
+      if (!next) return;
+      replace(next, { name: picked.handle.name, handle: picked.handle });
+      notify(`Opened ${picked.handle.name}`);
+    } catch (err) {
+      fail('Open', err);
+    }
+  }, [confirmDiscard, parseOrReport, replace, notify, fail]);
+
+  const exportJson = useCallback(() => {
+    const name = source?.name ?? fileNameFor(doc.meta.title);
+    downloadText(name, json);
+    // Without a bound file, the download is the saved copy.
+    if (!source?.handle) markSaved(json, { name });
+    notify(`Exported ${name}`);
+  }, [doc.meta.title, json, source, markSaved, notify]);
+
+  const saveAs = useCallback(async () => {
+    try {
+      const handle = await saveAsNewFile(json, source?.name ?? fileNameFor(doc.meta.title));
+      if (!handle) return;
+      markSaved(json, { name: handle.name, handle });
+      notify(`Saved ${handle.name}`, { tone: 'success' });
+    } catch (err) {
+      fail('Save', err);
+    }
+  }, [json, source, doc.meta.title, markSaved, notify, fail]);
+
+  const save = useCallback(async () => {
+    if (!supportsFileSystemAccess) return exportJson();
+    if (!source?.handle) return saveAs();
+    try {
+      if (!(await ensureWritePermission(source.handle))) {
+        notify('Saving needs write permission to the file. Try Save again or use Save as…', {
+          tone: 'error',
+        });
+        return;
+      }
+      await writeToHandle(source.handle, json);
+      markSaved(json);
+      notify(`Saved ${source.name}`, { tone: 'success' });
+    } catch (err) {
+      fail('Save', err);
+    }
+  }, [source, json, exportJson, saveAs, markSaved, notify, fail]);
+
+  const importJson = useCallback(async () => {
+    if (!confirmDiscard()) return;
+    try {
+      const file = await chooseJsonFile();
+      if (!file) return;
+      const next = parseOrReport(file.name, await file.text());
+      if (!next) return;
+      replace(next, { name: file.name });
+      notify(`Imported ${file.name}`);
+    } catch (err) {
+      fail('Import', err);
+    }
+  }, [confirmDiscard, parseOrReport, replace, notify, fail]);
+
+  const loadDemo = useCallback(() => {
+    if (!confirmDiscard()) return;
+    replace(demoDocument(), null);
+    notify('Loaded the demo CV');
+  }, [confirmDiscard, replace, notify]);
+
+  const loadPrivate = useCallback(async () => {
+    if (!confirmDiscard()) return;
+    const next = await loadPrivateDocument();
+    if (next) replace(next, { name: 'cv.private.json (dev)' });
+    else notify('data/cv.private.json is missing or invalid', { tone: 'error' });
+  }, [confirmDiscard, replace, notify]);
+
+  // Keyboard shortcuts. Read the latest callbacks through a ref.
+  const actions = useRef({ save, saveAs, open, importJson });
+  actions.current = { save, saveAs, open, importJson };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if (key === 's') {
+        e.preventDefault();
+        void (e.shiftKey && supportsFileSystemAccess ? actions.current.saveAs() : actions.current.save());
+      } else if (key === 'o') {
+        e.preventDefault();
+        void (supportsFileSystemAccess ? actions.current.open() : actions.current.importJson());
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // The PDF's default file name comes from document.title.
+  const title = doc.meta.title.trim() || doc.identity.name.trim() || 'CV';
+  useEffect(() => {
+    const original = document.title;
+    const before = () => (document.title = title);
+    const after = () => (document.title = original);
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, [title]);
+
+  // Only a bound file can fall behind; the browser cache keeps everything else.
+  const boundAndDirty = dirty && !!source?.handle;
+  useEffect(() => {
+    if (!boundAndDirty) return;
+    window.addEventListener('beforeunload', warnBeforeUnload);
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload);
+  }, [boundAndDirty]);
 
   return (
-    <div className="app-shell">
-      <Toolbar
-        status={status}
-        templateId={templateId}
-        scalePercent={scalePercent}
-        onScaleChange={setScalePercent}
-        onScaleReset={resetScale}
-        onTemplateChange={setTemplateId}
-        onExport={exportJson}
-        onImportFile={importJsonFile}
-        onPrint={() => window.print()}
-        fsaSupported={fsaSupported}
-        fileName={fileName}
-        dirty={dirty}
-        onOpenFile={openFile}
-        onSaveFile={saveToFile}
-      />
-
-      <div className="app-split">
-        <aside className="app-form-pane no-print">
-          <p className="form-persistence-note">
-            Edits auto-save in this browser.{' '}
-            {fsaSupported ? (
-              <>
-                <strong>Open</strong> a file and <strong>Save</strong> (⌘/Ctrl+S)
-                to keep a durable copy on disk.
-              </>
+    <>
+      <div className="ui-app">
+        <header className="ui-topbar">
+          <div className="ui-brand">
+            cv<span>Studio</span>
+          </div>
+          <div className="ui-file-status" title={source?.handle ? 'Save writes to this file' : undefined}>
+            <FileText size={15} />
+            <span className="ui-file-name">
+              {source ? source.name : 'Not linked to a file'}
+              {source && !source.handle && supportsFileSystemAccess && (
+                <span className="ui-muted"> (not linked)</span>
+              )}
+            </span>
+            {dirty ? (
+              <span className="ui-dirty" title="Unsaved changes">
+                ● Unsaved
+              </span>
             ) : (
+              <span className="ui-clean">Saved</span>
+            )}
+          </div>
+          <div className="ui-toolbar">
+            {supportsFileSystemAccess && (
               <>
-                <strong>Export JSON</strong> downloads a backup file. Import
-                anytime to restore.
+                <button type="button" className="ui-btn" onClick={() => void open()} title={`Open a .json file (${MOD}O)`}>
+                  <FolderOpen size={15} /> Open…
+                </button>
+                <button
+                  type="button"
+                  className="ui-btn"
+                  onClick={() => void save()}
+                  title={`Save to the linked file (${MOD}S). ${isMac ? '⇧⌘S' : 'Ctrl+Shift+S'} to save as.`}
+                >
+                  <Save size={15} /> Save
+                </button>
+                <button type="button" className="ui-btn ui-btn-ghost" onClick={() => void saveAs()}>
+                  Save as…
+                </button>
+                <span className="ui-toolbar-sep" />
               </>
             )}
-          </p>
-          <CvForm cv={cv} onChange={updateCv} />
-        </aside>
-        <section className="app-preview-pane" aria-label="A4 preview">
-          <CvPreview cv={cv} scale={scaleFactor} />
-        </section>
+            <button type="button" className="ui-btn ui-btn-ghost" onClick={() => void importJson()} title="Import a JSON file">
+              <Upload size={15} /> Import
+            </button>
+            <button type="button" className="ui-btn ui-btn-ghost" onClick={exportJson} title="Download as JSON">
+              <Download size={15} /> Export
+            </button>
+            <span className="ui-toolbar-sep" />
+            <button type="button" className="ui-btn ui-btn-ghost" onClick={loadDemo} title="Replace with the demo CV">
+              <RotateCcw size={15} /> Demo
+            </button>
+            {hasPrivateDocument && (
+              <button
+                type="button"
+                className="ui-btn ui-btn-ghost"
+                onClick={() => void loadPrivate()}
+                title="Load data/cv.private.json (dev only)"
+              >
+                <Sparkles size={15} /> Private
+              </button>
+            )}
+            <button type="button" className="ui-btn ui-btn-primary" onClick={() => window.print()}>
+              <Printer size={15} /> Print / PDF
+            </button>
+          </div>
+        </header>
+
+        <main className="ui-split">
+          <div className="ui-pane ui-pane-form">
+            <Editor doc={doc} update={update} />
+          </div>
+          <div className="ui-pane ui-pane-preview">
+            <Preview doc={doc} />
+          </div>
+        </main>
+
+        {problem && (
+          <Modal title="This file can't be loaded" onClose={() => setProblem(null)}>
+            <p>
+              <strong>{problem.fileName}</strong> doesn't match the CV format. Nothing was changed.
+            </p>
+            <ul className="ui-error-list">
+              {formatIssues(problem.errors).map((line) => (
+                <li key={line}>
+                  <code>{line}</code>
+                </li>
+              ))}
+            </ul>
+            <p className="ui-hint">See docs/DATA-MODEL.md for the expected structure.</p>
+            <div className="ui-modal-actions">
+              <button type="button" className="ui-btn ui-btn-primary" onClick={() => setProblem(null)}>
+                OK
+              </button>
+            </div>
+          </Modal>
+        )}
       </div>
-    </div>
-  )
+      <PrintRoot doc={doc} />
+    </>
+  );
 }

@@ -1,0 +1,22 @@
+/* Graphite — charcoal band, monospace headings, lime highlights. */
+.cv-theme-graphite {
+  --cv-ink: #202225;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 85%, #000000);
+  --cv-name-size: 2.3em;
+  --cv-name-tracking: -0.03em;
+  --cv-heading-size: 0.88em;
+  --cv-heading-bar: 4px solid var(--cv-accent);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0.05em 0 0.05em 0.6em;
+  --cv-date-font: var(--cv-font-heading);
+  --cv-date-size: 0.82em;
+  --cv-bullet: '›';
+  --cv-band-bg: #26282c;
+  --cv-band-ink: #f2f3ef;
+  --cv-band-muted: #b9bcb4;
+  --cv-band-role-color: color-mix(in srgb, var(--cv-accent) 45%, #ffffff);
+  --cv-band-icon-color: color-mix(in srgb, var(--cv-accent) 45%, #ffffff);
+  --cv-band-border: 1.5mm solid var(--cv-accent);
+  --cv-chip-bg: #f2f4ee;
+  --cv-chip-border: 1px solid #dde2d4;
+}

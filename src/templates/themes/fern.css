@@ -1,0 +1,26 @@
+/* Fern — editorial serif headings, green accents, airy spacing. */
+.cv-theme-fern {
+  --cv-page: #fffefa;
+  --cv-ink: #25292a;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 85%, #000000);
+  --cv-name-size: 2.45em;
+  --cv-name-weight: 600;
+  --cv-heading-size: 1.3em;
+  --cv-heading-weight: 600;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px solid var(--cv-accent-soft);
+  --cv-heading-pad: 0 0 0.2em;
+  --cv-entry-title-weight: 600;
+  --cv-entry-title-size: 1.1em;
+  --cv-org-style: italic;
+  --cv-org-weight: 400;
+  --cv-sidebar-bg: color-mix(in srgb, var(--cv-accent) 5%, #faf8f1);
+  --cv-sidebar-divider: 1px solid var(--cv-accent-soft);
+  --cv-bullet: '•';
+  --cv-icon-color: var(--cv-accent-ink);
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-gap: 0.35em;
+  --cv-chip-sep: '\00a0·';
+}

@@ -1,0 +1,25 @@
+/* Nocturne — deep ink sidebar with light text and an amber accent. */
+.cv-theme-nocturne {
+  --cv-ink: #1e2230;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 72%, #000000);
+  --cv-heading-rule: 2px solid var(--cv-accent);
+  --cv-heading-size: 0.88em;
+  --cv-sidebar-bg: #1d2230;
+  --cv-sidebar-ink: #e6e8ef;
+  --cv-sidebar-muted: #a7acbb;
+  --cv-sidebar-rule: #3a4052;
+  --cv-sidebar-accent-ink: color-mix(in srgb, var(--cv-accent) 65%, #ffffff);
+  --cv-sidebar-name-color: #ffffff;
+  --cv-sidebar-role-color: color-mix(in srgb, var(--cv-accent) 65%, #ffffff);
+  --cv-sidebar-icon-color: color-mix(in srgb, var(--cv-accent) 65%, #ffffff);
+  --cv-sidebar-heading-color: color-mix(in srgb, var(--cv-accent) 60%, #ffffff);
+  --cv-sidebar-heading-rule: 1px solid #3a4052;
+  --cv-sidebar-chip-bg: #282e3f;
+  --cv-sidebar-chip-border: 1px solid #3a4052;
+  --cv-sidebar-chip-color: #e6e8ef;
+  --cv-sidebar-link-marker-color: color-mix(in srgb, var(--cv-accent) 65%, #ffffff);
+  --cv-sidebar-bullet-color: color-mix(in srgb, var(--cv-accent) 65%, #ffffff);
+  --cv-bullet: '▸';
+  --cv-chip-bg: color-mix(in srgb, var(--cv-accent) 8%, #ffffff);
+  --cv-chip-border: 1px solid color-mix(in srgb, var(--cv-accent) 25%, #ffffff);
+}

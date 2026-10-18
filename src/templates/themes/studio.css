@@ -1,0 +1,17 @@
+/* Studio — monospace, soft pink, capped headers on a light accent bar. */
+.cv-theme-studio {
+  --cv-ink: #2b2429;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 80%, #000000);
+  --cv-name-size: 2.15em;
+  --cv-name-tracking: -0.02em;
+  --cv-heading-size: 0.88em;
+  --cv-heading-bg: color-mix(in srgb, var(--cv-accent) 15%, var(--cv-page));
+  --cv-heading-bar: 3px solid var(--cv-accent);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0.3em 0.65em;
+  --cv-sidebar-bg: color-mix(in srgb, var(--cv-accent) 6%, var(--cv-page));
+  --cv-bullet: '›';
+  --cv-chip-bg: var(--cv-page);
+  --cv-chip-border: 1px solid color-mix(in srgb, var(--cv-accent) 32%, var(--cv-page));
+  --cv-chip-radius: 2px;
+}

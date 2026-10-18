@@ -1,0 +1,36 @@
+/* Minimal — quiet sans-serif, hairlines, dates under titles. */
+.cv-theme-minimal {
+  --cv-ink: #23242a;
+  --cv-muted: #6b6d76;
+  --cv-rule: #e3e3e8;
+  --cv-identity-rule: 1px solid var(--cv-rule);
+  --cv-name-size: 2.5em;
+  --cv-name-weight: 600;
+  --cv-name-tracking: -0.03em;
+  --cv-role-color: var(--cv-muted);
+  --cv-role-weight: 400;
+  --cv-heading-size: 1.1em;
+  --cv-heading-weight: 600;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0;
+  --cv-entry-head-direction: column;
+  --cv-title-direction: row;
+  --cv-org-prefix: '· ';
+  --cv-org-color: var(--cv-ink);
+  --cv-org-weight: 400;
+  --cv-meta-direction: row;
+  --cv-meta-align: baseline;
+  --cv-meta-text-align: left;
+  --cv-meta-sep: '· ';
+  --cv-icon-color: var(--cv-muted);
+  --cv-link-marker-color: var(--cv-muted);
+  --cv-bullet: '–';
+  --cv-bullet-color: var(--cv-muted);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 8.5em;
+  --cv-chip-bg: #f1f1f5;
+  --cv-chip-border: none;
+  --cv-chip-radius: 999px;
+  --cv-chip-pad: 0.05em 0.65em;
+}

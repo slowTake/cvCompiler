@@ -1,0 +1,15 @@
+/* Harbor — navy header band, crisp sans-serif body. */
+.cv-theme-harbor {
+  --cv-ink: #1b2430;
+  --cv-name-weight: 800;
+  --cv-name-size: 2.5em;
+  --cv-name-tracking: -0.02em;
+  --cv-heading-size: 0.9em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 2px solid var(--cv-accent-soft);
+  --cv-org-weight: 600;
+  --cv-bullet: '•';
+  --cv-band-bg: var(--cv-accent);
+  --cv-band-ink: #ffffff;
+  --cv-band-pad-y: 10mm;
+}
