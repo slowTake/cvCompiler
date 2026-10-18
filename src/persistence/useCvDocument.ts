@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { serializeCv } from '../model/normalize';
 import type { CvDocument } from '../model/types';
 import { saveCachedDocument } from './cache';
@@ -21,6 +21,8 @@ export function useCvDocument(initial: { doc: CvDocument; clean: boolean }) {
     initial.clean ? serializeCv(initial.doc) : null,
   );
   const [source, setSource] = useState<DocumentSource | null>(null);
+  /** Bumped whenever a different document is loaded; the Editor is keyed on it. */
+  const [generation, setGeneration] = useState(0);
 
   const json = useMemo(() => serializeCv(doc), [doc]);
   const dirty = json !== savedJson;
@@ -30,6 +32,25 @@ export function useCvDocument(initial: { doc: CvDocument; clean: boolean }) {
     return () => clearTimeout(timer);
   }, [json, dirty]);
 
+  // The debounce above would lose the last keystrokes on reload or tab close,
+  // so write immediately whenever the page is hidden or unloaded.
+  const pending = useRef({ json, dirty });
+  useLayoutEffect(() => {
+    pending.current = { json, dirty };
+  });
+  useEffect(() => {
+    const flush = () => saveCachedDocument(pending.current.json, !pending.current.dirty);
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') flush();
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
   const update = useCallback((fn: (d: CvDocument) => CvDocument) => setDoc(fn), []);
 
   /** Swap in a whole document (open, import, demo) that matches its source. */
@@ -37,6 +58,7 @@ export function useCvDocument(initial: { doc: CvDocument; clean: boolean }) {
     setDoc(next);
     setSavedJson(serializeCv(next));
     setSource(nextSource);
+    setGeneration((g) => g + 1);
   }, []);
 
   const markSaved = useCallback((savedText: string, nextSource?: DocumentSource) => {
@@ -44,5 +66,5 @@ export function useCvDocument(initial: { doc: CvDocument; clean: boolean }) {
     if (nextSource) setSource(nextSource);
   }, []);
 
-  return { doc, json, dirty, source, update, replace, markSaved };
+  return { doc, json, dirty, source, generation, update, replace, markSaved };
 }

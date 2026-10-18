@@ -66,13 +66,20 @@ export async function ensureWritePermission(handle: FileSystemFileHandle): Promi
   return (await h.requestPermission(descriptor)) === 'granted';
 }
 
+/**
+ * Writes `text` to the file. close() commits the write, so it only runs on
+ * success; a failed write aborts instead, leaving the file untouched and
+ * surfacing the original error rather than a follow-on close() rejection.
+ */
 export async function writeToHandle(handle: FileSystemFileHandle, text: string): Promise<void> {
   const writable = await handle.createWritable();
   try {
     await writable.write(text);
-  } finally {
-    await writable.close();
+  } catch (err) {
+    await writable.abort().catch(() => {});
+    throw err;
   }
+  await writable.close();
 }
 
 /** Shows the save picker and writes. Resolves null when the user cancels. */

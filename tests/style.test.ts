@@ -82,6 +82,20 @@ describe('resolveStyle / setOverride', () => {
     expect(setOverride(setOverride(two, 'density', undefined), 'accent', undefined)).toBeUndefined();
   });
 
+  it('clears an override set back to the template value', () => {
+    const raised = setOverride(undefined, 'typeScale', 120, studio.defaults);
+    expect(raised).toEqual({ typeScale: 120 });
+    expect(setOverride(raised, 'typeScale', studio.defaults.typeScale, studio.defaults)).toBeUndefined();
+    const both = setOverride({ density: 'roomy' }, 'fontPairing', studio.defaults.fontPairing, studio.defaults);
+    expect(both).toEqual({ density: 'roomy' });
+    // Without defaults, an explicit value is always kept.
+    expect(setOverride(undefined, 'typeScale', 100)).toEqual({ typeScale: 100 });
+  });
+
+  it('drops invalid values passed to setOverride', () => {
+    expect(setOverride({ density: 'compact' }, 'accent', 'pink', studio.defaults)).toEqual({ density: 'compact' });
+  });
+
   it('turns a resolved style into --cv-* custom properties only', () => {
     const vars = styleToCssVars({ ...studio.defaults, sidebarWidth: 33, typeScale: 120, headerCase: 'normal' });
     expect(Object.keys(vars).every((k) => k.startsWith('--cv-'))).toBe(true);

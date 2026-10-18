@@ -3,7 +3,7 @@ import { newExperience } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { ExperienceEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TextField } from '../fields';
+import { FieldRow, ListTextField, TagListField, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -48,13 +48,11 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
             />
             <ListTextField
               label="Highlights"
-              mode="lines"
               value={e.bullets}
               onChange={(bullets) => update({ ...e, bullets })}
             />
-            <ListTextField
+            <TagListField
               label="Skills developed"
-              mode="comma"
               value={e.skills}
               onChange={(skills) => update({ ...e, skills: skills.length > 0 ? skills : undefined })}
             />

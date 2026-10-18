@@ -2,7 +2,7 @@ import { Wrench } from 'lucide-react';
 import { newSkillGroup } from '../../model/defaults';
 import type { SkillGroup } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { ListTextField, TextField } from '../fields';
+import { TagListField, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -28,9 +28,8 @@ export function SkillsSection({ title, value, onChange, ...chrome }: Props) {
               placeholder="e.g. Frontend"
               onChange={(name) => update({ ...g, name })}
             />
-            <ListTextField
+            <TagListField
               label="Skills"
-              mode="comma"
               value={g.items}
               placeholder="React, TypeScript, CSS"
               onChange={(items) => update({ ...g, items })}

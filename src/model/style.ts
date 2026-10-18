@@ -65,16 +65,22 @@ export function resolveStyle(defaults: ResolvedStyle, overrides?: StyleOverrides
   return { ...defaults, ...clean };
 }
 
-/** Sets or clears one override; returns undefined when no overrides remain. */
+/**
+ * Sets or clears one override; returns undefined when no overrides remain.
+ * With `defaults`, choosing the template's own value clears the override too,
+ * so moving a slider back to where it started leaves nothing behind.
+ */
 export function setOverride<K extends keyof StyleOverrides>(
   current: StyleOverrides | undefined,
   key: K,
   value: StyleOverrides[K] | undefined,
+  defaults?: ResolvedStyle,
 ): StyleOverrides | undefined {
   const next: StyleOverrides = { ...current };
-  if (value === undefined) delete next[key];
-  else next[key] = value;
-  return sanitizeStyle(next);
+  next[key] = value;
+  const clean = sanitizeStyle(next) ?? {};
+  if (value === undefined || (defaults && clean[key] === defaults[key])) delete clean[key];
+  return Object.keys(clean).length > 0 ? clean : undefined;
 }
 
 const MONO =

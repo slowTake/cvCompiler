@@ -38,7 +38,7 @@ interface ImportProblem {
 }
 
 export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } }) {
-  const { doc, json, dirty, source, update, replace, markSaved } = useCvDocument(initial);
+  const { doc, json, dirty, source, generation, update, replace, markSaved } = useCvDocument(initial);
   const { notify } = useToast();
   const [problem, setProblem] = useState<ImportProblem | null>(null);
 
@@ -255,7 +255,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
 
         <main className="ui-split">
           <div className="ui-pane ui-pane-form">
-            <Editor doc={doc} update={update} />
+            {/* A fresh Editor per loaded document drops pending Undo actions. */}
+            <Editor key={generation} doc={doc} update={update} />
           </div>
           <div className="ui-pane ui-pane-preview">
             <Preview doc={doc} />

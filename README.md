@@ -91,7 +91,8 @@ gallery under **Design → Templates…**.
 **Design** also lets you override the accent colour, font pairing, density,
 header case, sidebar width and type scale. Overrides are stored in the
 document (`meta.style`), survive template switches, and **Reset to template**
-clears them. You get a warning if the accent has less than 3:1 contrast
+clears them. Setting a control back to the current template's own value
+removes that override. You get a warning if the accent has less than 3:1 contrast
 against the page, but you can still use it.
 
 ### Adding a template

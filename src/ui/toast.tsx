@@ -34,7 +34,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         const id = nextId.current++;
         const toast: Toast = { id, message, tone: options?.tone ?? 'info', action: options?.action };
         setToasts((list) => [...list.slice(-3), toast]);
-        setTimeout(() => dismiss(id), toast.tone === 'error' ? 8000 : 5000);
+        // Toasts with an action (Undo) stay long enough to reach the button.
+        const ms = toast.action ? 10000 : toast.tone === 'error' ? 8000 : 5000;
+        setTimeout(() => dismiss(id), ms);
       },
     }),
     [dismiss],

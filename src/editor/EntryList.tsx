@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, ChevronRight, Plus, Trash2 } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
-import { moveItem, removeAt, replaceAt } from '../model/list';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { insertAt, moveItem, removeAt, replaceAt } from '../model/list';
 import { useToast } from '../ui/toast';
 
 interface EntryListProps<T extends { id: string }> {
@@ -29,6 +29,21 @@ export function EntryList<T extends { id: string }>({
   const { notify } = useToast();
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
 
+  // Undo runs later, from a toast. It must act on the list as it is then,
+  // through the latest onChange, and do nothing once this list is gone
+  // (the Editor remounts when a different document is loaded).
+  const latest = useRef({ items, onChange });
+  useLayoutEffect(() => {
+    latest.current = { items, onChange };
+  });
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
   const toggle = (id: string) =>
     setOpen((current) => {
       const next = new Set(current);
@@ -44,10 +59,19 @@ export function EntryList<T extends { id: string }>({
   };
 
   const remove = (index: number) => {
-    const before = items;
-    const label = summary(items[index]) || noun;
+    const removed = items[index];
+    const label = summary(removed) || noun;
     onChange(removeAt(items, index));
-    notify(`Removed “${label}”`, { action: { label: 'Undo', run: () => onChange(before) } });
+    const undo = () => {
+      if (!mounted.current) {
+        notify('Nothing to undo: a different document is open now.');
+        return;
+      }
+      const current = latest.current;
+      if (current.items.some((item) => item.id === removed.id)) return;
+      current.onChange(insertAt(current.items, index, removed));
+    };
+    notify(`Removed “${label}”`, { action: { label: 'Undo', run: undo } });
   };
 
   const controls = (index: number, label: string) => (

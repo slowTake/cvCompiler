@@ -50,7 +50,6 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
             />
             <ListTextField
               label="Details"
-              mode="lines"
               value={e.details}
               onChange={(details) => update({ ...e, details: details.length > 0 ? details : undefined })}
             />

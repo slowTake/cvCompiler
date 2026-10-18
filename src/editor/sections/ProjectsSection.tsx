@@ -3,7 +3,7 @@ import { newProject } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { ProjectEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TextArea, TextField } from '../fields';
+import { FieldRow, ListTextField, TagListField, TextArea, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -56,13 +56,11 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
             />
             <ListTextField
               label="Highlights"
-              mode="lines"
               value={p.bullets}
               onChange={(bullets) => update({ ...p, bullets: orUndefined(bullets) })}
             />
-            <ListTextField
+            <TagListField
               label="Tech"
-              mode="comma"
               value={p.tech}
               onChange={(tech) => update({ ...p, tech: orUndefined(tech) })}
             />

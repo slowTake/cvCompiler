@@ -101,7 +101,7 @@ export function DesignSection({ doc, onChange, ...chrome }: Props) {
   const [accentDraft, setAccentDraft] = useState<string | null>(null);
 
   const set = <K extends keyof StyleOverrides>(key: K, value: StyleOverrides[K] | undefined) => {
-    const style = setOverride(meta.style, key, value);
+    const style = setOverride(meta.style, key, value, template.defaults);
     const next: CvMeta = { ...meta, style };
     if (!style) delete next.style;
     onChange(next);

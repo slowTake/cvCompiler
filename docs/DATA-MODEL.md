@@ -60,7 +60,8 @@ repeated ids are replaced with fresh ones.
 | `sidebarWidth` | integer, 30–50                                             | Percent of page width. Sidebar skeleton only, but kept on other templates. |
 | `typeScale`    | integer, 80–145                                            | Percent. |
 
-Overrides survive template switches. "Reset to template" in the editor
+Overrides survive template switches. In the editor, setting a control back
+to the current template's value removes that override, and "Reset to template"
 removes `style` entirely. Invalid values are dropped; out-of-range numbers
 are clamped and rounded.
 
