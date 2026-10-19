@@ -74,6 +74,8 @@ export interface ContactItem {
   value: string;
   /** Optional explicit link target; otherwise derived from kind + value. */
   href?: string;
+  /** Optional caption such as "Mobile". Shown when it differs from the kind's name. */
+  label?: string;
 }
 
 export interface LinkItem {
@@ -85,25 +87,39 @@ export interface LinkItem {
 export interface Identity {
   name: string;
   role?: string;
+  /** One-line summary under the role, separate from `about`. */
+  tagline?: string;
   about?: string;
   contact: ContactItem[];
   links?: LinkItem[];
+}
+
+/** Makes the skill chip whose text is exactly `skill` a link. */
+export interface SkillLink {
+  id: string;
+  skill: string;
+  url: string;
 }
 
 export interface SkillGroup {
   id: string;
   name: string;
   items: string[];
+  links?: SkillLink[];
 }
 
 export interface EducationEntry {
   id: string;
   institution: string;
+  /** Link for the institution name. */
+  orgHref?: string;
   degree?: string;
   start?: string;
   end?: string;
   location?: string;
   details?: string[];
+  /** "Skills developed" during this education. */
+  skills?: string[];
 }
 
 export interface ProjectEntry {
@@ -122,6 +138,8 @@ export interface ExperienceEntry {
   id: string;
   title: string;
   org: string;
+  /** Link for the organisation name. */
+  orgHref?: string;
   start?: string;
   end?: string;
   location?: string;

@@ -1,5 +1,5 @@
 import { Wrench } from 'lucide-react';
-import { newSkillGroup } from '../../model/defaults';
+import { newSkillGroup, newSkillLink } from '../../model/defaults';
 import type { SkillGroup } from '../../model/types';
 import { EntryList } from '../EntryList';
 import { TagListField, TextField } from '../fields';
@@ -33,6 +33,32 @@ export function SkillsSection({ title, value, onChange, ...chrome }: Props) {
               value={g.items}
               placeholder="React, TypeScript, CSS"
               onChange={(items) => update({ ...g, items })}
+            />
+            <h4 className="ui-subhead">Skill links</h4>
+            <EntryList
+              compact
+              noun="skill link"
+              items={g.links ?? []}
+              create={newSkillLink}
+              summary={(l) => l.skill || l.url}
+              onChange={(links) => update({ ...g, links: links.length > 0 ? links : undefined })}
+              renderItem={(l, updateLink) => (
+                <>
+                  <TextField
+                    label="Skill"
+                    value={l.skill}
+                    placeholder="React"
+                    hint="Must match a skill above exactly."
+                    onChange={(skill) => updateLink({ ...l, skill })}
+                  />
+                  <TextField
+                    label="URL"
+                    type="url"
+                    value={l.url}
+                    onChange={(url) => updateLink({ ...l, url })}
+                  />
+                </>
+              )}
             />
           </>
         )}

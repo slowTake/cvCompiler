@@ -9,7 +9,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { sectionTitle } from '../model/defaults';
+import { CONTACT_KIND_LABELS, sectionTitle } from '../model/defaults';
 import { contactHref, safeHref } from '../model/links';
 import type {
   ContactKind,
@@ -19,6 +19,7 @@ import type {
   Identity,
   ProjectEntry,
   SectionConfig,
+  SkillLink,
 } from '../model/types';
 
 const CONTACT_ICONS: Record<ContactKind, LucideIcon> = {
@@ -42,6 +43,11 @@ function MaybeLink({ href, children }: { href: string | undefined; children: Rea
 
 const hasText = (s: string | undefined): s is string => !!s && s.trim() !== '';
 
+/** A label that only repeats the icon's meaning ("Email" on an email) is not shown. */
+function showContactLabel(label: string | undefined, kind: ContactKind): label is string {
+  return hasText(label) && label.trim().toLowerCase() !== CONTACT_KIND_LABELS[kind].toLowerCase();
+}
+
 function paragraphs(text: string): string[] {
   return text
     .split(/\n\s*\n/)
@@ -57,6 +63,7 @@ export function IdentityBlock({ identity }: { identity: Identity }) {
       <div className="cv-name-block">
         <h1 className="cv-name">{identity.name || 'Your Name'}</h1>
         {hasText(identity.role) && <p className="cv-role">{identity.role}</p>}
+        {hasText(identity.tagline) && <p className="cv-tagline">{identity.tagline}</p>}
       </div>
       {(contacts.length > 0 || links.length > 0) && (
         <ul className="cv-contact">
@@ -67,6 +74,7 @@ export function IdentityBlock({ identity }: { identity: Identity }) {
                 <span className="cv-icon" aria-hidden="true">
                   <Icon strokeWidth={2} />
                 </span>
+                {showContactLabel(c.label, c.kind) && <span className="cv-contact-label">{c.label}</span>}
                 <MaybeLink href={contactHref(c)}>{c.value}</MaybeLink>
               </li>
             );
@@ -110,15 +118,25 @@ function SectionShell({
   );
 }
 
-function Tags({ label, items }: { label?: string; items: string[] | undefined }) {
+function Tags({
+  label,
+  items,
+  links,
+}: {
+  label?: string;
+  items: string[] | undefined;
+  /** Chips whose text matches a link's `skill` become links. */
+  links?: SkillLink[];
+}) {
   const list = (items ?? []).filter(hasText);
   if (list.length === 0) return null;
+  const hrefFor = (tag: string) => safeHref(links?.find((l) => l.skill.trim() === tag.trim())?.url);
   return (
     <div className="cv-tags">
       {label && <span className="cv-tags-label">{label}</span>}
       {list.map((t, i) => (
         <span className="cv-chip" key={`${i}-${t}`}>
-          {t}
+          <MaybeLink href={hrefFor(t)}>{t}</MaybeLink>
         </span>
       ))}
     </div>
@@ -148,12 +166,14 @@ function EntryHead({
   name,
   org,
   href,
+  orgHref,
   dates,
   location,
 }: {
   name: string;
   org?: string;
   href?: string;
+  orgHref?: string;
   dates?: string;
   location?: string;
 }) {
@@ -163,7 +183,11 @@ function EntryHead({
         <h3 className="cv-entry-name">
           <MaybeLink href={href}>{name}</MaybeLink>
         </h3>
-        {hasText(org) && <span className="cv-entry-org">{org}</span>}
+        {hasText(org) && (
+          <span className="cv-entry-org">
+            <MaybeLink href={orgHref}>{org}</MaybeLink>
+          </span>
+        )}
       </div>
       {(dates || hasText(location)) && (
         <div className="cv-entry-meta">
@@ -181,6 +205,7 @@ function ExperienceItem({ entry }: { entry: ExperienceEntry }) {
       <EntryHead
         name={entry.title || 'Role'}
         org={entry.org}
+        orgHref={safeHref(entry.orgHref)}
         dates={dateRange(entry.start, entry.end)}
         location={entry.location}
       />
@@ -208,15 +233,19 @@ function ProjectItem({ entry }: { entry: ProjectEntry }) {
 
 function EducationItem({ entry }: { entry: EducationEntry }) {
   const hasDegree = hasText(entry.degree);
+  const orgHref = safeHref(entry.orgHref);
   return (
     <article className="cv-entry">
       <EntryHead
         name={(hasDegree ? entry.degree : entry.institution) || 'Institution'}
         org={hasDegree ? entry.institution : undefined}
+        href={hasDegree ? undefined : orgHref}
+        orgHref={hasDegree ? orgHref : undefined}
         dates={dateRange(entry.start, entry.end)}
         location={entry.location}
       />
       <Bullets items={entry.details} />
+      <Tags label="Skills developed" items={entry.skills} />
     </article>
   );
 }
@@ -258,7 +287,7 @@ export function CvSection({ config, doc }: { config: SectionConfig; doc: CvDocum
               node: (
                 <div className="cv-skill-group">
                   {hasText(g.name) && <h3 className="cv-skill-group-name">{g.name}</h3>}
-                  <Tags items={g.items} />
+                  <Tags items={g.items} links={g.links} />
                 </div>
               ),
             }))}

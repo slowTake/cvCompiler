@@ -1,22 +1,12 @@
 import { User } from 'lucide-react';
-import { newContact, newLink } from '../../model/defaults';
+import { CONTACT_KIND_LABELS, newContact, newLink } from '../../model/defaults';
 import { optional } from '../../model/list';
-import { CONTACT_KINDS, type ContactKind, type Identity } from '../../model/types';
+import { CONTACT_KINDS, type Identity } from '../../model/types';
 import { EntryList } from '../EntryList';
 import { FieldRow, SelectField, TextArea, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
-const KIND_LABELS: Record<ContactKind, string> = {
-  email: 'Email',
-  phone: 'Phone',
-  location: 'Location',
-  website: 'Website',
-  linkedin: 'LinkedIn',
-  github: 'GitHub',
-  other: 'Other',
-};
-
-const KIND_OPTIONS = CONTACT_KINDS.map((k) => ({ value: k, label: KIND_LABELS[k] }));
+const KIND_OPTIONS = CONTACT_KINDS.map((k) => ({ value: k, label: CONTACT_KIND_LABELS[k] }));
 
 interface Props extends SectionChrome {
   value: Identity;
@@ -36,6 +26,13 @@ export function IdentitySection({ value, onChange, ...chrome }: Props) {
           onChange={(role) => onChange({ ...value, role: optional(role) })}
         />
       </FieldRow>
+      <TextField
+        label="Tagline"
+        wide
+        value={value.tagline}
+        placeholder="One line under the role"
+        onChange={(tagline) => onChange({ ...value, tagline: optional(tagline) })}
+      />
       <TextArea
         label="About"
         rows={5}
@@ -61,6 +58,13 @@ export function IdentitySection({ value, onChange, ...chrome }: Props) {
               onChange={(kind) => update({ ...c, kind })}
             />
             <TextField label="Value" value={c.value} onChange={(v) => update({ ...c, value: v })} />
+            <TextField
+              label="Label"
+              value={c.label}
+              placeholder={CONTACT_KIND_LABELS[c.kind]}
+              hint="Shown before the value when it differs from the kind."
+              onChange={(label) => update({ ...c, label: optional(label) })}
+            />
           </>
         )}
       />

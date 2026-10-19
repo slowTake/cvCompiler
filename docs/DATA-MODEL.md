@@ -71,17 +71,20 @@ are clamped and rounded.
 | --------- | ------------------- | -------- | ----- |
 | `name`    | string              | **yes**  | May be empty while editing. |
 | `role`    | string              | no       | Headline under the name. |
+| `tagline` | string              | no       | One line under the role, separate from `about`. |
 | `about`   | string              | no       | Shown in the About section. Blank lines separate paragraphs. |
 | `contact` | ContactItem[]       | no       | |
 | `links`   | LinkItem[]          | no       | Extra labelled links shown with the contact details. |
 
-**ContactItem**: `{ id, kind, value, href? }`
+**ContactItem**: `{ id, kind, value, href?, label? }`
 
 - `kind`: `email`, `phone`, `location`, `website`, `linkedin`, `github` or
   `other`. Unknown kinds become `other`. The kind picks the icon and how the
   link is built (`mailto:`, `tel:`, or `https://` for bare domains).
 - `value` (required): the text shown.
 - `href` (optional): an explicit link target.
+- `label` (optional): a caption such as `"Mobile"`, shown before the value.
+  A label that only names the kind (`"Email"` on an email) is not shown.
 
 **LinkItem**: `{ id, url, label? }`. `url` is required; `label` defaults to the URL.
 
@@ -90,7 +93,10 @@ Anything else, such as `javascript:`, is shown as plain text.
 
 ## SkillGroup
 
-`{ id, name, items }`. `name` is required (may be empty); `items` is a list of strings.
+`{ id, name, items, links? }`. `name` is required (may be empty); `items` is a list of strings.
+
+`links` is an optional list of `{ id, skill, url }`. The chip whose text is
+exactly `skill` links to `url`; `skill` and `url` are required.
 
 ## Experience
 
@@ -98,6 +104,7 @@ Anything else, such as `javascript:`, is shown as plain text.
 | ---------- | -------- | -------- |
 | `title`    | string   | **yes**  |
 | `org`      | string   | **yes**  |
+| `orgHref`  | string   | no (link for the organisation) |
 | `start`    | string   | no       |
 | `end`      | string   | no       |
 | `location` | string   | no       |
@@ -113,8 +120,9 @@ format you like. Numbers such as `2021` are accepted and turned into text.
 
 ## Education
 
-`{ id, institution, degree?, start?, end?, location?, details? }`. `institution` is required.
+`{ id, institution, orgHref?, degree?, start?, end?, location?, details?, skills? }`. `institution` is required.
 When `degree` is set it is the entry's title and the institution is shown under it.
+`orgHref` links the institution name; `skills` is "Skills developed".
 
 ## Language
 
@@ -146,3 +154,32 @@ are quietly dropped, and the rest of the file loads.
 | `sidebar`     | `studio` (default), `slate`, `nocturne`, `fern` |
 | `single`      | `classic`, `minimal`, `ledger` |
 | `header-band` | `harbor`, `sunrise`, `graphite` |
+
+## Files from the first cvStudio
+
+The app before the rebuild (commit `094fa69`) saved files with no `version`
+and older field names. A file without `version` that uses any of those names
+is upgraded on import and Open…, and from the old browser cache
+(`cvstudio:cv`, then `cvstudio:demo`, then `cvstudio:public`) when the
+current cache is empty. The code is
+[`src/model/legacy.ts`](../src/model/legacy.ts).
+
+| Old                                      | Now |
+| ---------------------------------------- | --- |
+| `identity.contact[].type` `email`, `phone`, `location` | `kind`, same value |
+| `identity.contact[].type` `link`         | `kind` from the URL host: `github.com` → `github`, `linkedin.com` → `linkedin`, otherwise `website` |
+| `identity.contact[].href`                | kept only when it differs from the link the app builds from kind + value |
+| `identity.contact[].icon`                | dropped (it repeated the type) |
+| `identity.links[].href`                  | `url` |
+| `skills[].title`                         | `name` |
+| `skills[].items[]` `{ label, href }`     | `items[]` = `label`; each `href` becomes a `links` entry |
+| `education[].title` / `org` / `summary` / `skillsDeveloped` | `degree` / `institution` / `details: [summary]` / `skills` |
+| `projects[].title` / `href` / `stack`    | `name` / `url` / `tech` |
+| `experience[].skillsDeveloped`           | `skills` |
+| `sectionOrder` + `sectionsEnabled`       | `meta.sections`. Missing `sectionOrder` means the old order `about, skills, education, projects, experience, languages`; sections not listed are added hidden |
+| `meta.locale`, `meta.updatedAt`          | dropped (not used) |
+
+Old template ids that no longer exist map to the nearest template on the
+same skeleton: `noir` → `studio`, `forest` → `fern`, `rose` → `studio`,
+`ats` → `classic`, `azure` → `minimal`, `modern` → `harbor`,
+`bold` → `graphite`. `studio`, `slate` and `classic` are unchanged.

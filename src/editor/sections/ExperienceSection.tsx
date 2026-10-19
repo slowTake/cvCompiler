@@ -27,6 +27,12 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
               <TextField label="Title" value={e.title} onChange={(title) => update({ ...e, title })} />
               <TextField label="Organisation" value={e.org} onChange={(org) => update({ ...e, org })} />
             </FieldRow>
+            <TextField
+              label="Organisation link"
+              type="url"
+              value={e.orgHref}
+              onChange={(orgHref) => update({ ...e, orgHref: optional(orgHref) })}
+            />
             <FieldRow>
               <TextField
                 label="Start"

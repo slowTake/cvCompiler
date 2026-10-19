@@ -308,6 +308,11 @@
   color: var(--cv-role-color);
 }
 
+.cv-tagline {
+  color: var(--cv-muted);
+  font-size: 0.95em;
+}
+
 .cv-contact {
   display: flex;
   flex-direction: column;
@@ -466,6 +471,10 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--cv-chip-gap);
+}
+
+.cv-contact-label {
+  color: var(--cv-muted);
 }
 
 .cv-tags-label {

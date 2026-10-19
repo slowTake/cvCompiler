@@ -3,7 +3,7 @@ import { newEducation } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { EducationEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TextField } from '../fields';
+import { FieldRow, ListTextField, TagListField, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -35,6 +35,12 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
                 onChange={(degree) => update({ ...e, degree: optional(degree) })}
               />
             </FieldRow>
+            <TextField
+              label="Institution link"
+              type="url"
+              value={e.orgHref}
+              onChange={(orgHref) => update({ ...e, orgHref: optional(orgHref) })}
+            />
             <FieldRow>
               <TextField
                 label="Start"
@@ -52,6 +58,11 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
               label="Details"
               value={e.details}
               onChange={(details) => update({ ...e, details: details.length > 0 ? details : undefined })}
+            />
+            <TagListField
+              label="Skills developed"
+              value={e.skills}
+              onChange={(skills) => update({ ...e, skills: skills.length > 0 ? skills : undefined })}
             />
           </>
         )}

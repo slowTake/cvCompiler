@@ -1,0 +1,163 @@
+{
+  "meta": {
+    "title": "Software Developer",
+    "locale": "en",
+    "updatedAt": "2026-07-19",
+    "templateId": "studio"
+  },
+  "identity": {
+    "name": "Avery Quinn",
+    "role": "Software Developer",
+    "contact": [
+      {
+        "id": "email",
+        "type": "email",
+        "label": "Email",
+        "value": "avery.quinn@example.com",
+        "href": "mailto:avery.quinn@example.com",
+        "icon": "mail"
+      },
+      {
+        "id": "phone",
+        "type": "phone",
+        "label": "Phone",
+        "value": "+1 (555) 010-2048",
+        "href": "tel:+15550102048",
+        "icon": "phone"
+      },
+      {
+        "id": "location",
+        "type": "location",
+        "label": "Location",
+        "value": "Portland, OR",
+        "icon": "map-pin"
+      },
+      {
+        "id": "github",
+        "type": "link",
+        "label": "GitHub",
+        "value": "github.com/avery-quinn-demo",
+        "href": "https://github.com/avery-quinn-demo",
+        "icon": "github"
+      },
+      {
+        "id": "web",
+        "type": "link",
+        "label": "Website",
+        "value": "averyquinn.dev",
+        "href": "https://averyquinn.dev",
+        "icon": "globe"
+      }
+    ],
+    "about": "Full-stack developer who ships calm, maintainable products. Comfortable owning features from schema to polish, with a bias toward clear interfaces and fast feedback loops."
+  },
+  "skills": [
+    {
+      "id": "soft",
+      "title": "Soft Skills",
+      "items": [
+        { "id": "s1", "label": "Mentoring" },
+        { "id": "s2", "label": "Product sense" },
+        { "id": "s3", "label": "Clear writing" },
+        { "id": "s4", "label": "Incident calm" }
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Tools",
+      "items": [
+        { "id": "t1", "label": "TypeScript" },
+        { "id": "t2", "label": "React" },
+        { "id": "t3", "label": "Node.js" },
+        { "id": "t4", "label": "PostgreSQL" },
+        { "id": "t5", "label": "Vite" },
+        { "id": "t6", "label": "Git" }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu1",
+      "title": "B.S. Computer Science",
+      "org": "Cascade Technical University",
+      "orgHref": "https://example.com/ctu",
+      "start": "2016",
+      "end": "2020",
+      "location": "Eugene, OR",
+      "summary": "Focus on distributed systems and human-computer interaction.",
+      "skillsDeveloped": ["Algorithms", "Systems design", "UX research methods"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "title": "Harbor Board",
+      "href": "https://example.com/harbor-board",
+      "start": "2024",
+      "end": "2025",
+      "summary": "Local-first project board for small studios. Offline-capable editing with conflict-safe sync when online.",
+      "stack": ["React", "IndexedDB", "CRDT sync"]
+    },
+    {
+      "id": "p2",
+      "title": "Signal Shelf",
+      "href": "https://example.com/signal-shelf",
+      "start": "2023",
+      "end": "2024",
+      "summary": "Personal reading tracker with tag search, reading streaks, and printable yearly wrap PDFs.",
+      "stack": ["TypeScript", "SQLite", "Print CSS"]
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp1",
+      "title": "Senior Software Engineer",
+      "org": "Northwind Labs",
+      "orgHref": "https://example.com/northwind",
+      "start": "2023",
+      "end": "present",
+      "location": "Remote",
+      "skillsDeveloped": ["Design systems", "Performance profiling", "Team facilitation"],
+      "bullets": [
+        "Led rebuild of the customer billing UI, cutting time-to-invoice from three days to same-day for ops.",
+        "Introduced typed API contracts shared by web and mobile, reducing integration defects in release candidates.",
+        "Mentored three engineers through first production ownership cycles."
+      ]
+    },
+    {
+      "id": "exp2",
+      "title": "Software Engineer",
+      "org": "Cedar & Co",
+      "orgHref": "https://example.com/cedar",
+      "start": "2020",
+      "end": "2023",
+      "location": "Portland, OR",
+      "skillsDeveloped": ["React", "Node.js", "CI pipelines"],
+      "bullets": [
+        "Shipped the storefront checkout redesign used by 40k monthly buyers.",
+        "Built internal tooling that automated catalog imports previously done by hand each week.",
+        "Owned on-call for the payments path; improved runbooks and alert signal-to-noise."
+      ]
+    }
+  ],
+  "languages": [
+    { "id": "lang1", "name": "English", "level": "native" },
+    { "id": "lang2", "name": "Spanish", "level": "conversational" }
+  ],
+  "sectionOrder": [
+    "about",
+    "skills",
+    "education",
+    "projects",
+    "experience",
+    "languages"
+  ],
+  "sectionsEnabled": {
+    "about": true,
+    "skills": true,
+    "education": true,
+    "projects": true,
+    "experience": true,
+    "languages": true
+  }
+}

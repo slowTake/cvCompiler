@@ -1,6 +1,7 @@
 import { hasTemplate, DEFAULT_TEMPLATE } from '../templates/registry';
 import { defaultSections, isSectionId } from './defaults';
 import { newId } from './id';
+import { upgradeLegacyCv } from './legacy';
 import { sanitizeStyle, STYLE_KEYS } from './style';
 import {
   CONTACT_KINDS,
@@ -19,6 +20,7 @@ import {
   type SectionConfig,
   type SectionId,
   type SkillGroup,
+  type SkillLink,
 } from './types';
 
 /** A problem at a JSON path such as `experience[2].title`. */
@@ -150,6 +152,10 @@ function nonEmpty(list: string[] | undefined): string[] | undefined {
   return list && list.length > 0 ? list : undefined;
 }
 
+function nonEmptyList<T>(list: T[]): T[] | undefined {
+  return list.length > 0 ? list : undefined;
+}
+
 function normalizeSections(ctx: Ctx, raw: unknown, path: string): SectionConfig[] {
   if (raw === undefined || raw === null) return defaultSections();
   if (!Array.isArray(raw)) {
@@ -241,6 +247,7 @@ function normalizeIdentity(ctx: Ctx, raw: unknown): Identity {
       kind: contactKind(ctx, item, p),
       value: reqText(ctx, item, 'value', p),
       href: optText(ctx, item, 'href', p),
+      label: optText(ctx, item, 'label', p),
     }),
   );
   const links = entryList<LinkItem>(ctx, raw, 'links', path, (item, p, id) =>
@@ -249,21 +256,27 @@ function normalizeIdentity(ctx: Ctx, raw: unknown): Identity {
   return compact({
     name: reqText(ctx, raw, 'name', path),
     role: optText(ctx, raw, 'role', path),
+    tagline: optText(ctx, raw, 'tagline', path),
     about: optText(ctx, raw, 'about', path),
     contact,
     links: links.length > 0 ? links : undefined,
   });
 }
 
-/** Validates and normalises an already-parsed JSON value into a CvDocument. */
-export function normalizeCv(input: unknown): ParseResult {
+/**
+ * Validates and normalises an already-parsed JSON value into a CvDocument.
+ * Files without `version` may come from the first cvStudio (see legacy.ts);
+ * their old field names are upgraded before validation.
+ */
+export function normalizeCv(raw: unknown): ParseResult {
   const ctx = new Ctx();
-  if (!isObj(input)) {
+  if (!isObj(raw)) {
     return {
       ok: false,
-      errors: [{ path: '(root)', message: `must be a JSON object, got ${describe(input)}` }],
+      errors: [{ path: '(root)', message: `must be a JSON object, got ${describe(raw)}` }],
     };
   }
+  const input = upgradeLegacyCv(raw);
 
   if (input.version !== undefined) {
     if (typeof input.version !== 'number' || !Number.isInteger(input.version)) {
@@ -279,21 +292,32 @@ export function normalizeCv(input: unknown): ParseResult {
   const identity = normalizeIdentity(ctx, input.identity);
   const meta = normalizeMeta(ctx, input.meta, identity.name.trim() || 'Untitled CV');
 
-  const skills = entryList<SkillGroup>(ctx, input, 'skills', '', (raw, p, id) => ({
-    id,
-    name: reqText(ctx, raw, 'name', p),
-    items: textList(ctx, raw, 'items', p) ?? [],
-  }));
+  const skills = entryList<SkillGroup>(ctx, input, 'skills', '', (raw, p, id) =>
+    compact({
+      id,
+      name: reqText(ctx, raw, 'name', p),
+      items: textList(ctx, raw, 'items', p) ?? [],
+      links: nonEmptyList(
+        entryList<SkillLink>(ctx, raw, 'links', p, (item, lp, lid) => ({
+          id: lid,
+          skill: reqText(ctx, item, 'skill', lp),
+          url: reqText(ctx, item, 'url', lp),
+        })),
+      ),
+    }),
+  );
 
   const education = entryList<EducationEntry>(ctx, input, 'education', '', (raw, p, id) =>
     compact({
       id,
       institution: reqText(ctx, raw, 'institution', p),
+      orgHref: optText(ctx, raw, 'orgHref', p),
       degree: optText(ctx, raw, 'degree', p),
       start: optText(ctx, raw, 'start', p),
       end: optText(ctx, raw, 'end', p),
       location: optText(ctx, raw, 'location', p),
       details: nonEmpty(textList(ctx, raw, 'details', p)),
+      skills: nonEmpty(textList(ctx, raw, 'skills', p)),
     }),
   );
 
@@ -316,6 +340,7 @@ export function normalizeCv(input: unknown): ParseResult {
       id,
       title: reqText(ctx, raw, 'title', p),
       org: reqText(ctx, raw, 'org', p),
+      orgHref: optText(ctx, raw, 'orgHref', p),
       start: optText(ctx, raw, 'start', p),
       end: optText(ctx, raw, 'end', p),
       location: optText(ctx, raw, 'location', p),
