@@ -1,5 +1,5 @@
 {
-  "name": "cvstudio",
+  "name": "cvcompiler",
   "private": true,
   "version": "0.1.0",
   "type": "module",

@@ -1,4 +1,4 @@
-# cvStudio data model
+# cvCompiler data model
 
 A CV is one JSON document, a `CvDocument`. The TypeScript source of truth is
 [`src/model/types.ts`](../src/model/types.ts); this page describes the same
