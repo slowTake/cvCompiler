@@ -189,7 +189,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
       <div className="ui-app">
         <header className="ui-topbar">
           <div className="ui-brand">
-            cv<span>Studio</span>
+            cv<span>Compiler</span>
           </div>
           <div className="ui-file-status" title={source?.handle ? 'Save writes to this file' : undefined}>
             <FileText size={15} />

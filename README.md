@@ -1,4 +1,4 @@
-# cvStudio
+# cvCompiler
 
 A static, local-first CV editor. Edit a structured CV in a form next to a live
 A4 preview, then export a styled PDF with the browser's **Print → Save as PDF**.
@@ -133,5 +133,5 @@ public/_redirects     SPA fallback for a static host (unused: not deployed)
 
 ## Running it
 
-cvStudio is not deployed anywhere. It runs locally only, through
+cvCompiler is not deployed anywhere. It runs locally only, through
 `npm run dev` or `npm run build` followed by `npm run preview`.

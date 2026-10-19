@@ -9,7 +9,7 @@ import { defineConfig, type Plugin } from 'vite';
  */
 function stripPrivateData(): Plugin {
   return {
-    name: 'cvstudio:strip-private-data',
+    name: 'cvcompiler:strip-private-data',
     apply: 'build',
     enforce: 'pre',
     load(id) {
