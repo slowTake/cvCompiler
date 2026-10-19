@@ -128,12 +128,10 @@ src/editor/           form: one component per section, plus shared fields
 src/persistence/      localStorage cache, File System Access, import/export
 src/styles/           cv.css (CV structure), ui.css (editor), print.css
 tests/                Vitest suites
-public/_redirects     SPA fallback for Cloudflare Pages
+public/_redirects     SPA fallback for a static host (unused: not deployed)
 ```
 
-## Deploying to Cloudflare Pages
+## Running it
 
-Connect the repository, then set **Build command** `npm run build` and
-**Build output directory** `dist`. Pin Node with `NODE_VERSION=20` (any
-version from 18.18 works). `public/_redirects` sends every path to
-`index.html`. Everything else is static files, so any static host works too.
+cvStudio is not deployed anywhere. It runs locally only, through
+`npm run dev` or `npm run build` followed by `npm run preview`.
