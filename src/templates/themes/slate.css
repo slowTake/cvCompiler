@@ -1,0 +1,20 @@
+/* Slate — cool blue-grey sidebar, clean sans-serif. */
+.cv-theme-slate {
+  --cv-ink: #1f2933;
+  --cv-muted: #5c6773;
+  --cv-rule: #d9dee4;
+  --cv-name-weight: 800;
+  --cv-name-tracking: -0.025em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-size: 0.85em;
+  --cv-heading-rule: 1.5px solid var(--cv-accent-soft);
+  --cv-sidebar-bg: color-mix(in srgb, var(--cv-accent) 9%, #f3f5f8);
+  --cv-sidebar-divider: none;
+  --cv-sidebar-heading-rule: 1.5px solid color-mix(in srgb, var(--cv-accent) 28%, #f3f5f8);
+  --cv-org-color: #44505c;
+  --cv-org-weight: 600;
+  --cv-bullet: '•';
+  --cv-chip-bg: #ffffff;
+  --cv-chip-border: 1px solid #d3d9e0;
+  --cv-chip-radius: 4px;
+}

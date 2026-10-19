@@ -1,0 +1,35 @@
+/* Classic — plain serif, black on white, no icons. ATS friendly. */
+.cv-theme-classic {
+  --cv-ink: #111111;
+  --cv-muted: #4a4a4a;
+  --cv-accent-ink: var(--cv-ink);
+  --cv-identity-align: center;
+  --cv-identity-text-align: center;
+  --cv-identity-rule: 1px solid var(--cv-ink);
+  --cv-name-size: 2.2em;
+  --cv-name-weight: 700;
+  --cv-name-tracking: 0.02em;
+  --cv-role-color: var(--cv-muted);
+  --cv-role-weight: 400;
+  --cv-heading-size: 1em;
+  --cv-heading-rule: 1px solid var(--cv-ink);
+  --cv-title-direction: row;
+  --cv-org-prefix: '— ';
+  --cv-org-color: var(--cv-ink);
+  --cv-org-weight: 400;
+  --cv-org-style: italic;
+  --cv-date-color: var(--cv-ink);
+  --cv-bullet: '•';
+  --cv-bullet-color: var(--cv-ink);
+  --cv-icon-display: none;
+  --cv-link-marker: '';
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 9.5em;
+  --cv-skill-name-suffix: ':';
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-gap: 0.3em;
+  --cv-chip-sep: ',';
+  --cv-chip-color: var(--cv-ink);
+}

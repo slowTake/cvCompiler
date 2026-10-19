@@ -1,29 +1,8 @@
-# Dependencies & build
-node_modules/
-dist/
-dist-ssr/
+node_modules
+dist
+*.tsbuildinfo
+.DS_Store
 *.local
 
-# Private CV data (never commit)
+# Personal CV data: never commit, never ship.
 data/cv.private.json
-
-# Env & secrets
-.env
-.env.*
-!.env.example
-
-# Logs & caches
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-.DS_Store
-*.tsbuildinfo
-
-# Editor
-.idea/
-.vscode/*
-!.vscode/extensions.json
-
-# Other editors
-.cursor/

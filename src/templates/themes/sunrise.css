@@ -1,0 +1,25 @@
+/* Sunrise — warm coral band, editorial serif headings. */
+.cv-theme-sunrise {
+  --cv-page: #fffdfa;
+  --cv-ink: #2a2220;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 88%, #000000);
+  --cv-name-size: 2.7em;
+  --cv-name-weight: 600;
+  --cv-heading-size: 1.3em;
+  --cv-heading-weight: 600;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px solid var(--cv-accent-soft);
+  --cv-heading-pad: 0 0 0.15em;
+  --cv-entry-title-weight: 600;
+  --cv-entry-title-size: 1.1em;
+  --cv-org-style: italic;
+  --cv-org-weight: 400;
+  --cv-bullet: '•';
+  --cv-band-bg: var(--cv-accent);
+  --cv-band-border: 3mm solid color-mix(in srgb, var(--cv-accent) 55%, #ffd8b0);
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-gap: 0.35em;
+  --cv-chip-sep: '\00a0·';
+}

@@ -1,0 +1,21 @@
+/* Ledger — monospace headings over a sans body, teal markers, compact. */
+.cv-theme-ledger {
+  --cv-ink: #172122;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 85%, #000000);
+  --cv-identity-rule: 2px solid var(--cv-accent);
+  --cv-name-size: 2.1em;
+  --cv-name-tracking: -0.03em;
+  --cv-heading-size: 0.9em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px dashed color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page));
+  --cv-title-direction: row;
+  --cv-org-prefix: '/ ';
+  --cv-date-font: var(--cv-font-heading);
+  --cv-date-size: 0.82em;
+  --cv-bullet: '▪';
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 9em;
+  --cv-chip-bg: var(--cv-accent-faint);
+  --cv-chip-border: none;
+  --cv-chip-radius: 2px;
+}

@@ -1,0 +1,537 @@
+/*
+ * CV document styles. Structural only: every themable value is read from a
+ * --cv-* custom property. Theme files (src/templates/themes/*.css) override
+ * tokens on `.cv-theme-<id>`; user style overrides arrive as inline --cv-*
+ * properties on the same root element. Nothing here touches the editor UI,
+ * and nothing in the editor UI reads --cv-* tokens.
+ */
+
+/* ---- Token defaults (zero specificity so any theme block wins) ---------- */
+:where(.cv-page) {
+  /* Knobs. Normally set inline from template defaults + user overrides. */
+  --cv-accent: #555555;
+  --cv-font-heading: system-ui, sans-serif;
+  --cv-font-body: system-ui, sans-serif;
+  --cv-font-factor: 1;
+  --cv-density: 1;
+  --cv-heading-transform: uppercase;
+  --cv-heading-tracking: 0.12em;
+  --cv-sidebar-width: 40%;
+  --cv-type-scale: 1;
+
+  /* Colour */
+  --cv-page: #ffffff;
+  --cv-ink: #1f2023;
+  --cv-muted: color-mix(in srgb, var(--cv-ink) 62%, var(--cv-page));
+  --cv-rule: color-mix(in srgb, var(--cv-ink) 14%, var(--cv-page));
+  --cv-accent-ink: var(--cv-accent);
+  --cv-accent-soft: color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page));
+  --cv-accent-faint: color-mix(in srgb, var(--cv-accent) 6%, var(--cv-page));
+
+  /* Type */
+  --cv-base-size: 9.5pt;
+  --cv-line-height: 1.45;
+  --cv-name-font: var(--cv-font-heading);
+  --cv-name-size: 2.3em;
+  --cv-name-weight: 700;
+  --cv-name-transform: none;
+  --cv-name-tracking: -0.01em;
+  --cv-name-color: var(--cv-ink);
+  --cv-role-size: 1.15em;
+  --cv-role-weight: 500;
+  --cv-role-color: var(--cv-accent-ink);
+
+  /* Section headings */
+  --cv-heading-size: 0.95em;
+  --cv-heading-weight: 700;
+  --cv-heading-color: var(--cv-ink);
+  --cv-heading-bg: transparent;
+  --cv-heading-bar: 0 solid transparent;
+  --cv-heading-rule: 1px solid var(--cv-rule);
+  --cv-heading-pad: 0 0 0.35em;
+  --cv-heading-radius: 0;
+
+  /* Entries */
+  --cv-entry-head-direction: row;
+  --cv-title-direction: column;
+  --cv-entry-title-size: 1.05em;
+  --cv-entry-title-weight: 700;
+  --cv-entry-title-color: var(--cv-ink);
+  --cv-org-prefix: '';
+  --cv-org-color: var(--cv-accent-ink);
+  --cv-org-weight: 500;
+  --cv-org-style: normal;
+  --cv-meta-direction: column;
+  --cv-meta-align: flex-end;
+  --cv-meta-text-align: right;
+  --cv-meta-sep: '';
+  --cv-date-color: var(--cv-muted);
+  --cv-date-size: 0.9em;
+  --cv-date-font: var(--cv-font-body);
+  --cv-bullet: '–';
+  --cv-bullet-color: var(--cv-accent);
+
+  /* Contact, icons, links */
+  --cv-icon-display: inline-flex;
+  --cv-icon-color: var(--cv-accent);
+  --cv-link-color: inherit;
+  --cv-link-decoration: none;
+  --cv-link-marker: '\2009↗';
+  --cv-link-marker-color: var(--cv-accent);
+  --cv-identity-rule: none;
+  --cv-identity-align: flex-start;
+  --cv-identity-text-align: left;
+
+  /* Skill chips */
+  --cv-skill-group-direction: column;
+  --cv-skill-name-width: auto;
+  --cv-skill-name-suffix: '';
+  --cv-chip-bg: var(--cv-accent-faint);
+  --cv-chip-border: 1px solid var(--cv-accent-soft);
+  --cv-chip-color: var(--cv-ink);
+  --cv-chip-pad: 0.05em 0.5em;
+  --cv-chip-radius: 3px;
+  --cv-chip-gap: 0.3em;
+  --cv-chip-sep: '';
+
+  /* Spacing, before density scaling */
+  --cv-pad-x: 14mm;
+  --cv-pad-y: 13mm;
+  --cv-sidebar-pad-x: 9mm;
+  --cv-section-gap: 5.5mm;
+  --cv-entry-gap: 3.2mm;
+  --cv-heading-gap: 2.4mm;
+
+  /* Sidebar skeleton */
+  --cv-sidebar-bg: var(--cv-accent-faint);
+  --cv-sidebar-divider: none;
+  --cv-sidebar-ink: var(--cv-ink);
+  --cv-sidebar-muted: var(--cv-muted);
+  --cv-sidebar-rule: var(--cv-rule);
+  --cv-sidebar-accent-ink: var(--cv-accent-ink);
+  --cv-sidebar-name-color: var(--cv-name-color);
+  --cv-sidebar-role-color: var(--cv-role-color);
+  --cv-sidebar-icon-color: var(--cv-icon-color);
+  --cv-sidebar-heading-color: var(--cv-heading-color);
+  --cv-sidebar-heading-bg: var(--cv-heading-bg);
+  --cv-sidebar-heading-rule: var(--cv-heading-rule);
+  --cv-sidebar-heading-bar: var(--cv-heading-bar);
+  --cv-sidebar-chip-bg: var(--cv-chip-bg);
+  --cv-sidebar-chip-border: var(--cv-chip-border);
+  --cv-sidebar-chip-color: var(--cv-chip-color);
+  --cv-sidebar-link-marker-color: var(--cv-link-marker-color);
+  --cv-sidebar-bullet-color: var(--cv-bullet-color);
+
+  /* Header band skeleton */
+  --cv-band-bg: var(--cv-accent);
+  --cv-band-ink: #ffffff;
+  --cv-band-muted: color-mix(in srgb, var(--cv-band-ink) 78%, var(--cv-band-bg));
+  --cv-band-name-color: var(--cv-band-ink);
+  --cv-band-role-color: var(--cv-band-muted);
+  --cv-band-icon-color: var(--cv-band-muted);
+  --cv-band-pad-y: 11mm;
+  --cv-band-border: none;
+}
+
+/* ---- Page ---------------------------------------------------------------- */
+.cv-page {
+  position: relative;
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  background: var(--cv-page);
+  color: var(--cv-ink);
+  font-family: var(--cv-font-body);
+  font-size: calc(var(--cv-base-size) * var(--cv-type-scale) * var(--cv-font-factor));
+  line-height: var(--cv-line-height);
+  text-align: left;
+  overflow-wrap: break-word;
+  font-kerning: normal;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.cv-page *,
+.cv-page *::before,
+.cv-page *::after {
+  box-sizing: border-box;
+}
+
+.cv-page :where(h1, h2, h3, p, ul, ol, li) {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.cv-page :where(ul, ol) {
+  list-style: none;
+}
+
+.cv-page a {
+  color: var(--cv-link-color);
+  text-decoration: var(--cv-link-decoration);
+}
+
+/* Background fills. Absolute on screen; fixed in print so they repeat per page. */
+.cv-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cv-fill-page {
+  right: 0;
+  background: var(--cv-page);
+}
+
+.cv-fill-sidebar {
+  width: var(--cv-sidebar-width);
+  background: var(--cv-sidebar-bg);
+  border-right: var(--cv-sidebar-divider);
+}
+
+.cv-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cv-col {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--cv-section-gap) * var(--cv-density));
+  min-width: 0;
+  padding: calc(var(--cv-pad-y) * var(--cv-density)) calc(var(--cv-pad-x) * var(--cv-density));
+  /* Repeat column padding at the top and bottom of every printed page. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* A unit that never splits across pages. --cv-push is set by the on-screen
+   paginator to mimic print page breaks; it is never set in print. */
+.cv-block {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-top: var(--cv-push, 0px);
+}
+
+/* ---- Skeleton: sidebar --------------------------------------------------- */
+.cv-skeleton-sidebar .cv-content {
+  display: grid;
+  grid-template-columns: var(--cv-sidebar-width) minmax(0, 1fr);
+}
+
+.cv-skeleton-sidebar .cv-aside {
+  padding-inline: calc(var(--cv-sidebar-pad-x) * var(--cv-density));
+  color: var(--cv-sidebar-ink);
+  --cv-ink: var(--cv-sidebar-ink);
+  --cv-muted: var(--cv-sidebar-muted);
+  --cv-rule: var(--cv-sidebar-rule);
+  --cv-accent-ink: var(--cv-sidebar-accent-ink);
+  --cv-name-color: var(--cv-sidebar-name-color);
+  --cv-role-color: var(--cv-sidebar-role-color);
+  --cv-icon-color: var(--cv-sidebar-icon-color);
+  --cv-heading-color: var(--cv-sidebar-heading-color);
+  --cv-heading-bg: var(--cv-sidebar-heading-bg);
+  --cv-heading-rule: var(--cv-sidebar-heading-rule);
+  --cv-heading-bar: var(--cv-sidebar-heading-bar);
+  --cv-chip-bg: var(--cv-sidebar-chip-bg);
+  --cv-chip-border: var(--cv-sidebar-chip-border);
+  --cv-chip-color: var(--cv-sidebar-chip-color);
+  --cv-link-marker-color: var(--cv-sidebar-link-marker-color);
+  --cv-bullet-color: var(--cv-sidebar-bullet-color);
+  --cv-date-color: var(--cv-sidebar-muted);
+  --cv-entry-title-color: var(--cv-sidebar-ink);
+  --cv-org-color: var(--cv-sidebar-accent-ink);
+}
+
+.cv-skeleton-sidebar .cv-aside .cv-name {
+  font-size: calc(var(--cv-name-size) * 0.86);
+}
+
+/* ---- Skeleton: header band ----------------------------------------------- */
+.cv-band {
+  padding: calc(var(--cv-band-pad-y) * var(--cv-density)) calc(var(--cv-pad-x) * var(--cv-density));
+  background: var(--cv-band-bg);
+  border-bottom: var(--cv-band-border);
+  color: var(--cv-band-ink);
+  --cv-ink: var(--cv-band-ink);
+  --cv-muted: var(--cv-band-muted);
+  --cv-name-color: var(--cv-band-name-color);
+  --cv-role-color: var(--cv-band-role-color);
+  --cv-icon-color: var(--cv-band-icon-color);
+  --cv-link-color: var(--cv-band-ink);
+  --cv-link-marker-color: var(--cv-band-muted);
+}
+
+.cv-skeleton-header-band .cv-band + .cv-main {
+  padding-top: calc(var(--cv-pad-y) * var(--cv-density) * 0.75);
+}
+
+/* ---- Identity ------------------------------------------------------------ */
+.cv-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: var(--cv-identity-align);
+  gap: 0.7em;
+  text-align: var(--cv-identity-text-align);
+}
+
+.cv-skeleton-single .cv-identity {
+  padding-bottom: calc(var(--cv-section-gap) * var(--cv-density) * 0.6);
+  border-bottom: var(--cv-identity-rule);
+}
+
+.cv-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.cv-name {
+  font-family: var(--cv-name-font);
+  font-size: var(--cv-name-size);
+  font-weight: var(--cv-name-weight);
+  line-height: 1.08;
+  letter-spacing: var(--cv-name-tracking);
+  text-transform: var(--cv-name-transform);
+  color: var(--cv-name-color);
+}
+
+.cv-role {
+  font-family: var(--cv-font-heading);
+  font-size: var(--cv-role-size);
+  font-weight: var(--cv-role-weight);
+  color: var(--cv-role-color);
+}
+
+.cv-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.cv-skeleton-single .cv-contact,
+.cv-skeleton-header-band .cv-contact {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: var(--cv-identity-align);
+  column-gap: 1.3em;
+  row-gap: 0.25em;
+}
+
+.cv-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+}
+
+.cv-icon {
+  display: var(--cv-icon-display);
+  flex: none;
+  color: var(--cv-icon-color);
+}
+
+.cv-icon svg {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+/* Markers only on web links; mailto: and tel: stay plain. */
+.cv-link[href^='http']::after {
+  content: var(--cv-link-marker);
+  color: var(--cv-link-marker-color);
+  font-size: 0.85em;
+}
+
+/* ---- Section headings ---------------------------------------------------- */
+.cv-section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--cv-entry-gap) * var(--cv-density));
+}
+
+.cv-heading {
+  margin: 0 0 calc(var(--cv-heading-gap) * var(--cv-density));
+  padding: var(--cv-heading-pad);
+  border-left: var(--cv-heading-bar);
+  border-bottom: var(--cv-heading-rule);
+  border-radius: var(--cv-heading-radius);
+  background: var(--cv-heading-bg);
+  color: var(--cv-heading-color);
+  font-family: var(--cv-font-heading);
+  font-size: var(--cv-heading-size);
+  font-weight: var(--cv-heading-weight);
+  letter-spacing: var(--cv-heading-tracking);
+  text-transform: var(--cv-heading-transform);
+  line-height: 1.3;
+  break-after: avoid;
+}
+
+/* ---- Entries ------------------------------------------------------------- */
+.cv-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.cv-entry-head {
+  display: flex;
+  flex-direction: var(--cv-entry-head-direction);
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.1em 1em;
+}
+
+.cv-entry-title {
+  display: flex;
+  flex-direction: var(--cv-title-direction);
+  flex-wrap: wrap;
+  column-gap: 0.45em;
+  min-width: 0;
+}
+
+.cv-entry-name {
+  font-family: var(--cv-font-heading);
+  font-size: var(--cv-entry-title-size);
+  font-weight: var(--cv-entry-title-weight);
+  color: var(--cv-entry-title-color);
+  line-height: 1.3;
+}
+
+.cv-entry-org {
+  color: var(--cv-org-color);
+  font-weight: var(--cv-org-weight);
+  font-style: var(--cv-org-style);
+}
+
+.cv-entry-org::before {
+  content: var(--cv-org-prefix);
+  color: var(--cv-muted);
+}
+
+.cv-entry-meta {
+  display: flex;
+  flex: none;
+  flex-direction: var(--cv-meta-direction);
+  align-items: var(--cv-meta-align);
+  column-gap: 0.4em;
+  max-width: 45%;
+  text-align: var(--cv-meta-text-align);
+  color: var(--cv-date-color);
+  font-family: var(--cv-date-font);
+  font-size: var(--cv-date-size);
+  white-space: nowrap;
+}
+
+.cv-entry-meta > * + *::before {
+  content: var(--cv-meta-sep);
+}
+
+.cv-text {
+  white-space: pre-line;
+}
+
+.cv-about {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+
+.cv-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+
+.cv-bullets > li {
+  position: relative;
+  padding-left: 1.15em;
+}
+
+.cv-bullets > li::before {
+  content: var(--cv-bullet);
+  position: absolute;
+  left: 0.1em;
+  color: var(--cv-bullet-color);
+}
+
+/* ---- Chips (skills, tech, skills developed) ------------------------------ */
+.cv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--cv-chip-gap);
+}
+
+.cv-tags-label {
+  margin-right: 0.3em;
+  color: var(--cv-muted);
+  font-size: 0.88em;
+}
+
+.cv-chip {
+  padding: var(--cv-chip-pad);
+  border: var(--cv-chip-border);
+  border-radius: var(--cv-chip-radius);
+  background: var(--cv-chip-bg);
+  color: var(--cv-chip-color);
+  font-size: 0.88em;
+  line-height: 1.4;
+}
+
+.cv-chip:not(:last-child)::after {
+  content: var(--cv-chip-sep);
+}
+
+.cv-skill-group {
+  display: flex;
+  flex-direction: var(--cv-skill-group-direction);
+  align-items: baseline;
+  gap: 0.35em 0.8em;
+}
+
+.cv-skill-group-name {
+  flex: none;
+  width: var(--cv-skill-name-width);
+  font-family: var(--cv-font-heading);
+  font-weight: 700;
+  font-size: 0.95em;
+}
+
+.cv-skill-group-name::after {
+  content: var(--cv-skill-name-suffix);
+}
+
+/* ---- Languages ----------------------------------------------------------- */
+.cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 2.2em;
+}
+
+.cv-aside .cv-languages {
+  flex-direction: column;
+}
+
+.cv-language {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.cv-aside .cv-language {
+  justify-content: space-between;
+}
+
+.cv-language-name {
+  font-weight: 600;
+}
+
+.cv-language-level {
+  color: var(--cv-muted);
+}
