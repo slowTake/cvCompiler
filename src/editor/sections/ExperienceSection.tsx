@@ -55,6 +55,7 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
               value={e.description}
               placeholder={DESCRIPTION_PLACEHOLDER}
               hint={DESCRIPTION_HINT}
+              rich
               onChange={(description) => update({ ...e, description: optional(description) })}
             />
             <TagListField

@@ -42,7 +42,8 @@ export function IdentitySection({ value, onChange, ...chrome }: Props) {
         field="about"
         rows={5}
         value={value.about}
-        hint="Shown in the About section. Leave a blank line between paragraphs."
+        rich
+        hint="Shown in the About section. Leave a blank line between paragraphs. **Two asterisks** around words make them bold (Ctrl/⌘+B)."
         onChange={(about) => onChange({ ...value, about: optional(about) })}
       />
 

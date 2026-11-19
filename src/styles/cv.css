@@ -445,6 +445,12 @@
   white-space: pre-line;
 }
 
+/* **Bold** words in free text. Themes may tint them with --cv-strong-color. */
+.cv-strong {
+  font-weight: 700;
+  color: var(--cv-strong-color, inherit);
+}
+
 /* Paragraphs and bullet lists of a project or role, in written order. */
 .cv-description {
   display: flex;

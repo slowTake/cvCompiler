@@ -3,7 +3,7 @@ import { newEducation } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { EducationEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TextField } from '../fields';
+import { BOLD_HINT, FieldRow, ListTextField, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -55,6 +55,8 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
             <ListTextField
               label="Details"
               field="details"
+              rich
+              hint={`One item per line. ${BOLD_HINT}`}
               value={e.details}
               onChange={(details) => update({ ...e, details: details.length > 0 ? details : undefined })}
             />

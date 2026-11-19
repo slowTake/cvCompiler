@@ -128,6 +128,9 @@ be paragraphs, bullet points, or both, in any order.
 "description": "What it is, in a sentence.\n\n- One result\n- Another result\n\nA closing note."
 ```
 
+In descriptions, `identity.about` and education `details`, `**words**` are
+bold, as in Markdown. A `**` without a partner stays as typed.
+
 Version 1 files stored a project `summary` and a `bullets` list on projects
 and experience. They still load: the summary becomes the first paragraph and
 each bullet becomes a `- ` line. Saving writes the new `description` field and

@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { applyEdit, toggleBold } from '../model/inline';
 import { applyTagDraft, removeAt } from '../model/list';
 
 interface FieldShellProps {
@@ -48,6 +49,24 @@ export function TextField({ label, value, onChange, placeholder, hint, wide, typ
   );
 }
 
+/**
+ * Ctrl/⌘+B in a textarea that supports `**bold**`. The edit goes through
+ * insertText so it lands on the browser's undo stack and fires a normal input
+ * event; `fallback` covers browsers without it.
+ */
+function onBoldShortcut(e: KeyboardEvent<HTMLTextAreaElement>, fallback: (text: string) => void) {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 'b') return;
+  e.preventDefault();
+  const el = e.currentTarget;
+  const edit = toggleBold(el.value, el.selectionStart, el.selectionEnd);
+  el.setSelectionRange(edit.from, edit.to);
+  if (!document.execCommand('insertText', false, edit.insert)) fallback(applyEdit(el.value, edit));
+  requestAnimationFrame(() => el.setSelectionRange(edit.selStart, edit.selEnd));
+}
+
+/** Hint line for fields that accept `**bold**`. */
+export const BOLD_HINT = '**Two asterisks** around words make them bold (Ctrl/⌘+B).';
+
 interface TextAreaProps {
   label: string;
   value: string | undefined;
@@ -56,9 +75,11 @@ interface TextAreaProps {
   placeholder?: string;
   hint?: ReactNode;
   field?: string;
+  /** Accepts `**bold**`; enables Ctrl/⌘+B. */
+  rich?: boolean;
 }
 
-export function TextArea({ label, value, onChange, rows = 4, placeholder, hint, field }: TextAreaProps) {
+export function TextArea({ label, value, onChange, rows = 4, placeholder, hint, field, rich }: TextAreaProps) {
   const id = useId();
   return (
     <FieldShell label={label} hint={hint} id={id} wide>
@@ -69,6 +90,7 @@ export function TextArea({ label, value, onChange, rows = 4, placeholder, hint, 
         value={value ?? ''}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={rich ? (e) => onBoldShortcut(e, onChange) : undefined}
       />
     </FieldShell>
   );
@@ -94,6 +116,7 @@ interface ListTextFieldProps {
   placeholder?: string;
   hint?: ReactNode;
   field?: string;
+  rich?: boolean;
 }
 
 /**
@@ -101,7 +124,7 @@ interface ListTextFieldProps {
  * lines survive while typing, and only resyncs when the list changes from
  * outside.
  */
-export function ListTextField({ label, value, onChange, rows, placeholder, hint, field }: ListTextFieldProps) {
+export function ListTextField({ label, value, onChange, rows, placeholder, hint, field, rich }: ListTextFieldProps) {
   const id = useId();
   const items = value ?? NO_ITEMS;
   const [draft, setDraft] = useState(() => items.join('\n'));
@@ -125,6 +148,7 @@ export function ListTextField({ label, value, onChange, rows, placeholder, hint,
         value={draft}
         placeholder={placeholder}
         onChange={(e) => handle(e.target.value)}
+        onKeyDown={rich ? (e) => onBoldShortcut(e, handle) : undefined}
       />
     </FieldShell>
   );
@@ -278,7 +302,7 @@ export function SelectField<T extends string>({ label, value, options, onChange,
 }
 
 /** Shared by the project and experience Description fields (see model/description.ts). */
-export const DESCRIPTION_HINT = 'Start a line with "- " for a bullet point. A blank line starts a new paragraph. Mix both as you like.';
+export const DESCRIPTION_HINT = 'Start a line with "- " for a bullet point. A blank line starts a new paragraph. Mix both as you like. **Two asterisks** around words make them bold (Ctrl/⌘+B).';
 export const DESCRIPTION_PLACEHOLDER = 'A sentence or two about it.\n\n- One result or highlight\n- Another one';
 
 /** Two-column grid for short fields. */
