@@ -11,6 +11,7 @@ import {
 import type { ReactNode } from 'react';
 import { sectionTitle } from '../model/defaults';
 import { parseDescription } from '../model/description';
+import { sectionTitleField } from '../model/editTarget';
 import { contactHref, safeHref } from '../model/links';
 import type {
   ContactKind,
@@ -98,11 +99,13 @@ function SectionShell({
   const [first, ...rest] = items;
   return (
     <section
-      className={`cv-section cv-section-${config.id}`}
+      className={`cv-section cv-section-${config.id}${config.spacing ? ` cv-spacing-${config.spacing}` : ''}`}
       data-edit-section={config.id === 'about' ? 'identity' : config.id}
     >
       <div className="cv-block">
-        <h2 className="cv-heading">{sectionTitle(config)}</h2>
+        <h2 className="cv-heading" data-edit-section="layout" data-edit-field={sectionTitleField(config.id)}>
+          {sectionTitle(config)}
+        </h2>
         {first.node}
       </div>
       {rest.map((item) => (

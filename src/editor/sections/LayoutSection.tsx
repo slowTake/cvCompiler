@@ -1,7 +1,8 @@
 import { ArrowDown, ArrowUp, Eye, EyeOff, ListOrdered } from 'lucide-react';
 import { SECTION_LABELS } from '../../model/defaults';
+import { sectionTitleField } from '../../model/editTarget';
 import { moveItem, optional, replaceAt } from '../../model/list';
-import type { CvMeta } from '../../model/types';
+import type { CvMeta, SectionConfig, SectionSpacing } from '../../model/types';
 import { TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
@@ -10,6 +11,17 @@ interface Props extends SectionChrome {
   onChange: (next: CvMeta) => void;
   /** Sections the current skeleton puts in its sidebar. */
   sidebarSections: readonly string[];
+}
+
+const SPACING_OPTIONS: { value: SectionSpacing; label: string }[] = [
+  { value: 'tight', label: 'Tight' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'roomy', label: 'Roomy' },
+];
+
+function withSpacing(s: SectionConfig, spacing: SectionSpacing): SectionConfig {
+  const { spacing: _old, ...rest } = s;
+  return spacing === 'normal' ? rest : { ...rest, spacing };
 }
 
 export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: Props) {
@@ -25,7 +37,10 @@ export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: P
         onChange={(title) => onChange({ ...value, title })}
       />
       <h3 className="ui-subhead">Sections</h3>
-      <p className="ui-hint">Show, hide, rename and reorder the sections of your CV.</p>
+      <p className="ui-hint">
+        Type in a box to rename that heading (or click the heading in the preview). Spacing sets the gap
+        between the section's items.
+      </p>
       <ol className="ui-section-list">
         {sections.map((s, i) => (
           <li key={s.id} className={s.visible ? '' : 'is-hidden'}>
@@ -41,6 +56,8 @@ export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: P
             </button>
             <input
               type="text"
+              data-field={sectionTitleField(s.id)}
+              title="Rename this heading"
               aria-label={`Heading for ${SECTION_LABELS[s.id]}`}
               value={s.title ?? ''}
               placeholder={SECTION_LABELS[s.id]}
@@ -51,6 +68,19 @@ export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: P
               }}
             />
             {sidebarSections.includes(s.id) && <span className="ui-tag">sidebar</span>}
+            <select
+              className="ui-section-spacing"
+              aria-label={`Spacing between items in ${SECTION_LABELS[s.id]}`}
+              title="Spacing between items"
+              value={s.spacing ?? 'normal'}
+              onChange={(e) => setSections(replaceAt(sections, i, withSpacing(s, e.target.value as SectionSpacing)))}
+            >
+              {SPACING_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
             <button
               type="button"
               className="ui-icon-btn"

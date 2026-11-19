@@ -223,6 +223,29 @@ describe('normalizeCv: lenient optional values', () => {
     );
   });
 
+  it('keeps tight and roomy section spacing, and drops normal or invalid values', () => {
+    const { doc, dropped } = expectOk(
+      normalizeCv({
+        ...minimal(),
+        meta: {
+          sections: [
+            { id: 'education', spacing: 'tight' },
+            { id: 'projects', spacing: 'roomy' },
+            { id: 'skills', spacing: 'normal' },
+            { id: 'about', spacing: 'cosy' },
+          ],
+        },
+      }),
+    );
+    expect(doc.meta.sections.slice(0, 4)).toEqual([
+      { id: 'education', visible: true, spacing: 'tight' },
+      { id: 'projects', visible: true, spacing: 'roomy' },
+      { id: 'skills', visible: true },
+      { id: 'about', visible: true },
+    ]);
+    expect(dropped.map((d) => d.path)).toEqual(['meta.sections[3].spacing']);
+  });
+
   it('produces a document that satisfies the CvDocument shape', () => {
     const { doc } = expectOk(normalizeCv(minimal()));
     const typed: CvDocument = doc;
