@@ -24,12 +24,14 @@ export function SkillsSection({ title, value, onChange, ...chrome }: Props) {
           <>
             <TextField
               label="Group name"
+              field="name"
               value={g.name}
               placeholder="e.g. Frontend"
               onChange={(name) => update({ ...g, name })}
             />
             <TagListField
               label="Skills"
+              field="items"
               value={g.items}
               placeholder="React, TypeScript, CSS"
               onChange={(items) => update({ ...g, items })}

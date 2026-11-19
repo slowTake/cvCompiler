@@ -887,6 +887,35 @@ textarea {
   box-shadow: var(--ui-shadow);
 }
 
+/* Click-to-edit. Outlines take no space, so page breaks don't move. */
+.ui-sheet-scale.is-editable [data-edit-section] {
+  cursor: pointer;
+}
+
+.ui-sheet-scale.is-editable [data-edit-entry]:hover,
+.ui-sheet-scale.is-editable .cv-about:hover,
+.ui-sheet-scale.is-editable .cv-name-block:hover {
+  outline: 1.5px dashed var(--ui-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The form field a preview click landed on. */
+.ui-flash {
+  animation: ui-flash 1.2s ease-out;
+}
+
+@keyframes ui-flash {
+  from {
+    background: var(--ui-accent-soft);
+    box-shadow: 0 0 0 6px var(--ui-accent-soft);
+  }
+  to {
+    background: transparent;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
 /* Gap between simulated sheets, drawn over the page edges. */
 .ui-page-break {
   position: absolute;

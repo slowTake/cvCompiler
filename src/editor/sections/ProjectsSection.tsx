@@ -26,9 +26,10 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
         renderItem={(p, update) => (
           <>
             <FieldRow>
-              <TextField label="Name" value={p.name} onChange={(name) => update({ ...p, name })} />
+              <TextField label="Name" field="name" value={p.name} onChange={(name) => update({ ...p, name })} />
               <TextField
                 label="Role"
+                field="role"
                 value={p.role}
                 placeholder="Lead developer"
                 onChange={(role) => update({ ...p, role: optional(role) })}
@@ -37,6 +38,7 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
             <FieldRow>
               <TextField
                 label="Start"
+                field="start"
                 value={p.start}
                 onChange={(start) => update({ ...p, start: optional(start) })}
               />
@@ -50,17 +52,20 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
             />
             <TextArea
               label="Summary"
+              field="summary"
               rows={3}
               value={p.summary}
               onChange={(summary) => update({ ...p, summary: optional(summary) })}
             />
             <ListTextField
               label="Highlights"
+              field="bullets"
               value={p.bullets}
               onChange={(bullets) => update({ ...p, bullets: orUndefined(bullets) })}
             />
             <TagListField
               label="Tech"
+              field="tech"
               value={p.tech}
               onChange={(tech) => update({ ...p, tech: orUndefined(tech) })}
             />

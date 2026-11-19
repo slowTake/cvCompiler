@@ -83,12 +83,16 @@ export function setOverride<K extends keyof StyleOverrides>(
   return Object.keys(clean).length > 0 ? clean : undefined;
 }
 
+/**
+ * Each stack leads with a font bundled in src/main.tsx, so line wraps (and
+ * page breaks) are the same on every machine. The rest are fallbacks.
+ */
 const MONO =
-  'ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace';
+  '"JetBrains Mono Variable", ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace';
 const SANS =
-  'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif';
+  '"Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif';
 const SERIF =
-  'Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Noto Serif", "DejaVu Serif", serif';
+  '"Source Serif 4 Variable", Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Noto Serif", "DejaVu Serif", serif';
 
 /** Monospace runs wide; shrink it a touch so line lengths stay comparable. */
 const MONO_FACTOR = 0.9;

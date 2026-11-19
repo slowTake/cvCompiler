@@ -24,9 +24,10 @@ export function LanguagesSection({ title, value, onChange, ...chrome }: Props) {
         onChange={onChange}
         renderItem={(l, update) => (
           <>
-            <TextField label="Language" value={l.name} onChange={(name) => update({ ...l, name })} />
+            <TextField label="Language" field="name" value={l.name} onChange={(name) => update({ ...l, name })} />
             <TextField
               label="Level"
+              field="level"
               value={l.level}
               placeholder="Fluent, B2, Native…"
               onChange={(level) => update({ ...l, level: optional(level) })}

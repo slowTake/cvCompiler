@@ -24,12 +24,13 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
         renderItem={(e, update) => (
           <>
             <FieldRow>
-              <TextField label="Title" value={e.title} onChange={(title) => update({ ...e, title })} />
-              <TextField label="Organisation" value={e.org} onChange={(org) => update({ ...e, org })} />
+              <TextField label="Title" field="title" value={e.title} onChange={(title) => update({ ...e, title })} />
+              <TextField label="Organisation" field="org" value={e.org} onChange={(org) => update({ ...e, org })} />
             </FieldRow>
             <FieldRow>
               <TextField
                 label="Start"
+                field="start"
                 value={e.start}
                 placeholder="2021"
                 onChange={(start) => update({ ...e, start: optional(start) })}
@@ -43,16 +44,19 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
             </FieldRow>
             <TextField
               label="Location"
+              field="location"
               value={e.location}
               onChange={(location) => update({ ...e, location: optional(location) })}
             />
             <ListTextField
               label="Highlights"
+              field="bullets"
               value={e.bullets}
               onChange={(bullets) => update({ ...e, bullets })}
             />
             <TagListField
               label="Skills developed"
+              field="skills"
               value={e.skills}
               onChange={(skills) => update({ ...e, skills: skills.length > 0 ? skills : undefined })}
             />
