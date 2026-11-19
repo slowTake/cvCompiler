@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { sectionTitle } from '../model/defaults';
+import type { EditTarget } from '../model/editTarget';
 import type { CvDocument, ListSectionKey, SectionId } from '../model/types';
 import { loadUiState, saveUiState } from '../persistence/cache';
 import { getTemplate } from '../templates/registry';
 import { SKELETONS } from '../templates/skeletons';
+import { EditFocusContext, focusWithin } from './editFocus';
 import { formSectionDomId } from './FormSection';
 import { DesignSection } from './sections/DesignSection';
 import { EducationSection } from './sections/EducationSection';
@@ -18,6 +20,8 @@ interface Props {
   doc: CvDocument;
   /** Functional updates, so late callbacks (e.g. Undo) only touch their own slice. */
   update: (fn: (doc: CvDocument) => CvDocument) => void;
+  /** Latest click on the preview; the form opens and focuses what was clicked. */
+  editTarget?: EditTarget | null;
 }
 
 const OPEN_KEY = 'openSections';
@@ -38,9 +42,10 @@ function useOpenSections() {
     });
   }, []);
 
-  const reveal = useCallback((id: string) => {
+  const reveal = useCallback((id: string, scroll = true) => {
     setOpen((current) => (current.has(id) ? current : new Set(current).add(id)));
     // Wait for the section body to render before scrolling.
+    if (!scroll) return;
     requestAnimationFrame(() =>
       document.getElementById(formSectionDomId(id))?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     );
@@ -51,8 +56,36 @@ function useOpenSections() {
 
 type ListSectionId = Exclude<SectionId, 'about'>;
 
-export function Editor({ doc, update }: Props) {
+/**
+ * Opens the section a preview click points at. Entries are expanded and
+ * focused by their EntryList; section-level fields (Identity's name, about)
+ * are focused here.
+ */
+function useEditTarget(
+  editTarget: EditTarget | null | undefined,
+  open: ReadonlySet<string>,
+  reveal: (id: string, scroll?: boolean) => void,
+) {
+  const [pending, setPending] = useState<EditTarget | null>(null);
+  useEffect(() => {
+    if (!editTarget) return;
+    setPending(editTarget);
+    reveal(editTarget.section, !editTarget.entryId && !editTarget.field);
+  }, [editTarget, reveal]);
+  // Section-level fields, once the section body has rendered.
+  useEffect(() => {
+    if (!pending || pending.entryId || !open.has(pending.section)) return;
+    setPending(null);
+    const section = document.getElementById(formSectionDomId(pending.section));
+    if (section && pending.field) focusWithin(section, pending.field);
+  }, [pending, open]);
+  const done = useCallback(() => setPending(null), []);
+  return useMemo(() => ({ target: pending, done }), [pending, done]);
+}
+
+export function Editor({ doc, update, editTarget }: Props) {
   const { open, toggle, reveal } = useOpenSections();
+  const editFocus = useEditTarget(editTarget, open, reveal);
   const skeleton = SKELETONS[getTemplate(doc.meta.templateId).skeleton];
   const chrome = (id: string) => ({ open: open.has(id), onToggle: toggle });
   const setList =
@@ -114,34 +147,36 @@ export function Editor({ doc, update }: Props) {
   ];
 
   return (
-    <div className="ui-editor">
-      <nav className="ui-jump-nav" aria-label="Jump to section">
-        {nav.map((n) => (
-          <button
-            key={n.id}
-            type="button"
-            className={open.has(n.id) ? 'is-open' : ''}
-            onClick={() => reveal(n.id)}
-          >
-            {n.label}
-          </button>
-        ))}
-      </nav>
-      <div className="ui-form">
-        <DesignSection doc={doc} onChange={(meta) => update((d) => ({ ...d, meta }))} {...chrome('design')} />
-        <LayoutSection
-          value={doc.meta}
-          sidebarSections={skeleton.sidebarSections}
-          onChange={(meta) => update((d) => ({ ...d, meta }))}
-          {...chrome('layout')}
-        />
-        <IdentitySection
-          value={doc.identity}
-          onChange={(identity) => update((d) => ({ ...d, identity }))}
-          {...chrome('identity')}
-        />
-        {ordered.map((s) => listSections[s.id](sectionTitle(s)))}
+    <EditFocusContext.Provider value={editFocus}>
+      <div className="ui-editor">
+        <nav className="ui-jump-nav" aria-label="Jump to section">
+          {nav.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              className={open.has(n.id) ? 'is-open' : ''}
+              onClick={() => reveal(n.id)}
+            >
+              {n.label}
+            </button>
+          ))}
+        </nav>
+        <div className="ui-form">
+          <DesignSection doc={doc} onChange={(meta) => update((d) => ({ ...d, meta }))} {...chrome('design')} />
+          <LayoutSection
+            value={doc.meta}
+            sidebarSections={skeleton.sidebarSections}
+            onChange={(meta) => update((d) => ({ ...d, meta }))}
+            {...chrome('layout')}
+          />
+          <IdentitySection
+            value={doc.identity}
+            onChange={(identity) => update((d) => ({ ...d, identity }))}
+            {...chrome('identity')}
+          />
+          {ordered.map((s) => listSections[s.id](sectionTitle(s)))}
+        </div>
       </div>
-    </div>
+    </EditFocusContext.Provider>
   );
 }

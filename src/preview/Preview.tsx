@@ -1,5 +1,6 @@
 import { Maximize2, Minus, Plus } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
+import { editTargetAt, type EditTarget } from '../model/editTarget';
 import type { CvDocument } from '../model/types';
 import { loadUiState, saveUiState } from '../persistence/cache';
 import { getTemplate } from '../templates/registry';
@@ -10,7 +11,7 @@ type Zoom = 'fit' | number;
 const ZOOM_STEPS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
 const GUTTER = 32;
 
-export function Preview({ doc }: { doc: CvDocument }) {
+export function Preview({ doc, onEdit }: { doc: CvDocument; onEdit?: (target: EditTarget) => void }) {
   const template = getTemplate(doc.meta.templateId);
   const sheetRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -37,6 +38,17 @@ export function Preview({ doc }: { doc: CvDocument }) {
     const count = paginate(sheetRef.current);
     setPages((prev) => (prev === count ? prev : count));
   }, [doc]);
+
+  // Clicking the CV opens what was clicked in the form. Links still open with Ctrl/⌘.
+  const onSheetClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (!onEdit || !(e.target instanceof Element)) return;
+    const link = e.target.closest('a');
+    if (link && (e.metaKey || e.ctrlKey)) return;
+    if (window.getSelection()?.toString()) return; // selecting text, not clicking
+    const target = editTargetAt(e.target);
+    if (link) e.preventDefault();
+    if (target) onEdit(target);
+  };
 
   const scale = zoom === 'fit' ? fitScale : zoom;
   const step = (dir: 1 | -1) => {
@@ -75,7 +87,11 @@ export function Preview({ doc }: { doc: CvDocument }) {
           className="ui-sheet-frame"
           style={{ width: PAGE_WIDTH_PX * scale, height: PAGE_HEIGHT_PX * pages * scale }}
         >
-          <div className="ui-sheet-scale" style={{ transform: `scale(${scale})` }}>
+          <div
+            className={`ui-sheet-scale${onEdit ? ' is-editable' : ''}`}
+            style={{ transform: `scale(${scale})` }}
+            onClick={onSheetClick}
+          >
             <CvRenderer
               doc={doc}
               template={template}

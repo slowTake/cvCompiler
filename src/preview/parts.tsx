@@ -53,17 +53,17 @@ export function IdentityBlock({ identity }: { identity: Identity }) {
   const contacts = identity.contact.filter((c) => hasText(c.value));
   const links = (identity.links ?? []).filter((l) => hasText(l.url));
   return (
-    <header className="cv-identity">
+    <header className="cv-identity" data-edit-section="identity">
       <div className="cv-name-block">
-        <h1 className="cv-name">{identity.name || 'Your Name'}</h1>
-        {hasText(identity.role) && <p className="cv-role">{identity.role}</p>}
+        <h1 className="cv-name" data-edit-field="name">{identity.name || 'Your Name'}</h1>
+        {hasText(identity.role) && <p className="cv-role" data-edit-field="role">{identity.role}</p>}
       </div>
       {(contacts.length > 0 || links.length > 0) && (
         <ul className="cv-contact">
           {contacts.map((c) => {
             const Icon = CONTACT_ICONS[c.kind];
             return (
-              <li className="cv-contact-item" key={c.id}>
+              <li className="cv-contact-item" key={c.id} data-edit-entry={c.id}>
                 <span className="cv-icon" aria-hidden="true">
                   <Icon strokeWidth={2} />
                 </span>
@@ -72,7 +72,7 @@ export function IdentityBlock({ identity }: { identity: Identity }) {
             );
           })}
           {links.map((l) => (
-            <li className="cv-contact-item" key={l.id}>
+            <li className="cv-contact-item" key={l.id} data-edit-entry={l.id}>
               <span className="cv-icon" aria-hidden="true">
                 <LinkIcon strokeWidth={2} />
               </span>
@@ -96,7 +96,10 @@ function SectionShell({
   if (items.length === 0) return null;
   const [first, ...rest] = items;
   return (
-    <section className={`cv-section cv-section-${config.id}`}>
+    <section
+      className={`cv-section cv-section-${config.id}`}
+      data-edit-section={config.id === 'about' ? 'identity' : config.id}
+    >
       <div className="cv-block">
         <h2 className="cv-heading">{sectionTitle(config)}</h2>
         {first.node}
@@ -110,11 +113,11 @@ function SectionShell({
   );
 }
 
-function Tags({ label, items }: { label?: string; items: string[] | undefined }) {
+function Tags({ label, items, field }: { label?: string; items: string[] | undefined; field: string }) {
   const list = (items ?? []).filter(hasText);
   if (list.length === 0) return null;
   return (
-    <div className="cv-tags">
+    <div className="cv-tags" data-edit-field={field}>
       {label && <span className="cv-tags-label">{label}</span>}
       {list.map((t, i) => (
         <span className="cv-chip" key={`${i}-${t}`}>
@@ -125,11 +128,11 @@ function Tags({ label, items }: { label?: string; items: string[] | undefined })
   );
 }
 
-function Bullets({ items }: { items: string[] | undefined }) {
+function Bullets({ items, field }: { items: string[] | undefined; field: string }) {
   const list = (items ?? []).filter(hasText);
   if (list.length === 0) return null;
   return (
-    <ul className="cv-bullets">
+    <ul className="cv-bullets" data-edit-field={field}>
       {list.map((b, i) => (
         <li key={`${i}-${b.slice(0, 16)}`}>{b}</li>
       ))}
@@ -150,25 +153,40 @@ function EntryHead({
   href,
   dates,
   location,
+  fields,
 }: {
   name: string;
   org?: string;
   href?: string;
   dates?: string;
   location?: string;
+  /** Which document fields the name and org lines show, for click-to-edit. */
+  fields: { name: string; org?: string };
 }) {
   return (
     <div className="cv-entry-head">
       <div className="cv-entry-title">
-        <h3 className="cv-entry-name">
+        <h3 className="cv-entry-name" data-edit-field={fields.name}>
           <MaybeLink href={href}>{name}</MaybeLink>
         </h3>
-        {hasText(org) && <span className="cv-entry-org">{org}</span>}
+        {hasText(org) && (
+          <span className="cv-entry-org" data-edit-field={fields.org}>
+            {org}
+          </span>
+        )}
       </div>
       {(dates || hasText(location)) && (
         <div className="cv-entry-meta">
-          {dates && <span className="cv-date">{dates}</span>}
-          {hasText(location) && <span className="cv-location">{location}</span>}
+          {dates && (
+            <span className="cv-date" data-edit-field="start">
+              {dates}
+            </span>
+          )}
+          {hasText(location) && (
+            <span className="cv-location" data-edit-field="location">
+              {location}
+            </span>
+          )}
         </div>
       )}
     </div>
@@ -177,31 +195,37 @@ function EntryHead({
 
 function ExperienceItem({ entry }: { entry: ExperienceEntry }) {
   return (
-    <article className="cv-entry">
+    <article className="cv-entry" data-edit-entry={entry.id}>
       <EntryHead
         name={entry.title || 'Role'}
         org={entry.org}
         dates={dateRange(entry.start, entry.end)}
         location={entry.location}
+        fields={{ name: 'title', org: 'org' }}
       />
-      <Bullets items={entry.bullets} />
-      <Tags label="Skills developed" items={entry.skills} />
+      <Bullets items={entry.bullets} field="bullets" />
+      <Tags label="Skills developed" items={entry.skills} field="skills" />
     </article>
   );
 }
 
 function ProjectItem({ entry }: { entry: ProjectEntry }) {
   return (
-    <article className="cv-entry">
+    <article className="cv-entry" data-edit-entry={entry.id}>
       <EntryHead
         name={entry.name || 'Project'}
         org={entry.role}
         href={safeHref(entry.url)}
         dates={dateRange(entry.start, entry.end)}
+        fields={{ name: 'name', org: 'role' }}
       />
-      {hasText(entry.summary) && <p className="cv-text">{entry.summary}</p>}
-      <Bullets items={entry.bullets} />
-      <Tags items={entry.tech} />
+      {hasText(entry.summary) && (
+        <p className="cv-text" data-edit-field="summary">
+          {entry.summary}
+        </p>
+      )}
+      <Bullets items={entry.bullets} field="bullets" />
+      <Tags items={entry.tech} field="tech" />
     </article>
   );
 }
@@ -209,14 +233,15 @@ function ProjectItem({ entry }: { entry: ProjectEntry }) {
 function EducationItem({ entry }: { entry: EducationEntry }) {
   const hasDegree = hasText(entry.degree);
   return (
-    <article className="cv-entry">
+    <article className="cv-entry" data-edit-entry={entry.id}>
       <EntryHead
         name={(hasDegree ? entry.degree : entry.institution) || 'Institution'}
         org={hasDegree ? entry.institution : undefined}
         dates={dateRange(entry.start, entry.end)}
         location={entry.location}
+        fields={hasDegree ? { name: 'degree', org: 'institution' } : { name: 'institution' }}
       />
-      <Bullets items={entry.details} />
+      <Bullets items={entry.details} field="details" />
     </article>
   );
 }
@@ -234,7 +259,7 @@ export function CvSection({ config, doc }: { config: SectionConfig; doc: CvDocum
             {
               key: 'about',
               node: (
-                <div className="cv-about">
+                <div className="cv-about" data-edit-field="about">
                   {paragraphs(about).map((p, i) => (
                     <p className="cv-text" key={i}>
                       {p}
@@ -256,9 +281,13 @@ export function CvSection({ config, doc }: { config: SectionConfig; doc: CvDocum
             .map((g) => ({
               key: g.id,
               node: (
-                <div className="cv-skill-group">
-                  {hasText(g.name) && <h3 className="cv-skill-group-name">{g.name}</h3>}
-                  <Tags items={g.items} />
+                <div className="cv-skill-group" data-edit-entry={g.id}>
+                  {hasText(g.name) && (
+                    <h3 className="cv-skill-group-name" data-edit-field="name">
+                      {g.name}
+                    </h3>
+                  )}
+                  <Tags items={g.items} field="items" />
                 </div>
               ),
             }))}
@@ -297,9 +326,15 @@ export function CvSection({ config, doc }: { config: SectionConfig; doc: CvDocum
               node: (
                 <ul className="cv-languages">
                   {langs.map((l) => (
-                    <li className="cv-language" key={l.id}>
-                      <span className="cv-language-name">{l.name}</span>
-                      {hasText(l.level) && <span className="cv-language-level">{l.level}</span>}
+                    <li className="cv-language" key={l.id} data-edit-entry={l.id}>
+                      <span className="cv-language-name" data-edit-field="name">
+                        {l.name}
+                      </span>
+                      {hasText(l.level) && (
+                        <span className="cv-language-level" data-edit-field="level">
+                          {l.level}
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>

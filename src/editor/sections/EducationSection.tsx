@@ -26,11 +26,13 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
             <FieldRow>
               <TextField
                 label="Institution"
+                field="institution"
                 value={e.institution}
                 onChange={(institution) => update({ ...e, institution })}
               />
               <TextField
                 label="Degree"
+                field="degree"
                 value={e.degree}
                 onChange={(degree) => update({ ...e, degree: optional(degree) })}
               />
@@ -38,6 +40,7 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
             <FieldRow>
               <TextField
                 label="Start"
+                field="start"
                 value={e.start}
                 onChange={(start) => update({ ...e, start: optional(start) })}
               />
@@ -45,11 +48,13 @@ export function EducationSection({ title, value, onChange, ...chrome }: Props) {
             </FieldRow>
             <TextField
               label="Location"
+              field="location"
               value={e.location}
               onChange={(location) => update({ ...e, location: optional(location) })}
             />
             <ListTextField
               label="Details"
+              field="details"
               value={e.details}
               onChange={(details) => update({ ...e, details: details.length > 0 ? details : undefined })}
             />

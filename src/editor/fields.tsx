@@ -28,14 +28,17 @@ interface TextFieldProps {
   hint?: ReactNode;
   wide?: boolean;
   type?: 'text' | 'email' | 'url' | 'tel';
+  /** Document key this edits; clicking it in the preview focuses the input. */
+  field?: string;
 }
 
-export function TextField({ label, value, onChange, placeholder, hint, wide, type = 'text' }: TextFieldProps) {
+export function TextField({ label, value, onChange, placeholder, hint, wide, type = 'text', field }: TextFieldProps) {
   const id = useId();
   return (
     <FieldShell label={label} hint={hint} id={id} wide={wide}>
       <input
         id={id}
+        data-field={field}
         type={type}
         value={value ?? ''}
         placeholder={placeholder}
@@ -52,14 +55,16 @@ interface TextAreaProps {
   rows?: number;
   placeholder?: string;
   hint?: ReactNode;
+  field?: string;
 }
 
-export function TextArea({ label, value, onChange, rows = 4, placeholder, hint }: TextAreaProps) {
+export function TextArea({ label, value, onChange, rows = 4, placeholder, hint, field }: TextAreaProps) {
   const id = useId();
   return (
     <FieldShell label={label} hint={hint} id={id} wide>
       <textarea
         id={id}
+        data-field={field}
         rows={rows}
         value={value ?? ''}
         placeholder={placeholder}
@@ -88,6 +93,7 @@ interface ListTextFieldProps {
   rows?: number;
   placeholder?: string;
   hint?: ReactNode;
+  field?: string;
 }
 
 /**
@@ -95,7 +101,7 @@ interface ListTextFieldProps {
  * lines survive while typing, and only resyncs when the list changes from
  * outside.
  */
-export function ListTextField({ label, value, onChange, rows, placeholder, hint }: ListTextFieldProps) {
+export function ListTextField({ label, value, onChange, rows, placeholder, hint, field }: ListTextFieldProps) {
   const id = useId();
   const items = value ?? NO_ITEMS;
   const [draft, setDraft] = useState(() => items.join('\n'));
@@ -114,6 +120,7 @@ export function ListTextField({ label, value, onChange, rows, placeholder, hint 
     <FieldShell label={label} id={id} wide hint={hint ?? 'One item per line.'}>
       <textarea
         id={id}
+        data-field={field}
         rows={rows ?? Math.min(8, Math.max(3, items.length + 1))}
         value={draft}
         placeholder={placeholder}
@@ -128,6 +135,7 @@ interface TagListFieldProps {
   value: readonly string[] | undefined;
   onChange: (value: string[]) => void;
   placeholder?: string;
+  field?: string;
 }
 
 /**
@@ -135,7 +143,7 @@ interface TagListFieldProps {
  * clicking a chip (or Backspace in an empty input) edits it in place. Stored
  * tags are never re-split, so a tag such as "Node.js, Deno" stays one tag.
  */
-export function TagListField({ label, value, onChange, placeholder }: TagListFieldProps) {
+export function TagListField({ label, value, onChange, placeholder, field }: TagListFieldProps) {
   const id = useId();
   const tags = value ?? NO_ITEMS;
   const [draft, setDraft] = useState('');
@@ -233,6 +241,7 @@ export function TagListField({ label, value, onChange, placeholder }: TagListFie
         <input
           ref={inputRef}
           id={id}
+          data-field={field}
           type="text"
           value={draft}
           placeholder={tags.length === 0 ? placeholder : undefined}

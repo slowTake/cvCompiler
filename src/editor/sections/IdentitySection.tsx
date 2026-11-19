@@ -28,9 +28,10 @@ export function IdentitySection({ value, onChange, ...chrome }: Props) {
   return (
     <FormSection id="identity" title="Identity" icon={User} {...chrome}>
       <FieldRow>
-        <TextField label="Name" value={value.name} onChange={(name) => onChange({ ...value, name })} />
+        <TextField label="Name" field="name" value={value.name} onChange={(name) => onChange({ ...value, name })} />
         <TextField
           label="Role"
+          field="role"
           value={value.role}
           placeholder="e.g. Product Engineer"
           onChange={(role) => onChange({ ...value, role: optional(role) })}
@@ -38,6 +39,7 @@ export function IdentitySection({ value, onChange, ...chrome }: Props) {
       </FieldRow>
       <TextArea
         label="About"
+        field="about"
         rows={5}
         value={value.about}
         hint="Shown in the About section. Leave a blank line between paragraphs."

@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { insertAt, moveItem, removeAt, replaceAt } from '../model/list';
 import { useToast } from '../ui/toast';
+import { focusWithin, useEditFocus } from './editFocus';
 
 interface EntryListProps<T extends { id: string }> {
   items: T[];
@@ -28,6 +29,27 @@ export function EntryList<T extends { id: string }>({
 }: EntryListProps<T>) {
   const { notify } = useToast();
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
+  const listRef = useRef<HTMLDivElement>(null);
+  const { target, done } = useEditFocus();
+
+  // A click on one of our entries in the preview: expand it, then focus the field.
+  const [focusing, setFocusing] = useState<{ entryId: string; field?: string } | null>(null);
+  const targetId = target?.entryId;
+  const owns = !!targetId && items.some((item) => item.id === targetId);
+  useEffect(() => {
+    if (!owns || !target?.entryId) return;
+    const { entryId, field } = target;
+    done();
+    setOpen((current) => (current.has(entryId) ? current : new Set(current).add(entryId)));
+    setFocusing({ entryId, field });
+  }, [owns, target, done]);
+  // Runs after the expanded body is in the DOM.
+  useEffect(() => {
+    if (!focusing) return;
+    setFocusing(null);
+    const el = listRef.current?.querySelector<HTMLElement>(`[data-entry-id="${CSS.escape(focusing.entryId)}"]`);
+    if (el) focusWithin(el, focusing.field);
+  }, [focusing]);
 
   // Undo runs later, from a toast. It must act on the list as it is then,
   // through the latest onChange, and do nothing once this list is gone
@@ -109,14 +131,14 @@ export function EntryList<T extends { id: string }>({
   );
 
   return (
-    <div className={`ui-entry-list${compact ? ' ui-entry-list-compact' : ''}`}>
+    <div className={`ui-entry-list${compact ? ' ui-entry-list-compact' : ''}`} ref={listRef}>
       {items.length === 0 && <p className="ui-empty">Nothing here yet.</p>}
       {items.map((item, index) => {
         const label = summary(item).trim() || `New ${noun}`;
         const update = (next: T) => onChange(replaceAt(items, index, next));
         if (compact) {
           return (
-            <div className="ui-entry-row" key={item.id}>
+            <div className="ui-entry-row" key={item.id} data-entry-id={item.id}>
               <div className="ui-entry-row-fields">{renderItem(item, update)}</div>
               {controls(index, label)}
             </div>
@@ -124,7 +146,7 @@ export function EntryList<T extends { id: string }>({
         }
         const isOpen = open.has(item.id);
         return (
-          <div className={`ui-entry${isOpen ? ' is-open' : ''}`} key={item.id}>
+          <div className={`ui-entry${isOpen ? ' is-open' : ''}`} key={item.id} data-entry-id={item.id}>
             <div className="ui-entry-head">
               <button
                 type="button"

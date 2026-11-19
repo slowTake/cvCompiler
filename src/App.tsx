@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor } from './editor/Editor';
+import type { EditTarget } from './model/editTarget';
 import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
 import type { CvDocument } from './model/types';
 import { chooseJsonFile, downloadText, fileNameFor } from './persistence/download';
@@ -41,6 +42,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   const { doc, json, dirty, source, generation, update, replace, markSaved } = useCvDocument(initial);
   const { notify } = useToast();
   const [problem, setProblem] = useState<ImportProblem | null>(null);
+  const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
 
   const confirmDiscard = useCallback(
     () => !dirty || window.confirm('You have unsaved changes. Discard them?'),
@@ -256,10 +258,10 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
         <main className="ui-split">
           <div className="ui-pane ui-pane-form">
             {/* A fresh Editor per loaded document drops pending Undo actions. */}
-            <Editor key={generation} doc={doc} update={update} />
+            <Editor key={generation} doc={doc} update={update} editTarget={editTarget} />
           </div>
           <div className="ui-pane ui-pane-preview">
-            <Preview doc={doc} />
+            <Preview doc={doc} onEdit={setEditTarget} />
           </div>
         </main>
 
