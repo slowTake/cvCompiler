@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "meta": {
+    "title": "Peter Nurmi CV",
+    "templateId": "studio",
+    "sections": [
+      {
+        "id": "about",
+        "visible": true
+      },
+      {
+        "id": "skills",
+        "visible": true
+      },
+      {
+        "id": "education",
+        "visible": true
+      },
+      {
+        "id": "projects",
+        "visible": true
+      },
+      {
+        "id": "experience",
+        "visible": true,
+        "title": "Professional experience"
+      },
+      {
+        "id": "languages",
+        "visible": true
+      }
+    ]
+  },
+  "identity": {
+    "name": "Peter Nurmi",
+    "role": "Full-Stack Developer",
+    "about": "I’m a engineer who learns by building and the best way I've discovered to hone my skills is to constantly dive into new challenges and push the boundaries.\n\nI came to software from business. After a degree and life in business, I joined Hive, where I learned to code from first principles and how to build in a team. Where I also built a raycasting engine entirely by hand in C and a few other cool projects, with no AI. So when an agent writes code for me today, I know what I’m reviewing. \n\nMy core principles are: efficiency and maintainability. Maintainability is a lesson I learned the hard way, by finding out what unmaintainable code costs. Efficiency is how I ship more, faster, without giving up quality, which leaves more time for the things that matter. That same drive pulls me towards AI: learning to make it work for me, and using it to improve both my solutions and my life.",
+    "contact": [
+      {
+        "id": "c-phone",
+        "kind": "phone",
+        "value": "+358 44 9709 749"
+      },
+      {
+        "id": "c-location",
+        "kind": "location",
+        "value": "Helsinki, Finland"
+      },
+      {
+        "id": "c-email",
+        "kind": "email",
+        "value": "pnurmi.zt@gmail.com"
+      },
+      {
+        "id": "c-web",
+        "kind": "website",
+        "value": "https://peternurmi.com/"
+      }
+    ],
+    "links": [
+      {
+        "id": "ujuahs51et2",
+        "url": "https://www.linkedin.com/in/peter-nurmi-44490b419/",
+        "label": "LinkedIn"
+      },
+      {
+        "id": "ukk36bx24z4",
+        "url": "https://github.com/slowTake/",
+        "label": "Github"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "id": "evohc68xlh1",
+      "name": "Ai Architect Certified",
+      "items": [
+        "Ai System Design",
+        "Claude Agent SDK",
+        "Structure output",
+        "Tool & MCP Design",
+        "Production Reliablity",
+        "Multi-Agent Orchestration"
+      ]
+    },
+    {
+      "id": "s-1",
+      "name": "Frontend & UI",
+      "items": [
+        "React",
+        "Next.js",
+        "TanStack",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "id": "s-2",
+      "name": "Backend & Data",
+      "items": [
+        "Supabase",
+        "PostgreSQL",
+        "FastAPI"
+      ]
+    },
+    {
+      "id": "s-3",
+      "name": "Programming languages",
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "Python",
+        "C/C++"
+      ]
+    },
+    {
+      "id": "s-4",
+      "name": "Cloud & Tooling",
+      "items": [
+        "Cloudflare",
+        "Git / GitHub"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "e-1",
+      "institution": "Hive Helsinki",
+      "degree": "42 Curriculum",
+      "start": "2025",
+      "end": "Present",
+      "location": "Helsinki, Finland"
+    },
+    {
+      "id": "e-4",
+      "institution": "LAMK University of Applied Sciences",
+      "degree": "Bachelors Degree Programme in Business Administration",
+      "start": "2016",
+      "end": "2020",
+      "location": "Lahti, Finland"
+    }
+  ],
+  "projects": [
+    {
+      "id": "vtanoqjj4z6",
+      "name": "Florent Code League",
+      "start": "2026-07",
+      "end": "2026-08",
+      "summary": "3 weeks I lead and built in the Nordic's first Battlecode and made it to the finals in Stockholm. We built autonomous bots in python that faced other competitors on a ladder every 10 minutes. Bots needed everything coded such as pathfinding algorithms, target acquisition, economic based decision making and accurate memory storage. Supporting tools were built for telemetry, data processing and several automated processes. The level of complexity was high enough to warrant daily and even hourly patches further complicated by a thinking and planning opponents. ",
+      "url": "https://peternurmi.com/projects/florent",
+      "tech": [
+        "Vision & Map Analysis",
+        "Real time performance engine",
+        "MultiAgent Ai System",
+        "Pathfinding",
+        "Python",
+        "FCL SDK"
+      ]
+    },
+    {
+      "id": "p-2",
+      "name": "Lease Loop - Northina Hackathon",
+      "start": "2026-10",
+      "summary": "24 hour solo Hackathon entry. Full-stack leasing app that lets e-bikes, laptops and farm machines be leased again and again. It covers live pricing, an application form that asks only the questions that apply, contracts that lock the price, VAT correct monthly invoices, a fair early exit cost, and matching returned items with the next customer. Every item keeps a history of all its leases. Fully tested CI/CD pipeline, proper use of Kanban and a ticketing system was utilized even while under time pressure. ",
+      "tech": [
+        "Next.js",
+        "TypeScript",
+        "Pricing Engine",
+        "Security"
+      ],
+      "url": "https://peternurmi.com/projects/northfina"
+    },
+    {
+      "id": "p-4",
+      "name": "Plant Watering Scheduler",
+      "start": "2026-05",
+      "end": "Present",
+      "summary": "Shared plant-watering scheduler for the Hive Helsinki campus, used by the students there. It rotates watering duty between volunteers, keeps a leaderboard, and sends daily Discord reminders for plants that are due or overdue. It deploys automatically on every push, runs on free hosting plans and has needed no maintenance since launch. MCP integration via Supabase Edge functions allows for agentic data processing.",
+      "tech": [
+        "React",
+        "Supabase",
+        "Cloudflare",
+        "TypeScript",
+        "MCP",
+        "TanStack"
+      ],
+      "url": "https://peternurmi.com/projects/sprout-squad"
+    }
+  ],
+  "experience": [
+    {
+      "id": "x-1",
+      "title": "AI Implementation Consultant Trainee",
+      "org": "Staffa Oy + Loikka Solutions",
+      "start": "2026-09",
+      "end": "Present",
+      "location": "Espoo, Finland",
+      "bullets": [
+        "Consultant at Staffa Oy and working as an embedded AI Integration & Solutions Consultant trainee at Loikka Solutions.",
+        "In the process of receiving my 2nd and 3rd Anthropic certifications to build enterprise level automation and agentic pipelines."
+      ]
+    }
+  ],
+  "languages": []
+}
