@@ -12,10 +12,11 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor } from './editor/Editor';
 import { RepoOpenDialog } from './editor/RepoOpenDialog';
+import { usePdfImport } from './editor/usePdfImport';
 import type { EditTarget } from './model/editTarget';
 import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
 import type { CvDocument } from './model/types';
-import { chooseJsonFile, downloadText, fileNameFor } from './persistence/download';
+import { chooseCvFile, downloadText, fileNameFor } from './persistence/download';
 import {
   ensureWritePermission,
   pickFileToOpen,
@@ -35,6 +36,7 @@ const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigat
 const MOD = isMac ? '⌘' : 'Ctrl+';
 
 const warnBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
+const hasFiles = (e: DragEvent) => !!e.dataTransfer?.types.includes('Files');
 
 interface ImportProblem {
   fileName: string;
@@ -47,6 +49,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   const [problem, setProblem] = useState<ImportProblem | null>(null);
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
   const [repoDialog, setRepoDialog] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const confirmDiscard = useCallback(
     () => !dirty || window.confirm('You have unsaved changes. Discard them?'),
@@ -150,19 +153,32 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     }
   }, [source, json, exportJson, saveAs, saveToRepo, markSaved, notify, fail]);
 
-  const importJson = useCallback(async () => {
+  // A PDF has no editable copy behind it, so its import starts out unsaved.
+  const pdf = usePdfImport(
+    useCallback((next: CvDocument) => replace(next, { name: fileNameFor(next.meta.title) }, false), [replace]),
+  );
+
+  /** Imports a chosen or dropped file: a CV's JSON, or a PDF. */
+  const importFile = useCallback(
+    async (file: File) => {
+      try {
+        if (file.type === 'application/pdf' || /\.pdf$/iu.test(file.name)) return await pdf.start(file);
+        const next = parseOrReport(file.name, await file.text());
+        if (!next) return;
+        replace(next, { name: file.name });
+        notify(`Imported ${file.name}`);
+      } catch (err) {
+        fail('Import', err);
+      }
+    },
+    [pdf, parseOrReport, replace, notify, fail],
+  );
+
+  const importCv = useCallback(async () => {
     if (!confirmDiscard()) return;
-    try {
-      const file = await chooseJsonFile();
-      if (!file) return;
-      const next = parseOrReport(file.name, await file.text());
-      if (!next) return;
-      replace(next, { name: file.name });
-      notify(`Imported ${file.name}`);
-    } catch (err) {
-      fail('Import', err);
-    }
-  }, [confirmDiscard, parseOrReport, replace, notify, fail]);
+    const file = await chooseCvFile();
+    if (file) await importFile(file);
+  }, [confirmDiscard, importFile]);
 
   const askOpenFromRepo = useCallback(() => {
     if (confirmDiscard()) setRepoDialog(true);
@@ -182,8 +198,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   }, [confirmDiscard, replace, notify]);
 
   // Keyboard shortcuts. Read the latest callbacks through a ref.
-  const actions = useRef({ save, saveAs, open, importJson });
-  actions.current = { save, saveAs, open, importJson };
+  const actions = useRef({ save, saveAs, open, importCv });
+  actions.current = { save, saveAs, open, importCv };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
@@ -193,11 +209,41 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
         void (e.shiftKey && supportsFileSystemAccess ? actions.current.saveAs() : actions.current.save());
       } else if (key === 'o') {
         e.preventDefault();
-        void (supportsFileSystemAccess ? actions.current.open() : actions.current.importJson());
+        void (supportsFileSystemAccess ? actions.current.open() : actions.current.importCv());
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Drop a .json or .pdf anywhere to import it.
+  const dropped = useRef({ confirmDiscard, importFile });
+  dropped.current = { confirmDiscard, importFile };
+  useEffect(() => {
+    const over = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      setDragging(true);
+    };
+    const leave = (e: DragEvent) => {
+      // Only leaving the window ends the drag; moving between elements fires this too.
+      if (!e.relatedTarget) setDragging(false);
+    };
+    const drop = (e: DragEvent) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      setDragging(false);
+      const file = e.dataTransfer?.files[0];
+      if (file && dropped.current.confirmDiscard()) void dropped.current.importFile(file);
+    };
+    window.addEventListener('dragover', over);
+    window.addEventListener('dragleave', leave);
+    window.addEventListener('drop', drop);
+    return () => {
+      window.removeEventListener('dragover', over);
+      window.removeEventListener('dragleave', leave);
+      window.removeEventListener('drop', drop);
+    };
   }, []);
 
   // The PDF's default file name comes from document.title.
@@ -286,8 +332,13 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
                 <span className="ui-toolbar-sep" />
               </>
             )}
-            <button type="button" className="ui-btn ui-btn-ghost" onClick={() => void importJson()} title="Import a JSON file">
-              <Upload size={15} /> Import
+            <button
+              type="button"
+              className="ui-btn ui-btn-ghost"
+              onClick={() => void importCv()}
+              title="Import a CV from its .json file or a PDF. You can also drop a file anywhere."
+            >
+              <Upload size={15} /> Import CV…
             </button>
             <button type="button" className="ui-btn ui-btn-ghost" onClick={exportJson} title="Download as JSON">
               <Download size={15} /> Export
@@ -322,6 +373,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           </div>
         </main>
 
+        {pdf.dialog}
+
         {repoDialog && <RepoOpenDialog onPick={(n) => void openFromRepo(n)} onClose={() => setRepoDialog(false)} />}
 
         {problem && (
@@ -345,6 +398,15 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           </Modal>
         )}
       </div>
+      {dragging && (
+        <div className="ui-drop-overlay" aria-hidden="true">
+          <div className="ui-drop-card">
+            <Upload size={22} />
+            <strong>Drop a CV to import it</strong>
+            <span className="ui-muted">A .json file or a PDF. It never leaves this computer.</span>
+          </div>
+        </div>
+      )}
       <PrintRoot doc={doc} />
     </>
   );

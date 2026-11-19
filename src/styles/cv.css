@@ -147,6 +147,9 @@
   text-align: left;
   overflow-wrap: break-word;
   font-kerning: normal;
+  /* Firefox writes ligature glyphs ("fi", "ffl") into PDFs with no text
+     behind them, so "offline" would copy, and parse in an ATS, as "oine". */
+  font-variant-ligatures: none;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }

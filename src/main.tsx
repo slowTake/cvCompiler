@@ -3,17 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { loadCachedDocument } from './persistence/cache';
 import { demoDocument, loadPrivateDocument } from './persistence/initialData';
-// The CV's fonts, self-hosted so layout doesn't depend on what's installed.
-import '@fontsource-variable/inter/wght.css';
-import '@fontsource-variable/inter/wght-italic.css';
-import '@fontsource-variable/jetbrains-mono/wght.css';
-import '@fontsource-variable/jetbrains-mono/wght-italic.css';
-import '@fontsource-variable/source-serif-4/wght.css';
-import '@fontsource-variable/source-serif-4/wght-italic.css';
-import './styles/ui.css';
-import './styles/cv.css';
-import './templates/themes';
-import './styles/print.css';
+import './styles';
 import { ToastProvider } from './ui/toast';
 
 /** Browser cache first, then (dev only) data/cv.private.json, then the demo. */
