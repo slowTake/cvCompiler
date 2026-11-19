@@ -640,6 +640,12 @@ textarea {
   gap: 4px;
 }
 
+.ui-section-list .ui-column-toggle {
+  flex: none;
+  justify-content: center;
+  min-width: 74px;
+}
+
 .ui-section-list .ui-section-spacing {
   flex: none;
   width: auto;

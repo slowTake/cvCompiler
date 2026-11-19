@@ -1,16 +1,17 @@
-import { ArrowDown, ArrowUp, Eye, EyeOff, ListOrdered } from 'lucide-react';
+import { ArrowDown, ArrowUp, Eye, EyeOff, ListOrdered, PanelLeft, PanelRight } from 'lucide-react';
 import { SECTION_LABELS } from '../../model/defaults';
 import { sectionTitleField } from '../../model/editTarget';
 import { moveItem, optional, replaceAt } from '../../model/list';
 import type { CvMeta, SectionConfig, SectionSpacing } from '../../model/types';
+import { isInSidebar, toggleSidebar, type SkeletonInfo } from '../../templates/skeletons';
 import { TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
   value: CvMeta;
   onChange: (next: CvMeta) => void;
-  /** Sections the current skeleton puts in its sidebar. */
-  sidebarSections: readonly string[];
+  /** The current template's layout; decides whether sections can move to a sidebar. */
+  skeleton: SkeletonInfo;
 }
 
 const SPACING_OPTIONS: { value: SectionSpacing; label: string }[] = [
@@ -24,9 +25,10 @@ function withSpacing(s: SectionConfig, spacing: SectionSpacing): SectionConfig {
   return spacing === 'normal' ? rest : { ...rest, spacing };
 }
 
-export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: Props) {
+export function LayoutSection({ value, onChange, skeleton, ...chrome }: Props) {
   const sections = value.sections;
   const setSections = (next: CvMeta['sections']) => onChange({ ...value, sections: next });
+  const hasSidebar = skeleton.sidebarSections.length > 0;
 
   return (
     <FormSection id="layout" title="Document & sections" icon={ListOrdered} {...chrome}>
@@ -40,6 +42,7 @@ export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: P
       <p className="ui-hint">
         Type in a box to rename that heading (or click the heading in the preview). Spacing sets the gap
         between the section's items.
+        {hasSidebar && ' Sidebar / Main moves a section between the two columns.'}
       </p>
       <ol className="ui-section-list">
         {sections.map((s, i) => (
@@ -67,7 +70,18 @@ export function LayoutSection({ value, onChange, sidebarSections, ...chrome }: P
                 setSections(replaceAt(sections, i, next));
               }}
             />
-            {sidebarSections.includes(s.id) && <span className="ui-tag">sidebar</span>}
+            {hasSidebar && (
+              <button
+                type="button"
+                className={`ui-btn ui-btn-small ui-column-toggle${isInSidebar(skeleton, s) ? ' is-active' : ''}`}
+                aria-label={`${SECTION_LABELS[s.id]}: ${isInSidebar(skeleton, s) ? 'in the sidebar' : 'in the main column'}. Click to move.`}
+                title="Click to move to the other column"
+                onClick={() => setSections(replaceAt(sections, i, toggleSidebar(skeleton, s)))}
+              >
+                {isInSidebar(skeleton, s) ? <PanelLeft size={13} /> : <PanelRight size={13} />}
+                {isInSidebar(skeleton, s) ? 'Sidebar' : 'Main'}
+              </button>
+            )}
             <select
               className="ui-section-spacing"
               aria-label={`Spacing between items in ${SECTION_LABELS[s.id]}`}

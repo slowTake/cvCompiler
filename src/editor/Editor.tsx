@@ -165,7 +165,7 @@ export function Editor({ doc, update, editTarget }: Props) {
           <DesignSection doc={doc} onChange={(meta) => update((d) => ({ ...d, meta }))} {...chrome('design')} />
           <LayoutSection
             value={doc.meta}
-            sidebarSections={skeleton.sidebarSections}
+            skeleton={skeleton}
             onChange={(meta) => update((d) => ({ ...d, meta }))}
             {...chrome('layout')}
           />

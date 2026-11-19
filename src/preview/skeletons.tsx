@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { CvDocument, SectionConfig } from '../model/types';
-import { SKELETONS, type SkeletonId } from '../templates/skeletons';
+import { isInSidebar, SKELETONS, type SkeletonId } from '../templates/skeletons';
 import { CvSection, IdentityBlock } from './parts';
 
 export interface SkeletonProps {
@@ -14,9 +14,8 @@ function renderSections(doc: CvDocument, sections: SectionConfig[]) {
 }
 
 function SidebarSkeleton({ doc, sections }: SkeletonProps) {
-  const inSidebar = new Set(SKELETONS.sidebar.sidebarSections);
-  const side = sections.filter((s) => inSidebar.has(s.id));
-  const main = sections.filter((s) => !inSidebar.has(s.id));
+  const side = sections.filter((s) => isInSidebar(SKELETONS.sidebar, s));
+  const main = sections.filter((s) => !isInSidebar(SKELETONS.sidebar, s));
   return (
     <>
       <div className="cv-fill cv-fill-page" />

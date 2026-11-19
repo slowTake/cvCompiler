@@ -246,6 +246,18 @@ describe('normalizeCv: lenient optional values', () => {
     expect(dropped.map((d) => d.path)).toEqual(['meta.sections[3].spacing']);
   });
 
+  it('keeps a boolean sidebar override and drops anything else', () => {
+    const { doc, dropped } = expectOk(
+      normalizeCv({
+        ...minimal(),
+        meta: { sections: [{ id: 'education', sidebar: true }, { id: 'skills', sidebar: 'yes' }] },
+      }),
+    );
+    expect(doc.meta.sections[0]).toEqual({ id: 'education', visible: true, sidebar: true });
+    expect(doc.meta.sections[1]).toEqual({ id: 'skills', visible: true });
+    expect(dropped.map((d) => d.path)).toEqual(['meta.sections[1].sidebar']);
+  });
+
   it('produces a document that satisfies the CvDocument shape', () => {
     const { doc } = expectOk(normalizeCv(minimal()));
     const typed: CvDocument = doc;

@@ -28,6 +28,11 @@ export interface SectionConfig {
   title?: string;
   /** Space between the section's items. Absent means 'normal'. */
   spacing?: Exclude<SectionSpacing, 'normal'>;
+  /**
+   * Sidebar skeleton only: true puts the section in the side column, false in
+   * the main one. Absent means the skeleton's default (see templates/skeletons.ts).
+   */
+  sidebar?: boolean;
 }
 
 export const FONT_PAIRINGS = ['mono', 'sans', 'serif', 'editorial', 'technical'] as const;
