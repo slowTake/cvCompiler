@@ -48,9 +48,10 @@ repeated ids are replaced with fresh ones.
 - A bare string such as `"experience"` is accepted as shorthand.
 - List order is CV order. Unknown and duplicate ids are dropped. If a file
   lists only some sections, the missing ones are added at the end, hidden.
-- On the **sidebar** skeleton, `about` and `skills` sit in the side column
-  (in this order relative to each other); everything else flows in the main
-  column.
+- On the **sidebar** skeleton, `about`, `skills` and `languages` sit in the
+  side column by default; everything else flows in the main column. Set
+  `sidebar: true` or `false` on a section to override that. Each column keeps
+  the list's order. Other skeletons ignore `sidebar`.
 
 ### StyleOverrides
 
