@@ -18,11 +18,16 @@ export const SECTION_IDS = [
 ] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
+export const SECTION_SPACINGS = ['tight', 'normal', 'roomy'] as const;
+export type SectionSpacing = (typeof SECTION_SPACINGS)[number];
+
 export interface SectionConfig {
   id: SectionId;
   visible: boolean;
   /** Optional custom heading; falls back to the default label. */
   title?: string;
+  /** Space between the section's items. Absent means 'normal'. */
+  spacing?: Exclude<SectionSpacing, 'normal'>;
 }
 
 export const FONT_PAIRINGS = ['mono', 'sans', 'serif', 'editorial', 'technical'] as const;

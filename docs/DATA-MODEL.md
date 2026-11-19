@@ -31,17 +31,20 @@ repeated ids are replaced with fresh ones.
 | `title`      | string               | Document title. Used for file names and the default PDF name. Defaults to the person's name. |
 | `templateId` | string               | A template id from the registry (see below). Unknown ids fall back to `studio`. |
 | `style`      | [StyleOverrides](#styleoverrides) | Optional. A missing field means "use the template default". |
-| `sections`   | SectionConfig[]      | Order and visibility of CV sections.                            |
+| `sections`   | SectionConfig[]      | Order, visibility, headings and spacing of CV sections.         |
 
 ### SectionConfig
 
 ```json
-{ "id": "experience", "visible": true, "title": "Work history" }
+{ "id": "experience", "visible": true, "title": "Work history", "spacing": "tight" }
 ```
 
 - `id` is one of `about`, `skills`, `experience`, `projects`, `education`,
   `languages`.
 - `visible` defaults to `true`. `title` is an optional custom heading.
+- `spacing` is the gap between the section's items: `tight`, `normal` or
+  `roomy` (0.4×, 1× and 1.6× the template's entry gap, before Density).
+  Omitted means `normal`, and saving leaves it out.
 - A bare string such as `"experience"` is accepted as shorthand.
 - List order is CV order. Unknown and duplicate ids are dropped. If a file
   lists only some sections, the missing ones are added at the end, hidden.

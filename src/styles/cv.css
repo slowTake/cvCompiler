@@ -352,7 +352,16 @@
 .cv-section {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--cv-entry-gap) * var(--cv-density));
+  gap: calc(var(--cv-entry-gap) * var(--cv-density) * var(--cv-section-spacing, 1));
+}
+
+/* Per-section item spacing, set in Document & sections. */
+.cv-spacing-tight {
+  --cv-section-spacing: 0.4;
+}
+
+.cv-spacing-roomy {
+  --cv-section-spacing: 1.6;
 }
 
 .cv-heading {

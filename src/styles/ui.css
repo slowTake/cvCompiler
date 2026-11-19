@@ -640,6 +640,17 @@ textarea {
   gap: 4px;
 }
 
+.ui-section-list .ui-section-spacing {
+  flex: none;
+  width: auto;
+  padding: 5px 4px;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-panel);
+  color: inherit;
+  font-size: 12px;
+}
+
 .ui-section-list li.is-hidden input {
   color: var(--ui-muted);
   text-decoration: line-through;

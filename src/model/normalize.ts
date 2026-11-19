@@ -7,6 +7,7 @@ import {
   CONTACT_KINDS,
   CV_SCHEMA_VERSION,
   SECTION_IDS,
+  SECTION_SPACINGS,
   type ContactItem,
   type ContactKind,
   type CvDocument,
@@ -188,6 +189,11 @@ function normalizeSections(ctx: Ctx, raw: unknown, path: string): SectionConfig[
       else if (item.visible !== undefined) ctx.drop(join(itemPath, 'visible'), 'expected true or false');
       const title = optText(ctx, item, 'title', itemPath);
       if (title) config.title = title;
+      const spacing = item.spacing;
+      if (spacing === 'tight' || spacing === 'roomy') config.spacing = spacing;
+      else if (spacing !== undefined && spacing !== 'normal') {
+        ctx.drop(join(itemPath, 'spacing'), `expected one of ${SECTION_SPACINGS.join(', ')}`);
+      }
     }
     out.push(config);
   });

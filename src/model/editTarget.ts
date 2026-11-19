@@ -12,6 +12,9 @@ export interface EditTarget {
   nonce: number;
 }
 
+/** The field name of a section's rename box in Document & sections. */
+export const sectionTitleField = (sectionId: string) => `section-title-${sectionId}`;
+
 let nonce = 0;
 
 /** Reads the edit target under a clicked element, or null when there is none. */
