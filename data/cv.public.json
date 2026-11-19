@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "meta": {
     "title": "Mira Lindqvist CV",
     "templateId": "studio",
@@ -33,11 +33,7 @@
       "start": "2022",
       "end": "Present",
       "location": "Gothenburg (hybrid)",
-      "bullets": [
-        "Lead engineer for a collaborative planning tool used by 1,200 teams; rebuilt the editor around a local-first sync model.",
-        "Cut time-to-first-edit from 4.1 s to 0.9 s by splitting the bundle and caching documents in IndexedDB.",
-        "Run the frontend guild: monthly reviews, a shared component library and an accessibility checklist."
-      ],
+      "description": "- Lead engineer for a collaborative planning tool used by 1,200 teams; rebuilt the editor around a local-first sync model.\n- Cut time-to-first-edit from 4.1 s to 0.9 s by splitting the bundle and caching documents in IndexedDB.\n- Run the frontend guild: monthly reviews, a shared component library and an accessibility checklist.",
       "skills": ["React", "TypeScript", "CRDTs", "Performance"]
     },
     {
@@ -47,11 +43,7 @@
       "start": "2019",
       "end": "2022",
       "location": "Malmö",
-      "bullets": [
-        "Built the dispatcher dashboard that replaced three legacy tools; adopted by every regional office within six months.",
-        "Introduced visual regression tests and a design token pipeline shared by web and mobile.",
-        "Mentored four junior developers through their first production releases."
-      ],
+      "description": "- Built the dispatcher dashboard that replaced three legacy tools; adopted by every regional office within six months.\n- Introduced visual regression tests and a design token pipeline shared by web and mobile.\n- Mentored four junior developers through their first production releases.",
       "skills": ["Vue", "Design tokens", "Testing"]
     },
     {
@@ -61,10 +53,7 @@
       "start": "2017",
       "end": "2019",
       "location": "Stockholm",
-      "bullets": [
-        "Delivered 20+ marketing sites and microsites for cultural institutions, mostly static and hand-tuned for print.",
-        "Wrote the studio's first accessibility guidelines."
-      ]
+      "description": "- Delivered 20+ marketing sites and microsites for cultural institutions, mostly static and hand-tuned for print.\n- Wrote the studio's first accessibility guidelines."
     }
   ],
   "projects": [
@@ -74,7 +63,7 @@
       "role": "Author",
       "start": "2023",
       "url": "https://mira.example.com/paperweight",
-      "summary": "A tiny library that paginates HTML into print-ready pages in the browser.",
+      "description": "A tiny library that paginates HTML into print-ready pages in the browser.",
       "tech": ["TypeScript", "CSS Fragmentation"]
     },
     {
@@ -83,7 +72,7 @@
       "role": "Side project",
       "start": "2021",
       "end": "2022",
-      "summary": "An offline-capable departures board for a fictional city transit network; 3,000 weekly users at its peak.",
+      "description": "An offline-capable departures board for a fictional city transit network; 3,000 weekly users at its peak.",
       "tech": ["Svelte", "Service Workers"]
     }
   ],

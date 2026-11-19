@@ -1,5 +1,6 @@
 import { hasTemplate, DEFAULT_TEMPLATE } from '../templates/registry';
 import { defaultSections, isSectionId } from './defaults';
+import { descriptionFrom } from './description';
 import { newId } from './id';
 import { sanitizeStyle, STYLE_KEYS } from './style';
 import {
@@ -100,6 +101,17 @@ function textList(ctx: Ctx, obj: Obj, key: string, path: string): string[] | und
     }
   });
   return out;
+}
+
+/**
+ * An entry's description. Version 1 files kept a `summary` paragraph and a
+ * `bullets` list apart; they are folded into one description, summary first.
+ */
+function description(ctx: Ctx, obj: Obj, path: string): string | undefined {
+  const text = optText(ctx, obj, 'description', path);
+  if (text !== undefined) return text;
+  const legacy = descriptionFrom(optText(ctx, obj, 'summary', path), textList(ctx, obj, 'bullets', path));
+  return legacy || undefined;
 }
 
 /** Assigns ids that are missing or duplicated within one list. */
@@ -305,8 +317,7 @@ export function normalizeCv(input: unknown): ParseResult {
       start: optText(ctx, raw, 'start', p),
       end: optText(ctx, raw, 'end', p),
       url: optText(ctx, raw, 'url', p),
-      summary: optText(ctx, raw, 'summary', p),
-      bullets: nonEmpty(textList(ctx, raw, 'bullets', p)),
+      description: description(ctx, raw, p),
       tech: nonEmpty(textList(ctx, raw, 'tech', p)),
     }),
   );
@@ -319,7 +330,7 @@ export function normalizeCv(input: unknown): ParseResult {
       start: optText(ctx, raw, 'start', p),
       end: optText(ctx, raw, 'end', p),
       location: optText(ctx, raw, 'location', p),
-      bullets: textList(ctx, raw, 'bullets', p) ?? [],
+      description: description(ctx, raw, p),
       skills: nonEmpty(textList(ctx, raw, 'skills', p)),
     }),
   );

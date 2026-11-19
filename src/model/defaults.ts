@@ -63,5 +63,5 @@ export const newLink = (): LinkItem => ({ id: newId(), url: '' });
 export const newSkillGroup = (): SkillGroup => ({ id: newId(), name: '', items: [] });
 export const newEducation = (): EducationEntry => ({ id: newId(), institution: '' });
 export const newProject = (): ProjectEntry => ({ id: newId(), name: '' });
-export const newExperience = (): ExperienceEntry => ({ id: newId(), title: '', org: '', bullets: [] });
+export const newExperience = (): ExperienceEntry => ({ id: newId(), title: '', org: '' });
 export const newLanguage = (): LanguageEntry => ({ id: newId(), name: '' });

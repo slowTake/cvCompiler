@@ -11,7 +11,7 @@ All text is plain text. There are no photos, binary data or rich text.
 
 | Field        | Type               | Required | Notes                                           |
 | ------------ | ------------------ | -------- | ----------------------------------------------- |
-| `version`    | `1`                | no       | Schema version. Files with a higher number are rejected. |
+| `version`    | `2`                | no       | Schema version. Files with a higher number are rejected. |
 | `meta`       | [Meta](#meta)      | no       | Defaults are filled in when missing.            |
 | `identity`   | [Identity](#identity) | **yes** | Must contain `name`.                         |
 | `skills`     | [SkillGroup](#skillgroup)[] | no | Missing means `[]`.                         |
@@ -101,7 +101,7 @@ Anything else, such as `javascript:`, is shown as plain text.
 | `start`    | string   | no       |
 | `end`      | string   | no       |
 | `location` | string   | no       |
-| `bullets`  | string[] | no (defaults to `[]`) |
+| `description` | string | no (see [Descriptions](#descriptions)) |
 | `skills`   | string[] | no ("Skills developed") |
 
 Dates are free text (`"2021"`, `"Mar 2022"`, `"Present"`), so use whatever
@@ -109,7 +109,26 @@ format you like. Numbers such as `2021` are accepted and turned into text.
 
 ## Project
 
-`{ id, name, role?, start?, end?, url?, summary?, bullets?, tech? }`. `name` is required.
+`{ id, name, role?, start?, end?, url?, description?, tech? }`. `name` is required.
+
+## Descriptions
+
+Projects and experience entries have one `description`: plain text that can
+be paragraphs, bullet points, or both, in any order.
+
+- A line starting with `- `, `* ` or `• ` is a bullet point. Consecutive
+  bullet lines form one list.
+- Any other line is paragraph text. A blank line starts a new paragraph;
+  single line breaks inside a paragraph are kept.
+
+```json
+"description": "What it is, in a sentence.\n\n- One result\n- Another result\n\nA closing note."
+```
+
+Version 1 files stored a project `summary` and a `bullets` list on projects
+and experience. They still load: the summary becomes the first paragraph and
+each bullet becomes a `- ` line. Saving writes the new `description` field and
+`version: 2`.
 
 ## Education
 

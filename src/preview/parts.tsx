@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { sectionTitle } from '../model/defaults';
+import { parseDescription } from '../model/description';
 import { contactHref, safeHref } from '../model/links';
 import type {
   ContactKind,
@@ -128,7 +129,7 @@ function Tags({ label, items, field }: { label?: string; items: string[] | undef
   );
 }
 
-function Bullets({ items, field }: { items: string[] | undefined; field: string }) {
+function Bullets({ items, field }: { items: string[] | undefined; field?: string }) {
   const list = (items ?? []).filter(hasText);
   if (list.length === 0) return null;
   return (
@@ -137,6 +138,25 @@ function Bullets({ items, field }: { items: string[] | undefined; field: string 
         <li key={`${i}-${b.slice(0, 16)}`}>{b}</li>
       ))}
     </ul>
+  );
+}
+
+/** Paragraphs and bullet lists, in the order they were written. */
+function Description({ text }: { text: string | undefined }) {
+  const blocks = parseDescription(text);
+  if (blocks.length === 0) return null;
+  return (
+    <div className="cv-description" data-edit-field="description">
+      {blocks.map((block, i) =>
+        block.kind === 'paragraph' ? (
+          <p className="cv-text" key={i}>
+            {block.text}
+          </p>
+        ) : (
+          <Bullets key={i} items={block.items} />
+        ),
+      )}
+    </div>
   );
 }
 
@@ -203,7 +223,7 @@ function ExperienceItem({ entry }: { entry: ExperienceEntry }) {
         location={entry.location}
         fields={{ name: 'title', org: 'org' }}
       />
-      <Bullets items={entry.bullets} field="bullets" />
+      <Description text={entry.description} />
       <Tags label="Skills developed" items={entry.skills} field="skills" />
     </article>
   );
@@ -219,12 +239,7 @@ function ProjectItem({ entry }: { entry: ProjectEntry }) {
         dates={dateRange(entry.start, entry.end)}
         fields={{ name: 'name', org: 'role' }}
       />
-      {hasText(entry.summary) && (
-        <p className="cv-text" data-edit-field="summary">
-          {entry.summary}
-        </p>
-      )}
-      <Bullets items={entry.bullets} field="bullets" />
+      <Description text={entry.description} />
       <Tags items={entry.tech} field="tech" />
     </article>
   );

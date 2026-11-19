@@ -436,6 +436,13 @@
   white-space: pre-line;
 }
 
+/* Paragraphs and bullet lists of a project or role, in written order. */
+.cv-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
 .cv-about {
   display: flex;
   flex-direction: column;

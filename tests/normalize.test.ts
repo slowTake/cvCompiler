@@ -129,7 +129,7 @@ describe('normalizeCv: lenient optional values', () => {
     const [job] = doc.experience;
     expect(job.start).toBe('2020');
     expect(job.location).toBeUndefined();
-    expect(job.bullets).toEqual(['Shipped it', '42', 'Fixed it']);
+    expect(job.description).toBe('- Shipped it\n- 42\n- Fixed it');
     expect(job.skills).toEqual(['TypeScript']);
 
     const paths = dropped.map((d) => d.path);
@@ -150,6 +150,28 @@ describe('normalizeCv: lenient optional values', () => {
       normalizeCv({ ...minimal(), projects: [{ name: 'P', url: '', bullets: [], tech: [' '] }] }),
     );
     expect(Object.keys(doc.projects[0]).sort()).toEqual(['id', 'name']);
+  });
+
+  it('folds a version 1 summary and bullets into one description', () => {
+    const { doc } = expectOk(
+      normalizeCv({
+        ...minimal(),
+        version: 1,
+        projects: [{ name: 'P', summary: 'What it is.', bullets: ['Did this', 'Did that'] }],
+        experience: [{ title: 'T', org: 'O', bullets: [] }],
+      }),
+    );
+    expect(doc.projects[0].description).toBe('What it is.\n\n- Did this\n- Did that');
+    expect(doc.projects[0]).not.toHaveProperty('summary');
+    expect(doc.projects[0]).not.toHaveProperty('bullets');
+    expect(Object.keys(doc.experience[0]).sort()).toEqual(['id', 'org', 'title']);
+  });
+
+  it('prefers description over old summary and bullets', () => {
+    const { doc } = expectOk(
+      normalizeCv({ ...minimal(), projects: [{ name: 'P', description: 'New', summary: 'Old', bullets: ['x'] }] }),
+    );
+    expect(doc.projects[0].description).toBe('New');
   });
 
   it('maps unknown contact kinds to "other"', () => {
@@ -204,6 +226,6 @@ describe('normalizeCv: lenient optional values', () => {
   it('produces a document that satisfies the CvDocument shape', () => {
     const { doc } = expectOk(normalizeCv(minimal()));
     const typed: CvDocument = doc;
-    expect(typed.version).toBe(1);
+    expect(typed.version).toBe(2);
   });
 });

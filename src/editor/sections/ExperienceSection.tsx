@@ -3,7 +3,7 @@ import { newExperience } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { ExperienceEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TagListField, TextField } from '../fields';
+import { DESCRIPTION_HINT, DESCRIPTION_PLACEHOLDER, FieldRow, TagListField, TextArea, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -48,11 +48,14 @@ export function ExperienceSection({ title, value, onChange, ...chrome }: Props) 
               value={e.location}
               onChange={(location) => update({ ...e, location: optional(location) })}
             />
-            <ListTextField
-              label="Highlights"
-              field="bullets"
-              value={e.bullets}
-              onChange={(bullets) => update({ ...e, bullets })}
+            <TextArea
+              label="Description"
+              field="description"
+              rows={6}
+              value={e.description}
+              placeholder={DESCRIPTION_PLACEHOLDER}
+              hint={DESCRIPTION_HINT}
+              onChange={(description) => update({ ...e, description: optional(description) })}
             />
             <TagListField
               label="Skills developed"

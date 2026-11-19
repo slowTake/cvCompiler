@@ -3,7 +3,7 @@ import { newProject } from '../../model/defaults';
 import { optional } from '../../model/list';
 import type { ProjectEntry } from '../../model/types';
 import { EntryList } from '../EntryList';
-import { FieldRow, ListTextField, TagListField, TextArea, TextField } from '../fields';
+import { DESCRIPTION_HINT, DESCRIPTION_PLACEHOLDER, FieldRow, TagListField, TextArea, TextField } from '../fields';
 import { FormSection, type SectionChrome } from '../FormSection';
 
 interface Props extends SectionChrome {
@@ -51,17 +51,13 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
               onChange={(url) => update({ ...p, url: optional(url) })}
             />
             <TextArea
-              label="Summary"
-              field="summary"
-              rows={3}
-              value={p.summary}
-              onChange={(summary) => update({ ...p, summary: optional(summary) })}
-            />
-            <ListTextField
-              label="Highlights"
-              field="bullets"
-              value={p.bullets}
-              onChange={(bullets) => update({ ...p, bullets: orUndefined(bullets) })}
+              label="Description"
+              field="description"
+              rows={6}
+              value={p.description}
+              placeholder={DESCRIPTION_PLACEHOLDER}
+              hint={DESCRIPTION_HINT}
+              onChange={(description) => update({ ...p, description: optional(description) })}
             />
             <TagListField
               label="Tech"
