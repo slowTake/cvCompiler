@@ -6,7 +6,7 @@
  * and get fresh ids on import.
  */
 
-export const CV_SCHEMA_VERSION = 1;
+export const CV_SCHEMA_VERSION = 2;
 
 export const SECTION_IDS = [
   'about',
@@ -113,8 +113,8 @@ export interface ProjectEntry {
   start?: string;
   end?: string;
   url?: string;
-  summary?: string;
-  bullets?: string[];
+  /** Paragraphs and "- " bullet lines, in any mix (see model/description.ts). */
+  description?: string;
   tech?: string[];
 }
 
@@ -125,7 +125,8 @@ export interface ExperienceEntry {
   start?: string;
   end?: string;
   location?: string;
-  bullets: string[];
+  /** Paragraphs and "- " bullet lines, in any mix (see model/description.ts). */
+  description?: string;
   /** "Skills developed" in this role. */
   skills?: string[];
 }

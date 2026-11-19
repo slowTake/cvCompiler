@@ -277,6 +277,10 @@ export function SelectField<T extends string>({ label, value, options, onChange,
   );
 }
 
+/** Shared by the project and experience Description fields (see model/description.ts). */
+export const DESCRIPTION_HINT = 'Start a line with "- " for a bullet point. A blank line starts a new paragraph. Mix both as you like.';
+export const DESCRIPTION_PLACEHOLDER = 'A sentence or two about it.\n\n- One result or highlight\n- Another one';
+
 /** Two-column grid for short fields. */
 export function FieldRow({ children }: { children: ReactNode }) {
   return <div className="ui-field-row">{children}</div>;
