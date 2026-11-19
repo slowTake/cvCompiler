@@ -7,6 +7,8 @@ import { saveCachedDocument } from './cache';
 export interface DocumentSource {
   name: string;
   handle?: FileSystemFileHandle;
+  /** Saved in the repo's saves/ folder via the dev server. */
+  repo?: boolean;
 }
 
 const AUTOSAVE_MS = 400;

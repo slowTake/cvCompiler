@@ -1,6 +1,7 @@
 import {
   Download,
   FileText,
+  FolderGit2,
   FolderOpen,
   Printer,
   RotateCcw,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor } from './editor/Editor';
+import { RepoOpenDialog } from './editor/RepoOpenDialog';
 import type { EditTarget } from './model/editTarget';
 import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
 import type { CvDocument } from './model/types';
@@ -22,6 +24,7 @@ import {
   writeToHandle,
 } from './persistence/fileAccess';
 import { demoDocument, hasPrivateDocument, loadPrivateDocument } from './persistence/initialData';
+import { readRepoSave, supportsRepoSaves, writeRepoSave } from './persistence/repoSaves';
 import { useCvDocument } from './persistence/useCvDocument';
 import { Preview } from './preview/Preview';
 import { PrintRoot } from './preview/PrintRoot';
@@ -43,6 +46,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   const { notify } = useToast();
   const [problem, setProblem] = useState<ImportProblem | null>(null);
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
+  const [repoDialog, setRepoDialog] = useState(false);
 
   const confirmDiscard = useCallback(
     () => !dirty || window.confirm('You have unsaved changes. Discard them?'),
@@ -100,7 +104,35 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     }
   }, [json, source, doc.meta.title, markSaved, notify, fail]);
 
+  const saveToRepo = useCallback(async () => {
+    const name = source?.repo ? source.name : fileNameFor(doc.meta.title);
+    try {
+      await writeRepoSave(name, json);
+      markSaved(json, { name, repo: true });
+      notify(`Saved saves/${name}`, { tone: 'success' });
+    } catch (err) {
+      fail('Save to repo', err);
+    }
+  }, [source, doc.meta.title, json, markSaved, notify, fail]);
+
+  const openFromRepo = useCallback(
+    async (name: string) => {
+      setRepoDialog(false);
+      try {
+        const next = parseOrReport(name, await readRepoSave(name));
+        if (!next) return;
+        replace(next, { name, repo: true });
+        notify(`Opened saves/${name}`);
+      } catch (err) {
+        fail('Open', err);
+      }
+    },
+    [parseOrReport, replace, notify, fail],
+  );
+
   const save = useCallback(async () => {
+    // Repo-bound files, and Firefox in dev (no File System Access), save into saves/.
+    if (source?.repo || (supportsRepoSaves && !supportsFileSystemAccess)) return saveToRepo();
     if (!supportsFileSystemAccess) return exportJson();
     if (!source?.handle) return saveAs();
     try {
@@ -116,7 +148,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     } catch (err) {
       fail('Save', err);
     }
-  }, [source, json, exportJson, saveAs, markSaved, notify, fail]);
+  }, [source, json, exportJson, saveAs, saveToRepo, markSaved, notify, fail]);
 
   const importJson = useCallback(async () => {
     if (!confirmDiscard()) return;
@@ -131,6 +163,10 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
       fail('Import', err);
     }
   }, [confirmDiscard, parseOrReport, replace, notify, fail]);
+
+  const askOpenFromRepo = useCallback(() => {
+    if (confirmDiscard()) setRepoDialog(true);
+  }, [confirmDiscard]);
 
   const loadDemo = useCallback(() => {
     if (!confirmDiscard()) return;
@@ -179,7 +215,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   }, [title]);
 
   // Only a bound file can fall behind; the browser cache keeps everything else.
-  const boundAndDirty = dirty && !!source?.handle;
+  const boundAndDirty = dirty && !!(source?.handle || source?.repo);
   useEffect(() => {
     if (!boundAndDirty) return;
     window.addEventListener('beforeunload', warnBeforeUnload);
@@ -193,11 +229,11 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           <div className="ui-brand">
             cv<span>Compiler</span>
           </div>
-          <div className="ui-file-status" title={source?.handle ? 'Save writes to this file' : undefined}>
+          <div className="ui-file-status" title={source?.handle || source?.repo ? 'Save writes to this file' : undefined}>
             <FileText size={15} />
             <span className="ui-file-name">
               {source ? source.name : 'Not linked to a file'}
-              {source && !source.handle && supportsFileSystemAccess && (
+              {source && !source.handle && !source.repo && supportsFileSystemAccess && (
                 <span className="ui-muted"> (not linked)</span>
               )}
             </span>
@@ -225,6 +261,27 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
                 </button>
                 <button type="button" className="ui-btn ui-btn-ghost" onClick={() => void saveAs()}>
                   Save as…
+                </button>
+                <span className="ui-toolbar-sep" />
+              </>
+            )}
+            {supportsRepoSaves && (
+              <>
+                <button
+                  type="button"
+                  className="ui-btn ui-btn-ghost"
+                  onClick={askOpenFromRepo}
+                  title="Open a CV from the repo's saves/ folder"
+                >
+                  <FolderGit2 size={15} /> Open from repo
+                </button>
+                <button
+                  type="button"
+                  className="ui-btn ui-btn-ghost"
+                  onClick={() => void saveToRepo()}
+                  title="Write this CV to the repo's saves/ folder"
+                >
+                  <Save size={15} /> Save to repo
                 </button>
                 <span className="ui-toolbar-sep" />
               </>
@@ -264,6 +321,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
             <Preview doc={doc} onEdit={setEditTarget} />
           </div>
         </main>
+
+        {repoDialog && <RepoOpenDialog onPick={(n) => void openFromRepo(n)} onClose={() => setRepoDialog(false)} />}
 
         {problem && (
           <Modal title="This file can't be loaded" onClose={() => setProblem(null)}>
