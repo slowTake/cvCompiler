@@ -476,7 +476,11 @@
 
 .cv-chip {
   padding: var(--cv-chip-pad);
-  border: var(--cv-chip-border);
+  /* An outline, not a border: it takes no space. Browsers round thin borders
+     differently on screen and in print (Firefox prints 1px as ~0.67px), which
+     moved chip wraps and made the preview's page breaks disagree with the PDF. */
+  outline: var(--cv-chip-border);
+  outline-offset: -1px;
   border-radius: var(--cv-chip-radius);
   background: var(--cv-chip-bg);
   color: var(--cv-chip-color);
