@@ -164,6 +164,10 @@ textarea {
 }
 
 .ui-pane {
+  /* Positioned, so absolutely placed descendants (the screen-reader-only
+     labels in compact lists) are clipped by this scroll box instead of
+     stretching the whole page. */
+  position: relative;
   min-height: 0;
   overflow: auto;
 }
@@ -606,6 +610,10 @@ textarea {
 }
 
 /* Repeated rows keep their labels for screen readers only. */
+.ui-entry-list-compact .ui-entry-row:not(:first-child) .ui-field {
+  position: relative;
+}
+
 .ui-entry-list-compact .ui-entry-row:not(:first-child) .ui-field > label {
   position: absolute;
   width: 1px;
