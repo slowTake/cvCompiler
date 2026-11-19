@@ -1083,3 +1083,187 @@ textarea {
   width: 100%;
   justify-content: flex-start;
 }
+
+/* ---- PDF import review --------------------------------------------------- */
+.ui-review-intro {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.ui-review-note,
+.ui-review-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-warn-bg);
+  color: var(--ui-warn-ink);
+  font-size: 12.5px;
+}
+
+.ui-review-warn svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.ui-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 16px;
+  height: min(68vh, 760px);
+}
+
+.ui-review-pdf,
+.ui-review-form {
+  overflow: auto;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.ui-review-pdf {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-preview-bg);
+}
+
+.ui-review-pdf img {
+  width: 100%;
+  height: auto;
+  box-shadow: var(--ui-shadow);
+}
+
+.ui-review-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0 14px;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.ui-review-group h3 {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ui-muted);
+}
+
+.ui-review-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-panel-2);
+}
+
+.ui-review-entry.is-flagged,
+.ui-review-flagged > .ui-field input,
+.ui-review-flagged .ui-field-row input {
+  border-color: var(--ui-warn-ink);
+}
+
+.ui-review-contact {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.ui-review-contact input,
+.ui-review-contact select,
+.ui-review-actions select {
+  padding: 5px 8px;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+  font: inherit;
+}
+
+.ui-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.ui-review-unplaced ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-review-unplaced li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px dashed var(--ui-warn-ink);
+  border-radius: var(--ui-radius-sm);
+}
+
+.ui-review-unplaced-text {
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+
+.ui-review-footer {
+  align-items: center;
+}
+
+.ui-review-footer > .ui-muted {
+  margin-right: auto;
+}
+
+@media (max-width: 760px) {
+  .ui-review {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .ui-review-pdf {
+    max-height: 40vh;
+  }
+}
+
+/* Drag a file anywhere onto the app to import it. */
+.ui-drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+
+.ui-drop-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 36px;
+  border: 2px dashed var(--ui-accent);
+  border-radius: 14px;
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+  text-align: center;
+  box-shadow: var(--ui-shadow);
+}
+
+.ui-drop-card strong {
+  font-size: 16px;
+}

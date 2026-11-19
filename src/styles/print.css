@@ -43,4 +43,16 @@
   .print-root a {
     text-decoration: none;
   }
+
+  /* The embedded-data link (pdf/embed.ts). It needs a painted box to become
+     a PDF link, so no opacity:0 or display:none, and no text inside. */
+  .print-root .cv-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: block;
+    width: 2px;
+    height: 2px;
+  }
 }

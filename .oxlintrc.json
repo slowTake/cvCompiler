@@ -11,7 +11,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "no-unused-vars": "error",
     "eqeqeq": "error",
-    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css", "./templates/themes"] }]
+    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css", "./templates/themes", "../templates/themes", "./styles", "../src/styles"] }]
   },
   "ignorePatterns": ["dist", "node_modules"]
 }
