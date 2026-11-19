@@ -32,12 +32,31 @@ export function Preview({ doc, onEdit }: { doc: CvDocument; onEdit?: (target: Ed
     return () => observer.disconnect();
   }, []);
 
+  // Bundled fonts load on first use and change line widths, so measure again.
+  const [fontsLoaded, setFontsLoaded] = useState(0);
+  useEffect(() => {
+    const onLoaded = () => setFontsLoaded((n) => n + 1);
+    document.fonts.addEventListener('loadingdone', onLoaded);
+    return () => document.fonts.removeEventListener('loadingdone', onLoaded);
+  }, []);
+
   // Content, template and style (all inside doc) move page breaks.
   useLayoutEffect(() => {
     if (!sheetRef.current) return;
     const count = paginate(sheetRef.current);
     setPages((prev) => (prev === count ? prev : count));
-  }, [doc]);
+  }, [doc, fontsLoaded]);
+
+  // Clicking the CV opens what was clicked in the form. Links still open with Ctrl/⌘.
+  const onSheetClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (!onEdit || !(e.target instanceof Element)) return;
+    const link = e.target.closest('a');
+    if (link && (e.metaKey || e.ctrlKey)) return;
+    if (window.getSelection()?.toString()) return; // selecting text, not clicking
+    const target = editTargetAt(e.target);
+    if (link) e.preventDefault();
+    if (target) onEdit(target);
+  };
 
   // Clicking the CV opens what was clicked in the form. Links still open with Ctrl/⌘.
   const onSheetClick = (e: MouseEvent<HTMLDivElement>) => {
