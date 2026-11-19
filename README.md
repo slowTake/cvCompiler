@@ -62,6 +62,10 @@ Keep the real copy in a file:
   then **Save** (Ctrl/⌘+S) writes straight back to it. **Save as…** picks a
   new file.
 - **Any browser:** **Export** downloads the JSON, **Import** loads one.
+- **Under `npm run dev`:** **Save to repo** writes the JSON to the `saves/`
+  folder of your checkout (git-ignored), and **Open from repo** lists what is
+  there. This works in Firefox too, where **Save** also goes to `saves/`.
+  Production builds have no such folder.
 
 **Demo** resets to the fictional sample CV.
 

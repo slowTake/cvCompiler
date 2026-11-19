@@ -1,6 +1,11 @@
 /// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
+import { cvSaves } from './server/savesPlugin';
+
+const root = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Second line of defence for data/cv.private.json. The app only reaches for
@@ -23,7 +28,7 @@ function stripPrivateData(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), stripPrivateData()],
+  plugins: [react(), stripPrivateData(), cvSaves(path.join(root, 'saves'))],
   build: {
     target: 'es2020',
     sourcemap: false,

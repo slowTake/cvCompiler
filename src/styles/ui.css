@@ -1062,3 +1062,16 @@ textarea {
   font-size: 12px;
   font-weight: 600;
 }
+
+.ui-save-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.ui-save-list .ui-btn {
+  width: 100%;
+  justify-content: flex-start;
+}
