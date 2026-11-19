@@ -6,3 +6,9 @@ dist
 
 # Personal CV data: never commit, never ship.
 data/cv.private.json
+
+# Real CVs and exports: never commit.
+raw_cvs/
+
+# Local tooling
+.claude/

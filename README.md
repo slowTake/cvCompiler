@@ -4,7 +4,85 @@ A static, local-first CV editor. Edit a structured CV in a form next to a live
 A4 preview, then export a styled PDF with the browser's **Print → Save as PDF**.
 There is no backend, no account and no tracking: your CV stays on your machine.
 
-## Setup
+![The editor: form on the left, live A4 preview on the right](docs/images/editor.webp)
+
+## Quick start
+
+You need [Node.js](https://nodejs.org) 18.18 or newer and a modern browser
+(Chrome, Edge, Brave or Arc give the best experience; Firefox and Safari work
+too).
+
+```bash
+git clone https://github.com/slowTake/cvCompiler.git
+cd cvCompiler
+npm install
+npm run dev
+```
+
+Open <http://localhost:5173>. The app starts with a fictional demo CV so you
+can see how everything works before you enter anything of your own.
+
+## User guide
+
+### 1. Edit your CV
+
+The left panel is the form; the right panel is the live preview, which
+updates as you type. Use the chips at the top of the form to jump to a
+section: Design, Sections, Identity, Skills, Education, Experience, Projects
+and Languages. You can also click text in the preview to jump to the matching
+field.
+
+- **Entries** (jobs, education, projects) can be added, reordered with the
+  up/down arrows, and deleted.
+- **Bold** a word in any description by wrapping it in `**double asterisks**`
+  or by selecting it and pressing Ctrl/⌘+B.
+- **Contact** details are a list: pick a kind (phone, email, website, …) and
+  a value. Add as many as you like.
+- **Document & sections** lets you rename sections, hide ones you don't want,
+  and move any section between the columns.
+
+### 2. Pick a design
+
+Open **Design → Templates…** and choose from ten templates, grouped by layout:
+sidebar, single column (the most ATS-friendly) and header band. Your content
+is kept when you switch.
+
+![Template gallery](docs/images/templates.webp)
+
+Under **Design** you can also override the accent colour, fonts, density,
+header case, sidebar width and type scale. **Reset to template** undoes all
+overrides.
+
+### 3. Save your work
+
+Changes are cached in your browser automatically, but that is not a backup.
+Keep the real copy in a file:
+
+- **Chrome / Edge / Brave / Arc:** click **Open…** to bind a `.json` file,
+  then **Save** (Ctrl/⌘+S) writes straight back to it. **Save as…** picks a
+  new file.
+- **Any browser:** **Export** downloads the JSON, **Import** loads one.
+
+**Demo** resets to the fictional sample CV.
+
+### 4. Export a PDF
+
+Click **Print / PDF** (or press Ctrl/⌘+P) and in the print dialog set:
+
+| Setting             | Value                |
+| ------------------- | -------------------- |
+| Destination         | Save as PDF          |
+| Paper size          | A4                   |
+| Margins             | None                 |
+| Background graphics | **On**               |
+| Headers and footers | Off                  |
+
+![Exported PDF](docs/images/pdf-export.webp)
+
+Entries never split across pages and the preview shows the same page breaks
+as the PDF.
+
+## Scripts and setup
 
 Requires Node 18.18 or newer.
 
@@ -121,6 +199,7 @@ enforce this: theme files may only declare `--cv-*` properties.
 ```
 data/                 demo CV (+ your gitignored cv.private.json)
 docs/DATA-MODEL.md    the JSON schema
+docs/images/          README screenshots
 src/model/            types, parsing/normalising, style overrides, colour maths
 src/templates/        registry, skeleton metadata, theme token blocks
 src/preview/          CV renderer, skeleton components, pagination, print root
@@ -128,10 +207,14 @@ src/editor/           form: one component per section, plus shared fields
 src/persistence/      localStorage cache, File System Access, import/export
 src/styles/           cv.css (CV structure), ui.css (editor), print.css
 tests/                Vitest suites
-public/_redirects     SPA fallback for a static host (unused: not deployed)
 ```
 
 ## Running it
 
-cvCompiler is not deployed anywhere. It runs locally only, through
-`npm run dev` or `npm run build` followed by `npm run preview`.
+cvCompiler has no hosted version. Run it locally with `npm run dev`, or
+`npm run build` followed by `npm run preview`. The build in `dist/` is plain
+static files, so any static host will serve it.
+
+## License
+
+[MIT](LICENSE)
