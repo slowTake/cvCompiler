@@ -58,17 +58,6 @@ export function Preview({ doc, onEdit }: { doc: CvDocument; onEdit?: (target: Ed
     if (target) onEdit(target);
   };
 
-  // Clicking the CV opens what was clicked in the form. Links still open with Ctrl/⌘.
-  const onSheetClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (!onEdit || !(e.target instanceof Element)) return;
-    const link = e.target.closest('a');
-    if (link && (e.metaKey || e.ctrlKey)) return;
-    if (window.getSelection()?.toString()) return; // selecting text, not clicking
-    const target = editTargetAt(e.target);
-    if (link) e.preventDefault();
-    if (target) onEdit(target);
-  };
-
   const scale = zoom === 'fit' ? fitScale : zoom;
   const step = (dir: 1 | -1) => {
     const current = scale;
