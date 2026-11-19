@@ -12,6 +12,7 @@ import type { ReactNode } from 'react';
 import { sectionTitle } from '../model/defaults';
 import { parseDescription } from '../model/description';
 import { sectionTitleField } from '../model/editTarget';
+import { parseInline } from '../model/inline';
 import { contactHref, safeHref } from '../model/links';
 import type {
   ContactKind,
@@ -132,13 +133,32 @@ function Tags({ label, items, field }: { label?: string; items: string[] | undef
   );
 }
 
+/** Free text with `**bold**` spans. */
+function Rich({ text }: { text: string }) {
+  return (
+    <>
+      {parseInline(text).map((span, i) =>
+        span.bold ? (
+          <strong className="cv-strong" key={i}>
+            {span.text}
+          </strong>
+        ) : (
+          span.text
+        ),
+      )}
+    </>
+  );
+}
+
 function Bullets({ items, field }: { items: string[] | undefined; field?: string }) {
   const list = (items ?? []).filter(hasText);
   if (list.length === 0) return null;
   return (
     <ul className="cv-bullets" data-edit-field={field}>
       {list.map((b, i) => (
-        <li key={`${i}-${b.slice(0, 16)}`}>{b}</li>
+        <li key={`${i}-${b.slice(0, 16)}`}>
+          <Rich text={b} />
+        </li>
       ))}
     </ul>
   );
@@ -153,7 +173,7 @@ function Description({ text }: { text: string | undefined }) {
       {blocks.map((block, i) =>
         block.kind === 'paragraph' ? (
           <p className="cv-text" key={i}>
-            {block.text}
+            <Rich text={block.text} />
           </p>
         ) : (
           <Bullets key={i} items={block.items} />
@@ -280,7 +300,7 @@ export function CvSection({ config, doc }: { config: SectionConfig; doc: CvDocum
                 <div className="cv-about" data-edit-field="about">
                   {paragraphs(about).map((p, i) => (
                     <p className="cv-text" key={i}>
-                      {p}
+                      <Rich text={p} />
                     </p>
                   ))}
                 </div>

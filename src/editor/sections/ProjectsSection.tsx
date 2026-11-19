@@ -57,6 +57,7 @@ export function ProjectsSection({ title, value, onChange, ...chrome }: Props) {
               value={p.description}
               placeholder={DESCRIPTION_PLACEHOLDER}
               hint={DESCRIPTION_HINT}
+              rich
               onChange={(description) => update({ ...p, description: optional(description) })}
             />
             <TagListField
