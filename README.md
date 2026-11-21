@@ -61,14 +61,13 @@ Keep the real copy in a file:
 - **Chrome / Edge / Brave / Arc:** click **Open…** to bind a `.json` file,
   then **Save** (Ctrl/⌘+S) writes straight back to it. **Save as…** picks a
   new file.
-- **Any browser:** **Export** downloads the JSON, **Import CV…** loads one
-  (or a PDF, see [Edit a PDF later](#5-edit-a-pdf-later)).
+- **Any browser:** drop a `.json` file or a PDF onto the app to load it (see
+  [Edit a PDF later](#5-edit-a-pdf-later)). Where **Save** has no file to
+  write to (Firefox and Safari outside dev), it downloads the JSON.
 - **Under `npm run dev`:** **Save to repo** writes the JSON to the `saves/`
   folder of your checkout (git-ignored), and **Open from repo** lists what is
   there. This works in Firefox too, where **Save** also goes to `saves/`.
   Production builds have no such folder.
-
-**Demo** resets to the fictional sample CV.
 
 ### 4. Export a PDF
 
@@ -89,8 +88,8 @@ as the PDF.
 
 ### 5. Edit a PDF later
 
-Lost the JSON and only have the PDF? Click **Import CV…** (or drop the file
-anywhere on the app) and pick the PDF.
+Lost the JSON and only have the PDF? Drop the file anywhere on the
+app.
 
 - **A PDF exported from cvCompiler** comes back exactly: text, template,
   colours and section layout. Every export carries a compressed copy of your
@@ -136,27 +135,13 @@ places it can live:
    write permission, because files opened for reading are read-only until you
    allow it. The top bar shows the bound file name and a **● Unsaved** marker
    while you have changes that aren't on disk.
-2. **Import / Export JSON (every browser).** Export downloads the document;
-   **Import CV…** loads one, or a PDF. You can also drop either onto the app. In Firefox and Safari, ⌘S / Ctrl+S exports. Import checks
+2. **Drop a file (every browser).** Drop a CV's JSON, or a PDF, onto the app
+   to load it. In Firefox and Safari, ⌘S / Ctrl+S downloads the JSON. Loading checks
    the file and lists clear errors for broken structure (with the JSON path
    of each problem). Invalid optional values are dropped quietly.
 3. **Browser storage (automatic).** Every change is cached in `localStorage`
    so a reload or crash doesn't lose work. This is a cache, not a backup:
    clearing site data removes it. Keep the real copy in a file.
-
-**Demo** replaces the document with the fictional sample CV.
-
-### Private data during development
-
-`data/cv.public.json` is the shipped demo and contains only fictional data.
-To work on your own CV in dev, put it in `data/cv.private.json`. That file:
-
-- is gitignored;
-- loads only in `npm run dev` (behind an `import.meta.env.DEV` guard) when
-  there is no cached document yet, or via the **Private** button;
-- never reaches the production bundle. The DEV branch is removed from builds,
-  and as a second line of defence `vite.config.ts` swaps the file for `null`
-  in any production build.
 
 ## Exporting a PDF
 
@@ -253,7 +238,7 @@ enforce this: theme files may only declare `--cv-*` properties.
 ## Project layout
 
 ```
-data/                 demo CV (+ your gitignored cv.private.json)
+data/                 demo CV
 docs/DATA-MODEL.md    the JSON schema
 docs/images/          README screenshots
 src/model/            types, parsing/normalising, style overrides, colour maths
