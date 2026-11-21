@@ -1,0 +1,32 @@
+/* Blueprint — light grey page, mono labels, boxed skills, a pale band. */
+.cv-theme-blueprint {
+  --cv-page: #f6f7f9;
+  --cv-ink: #1c2330;
+  --cv-muted: #5b6676;
+  --cv-rule: #d5dae2;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 90%, #000000);
+  --cv-name-size: 2.3em;
+  --cv-name-tracking: -0.03em;
+  --cv-heading-size: 0.82em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px solid var(--cv-accent);
+  --cv-heading-pad: 0 0 0.3em;
+  --cv-date-font: var(--cv-font-heading);
+  --cv-date-size: 0.8em;
+  --cv-org-prefix: '@ ';
+  --cv-title-direction: row;
+  --cv-bullet: '+';
+  --cv-band-bg: #e3e9f2;
+  --cv-band-ink: #1c2330;
+  --cv-band-muted: #4b576a;
+  --cv-band-name-color: #1c2330;
+  --cv-band-role-color: var(--cv-accent-ink);
+  --cv-band-icon-color: var(--cv-accent-ink);
+  --cv-band-border: 2px solid var(--cv-accent);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 9em;
+  --cv-chip-bg: #ffffff;
+  --cv-chip-border: 1px solid #b9c4d6;
+  --cv-chip-radius: 2px;
+  --cv-chip-color: var(--cv-ink);
+}

@@ -43,8 +43,8 @@ field.
 
 ### 2. Pick a design
 
-Open **Design → Templates…** and choose from ten templates, grouped by layout:
-sidebar, single column (the most ATS-friendly) and header band. Your content
+Open **Design → Templates…** and choose from twenty-three templates, grouped by layout:
+sidebar, right sidebar, single column (the most ATS-friendly), header band, timeline and split. Your content
 is kept when you switch.
 
 ![Template gallery](docs/images/templates.webp)
@@ -210,16 +210,21 @@ that the unit tests parse, so they run without a browser.
 
 ## Templates
 
-A template is a **layout skeleton × theme**. There are three skeletons:
+A template is a **layout skeleton × theme**. There are six skeletons:
 
 - **Sidebar**: name, contact, about and skills in a side column (30–50% wide),
   everything else in the main column.
+- **Right sidebar**: name and about on the left, skills, education and
+  languages in a side column on the right.
 - **Single column**: top to bottom. The most ATS-friendly.
 - **Header band**: a coloured band with name and contact over a
   single-column body.
+- **Timeline**: one column with a vertical rail and a dot for every entry.
+- **Split**: section labels in a narrow left column, content on the right.
 
-Ten templates ship: Studio (default), Slate, Nocturne, Fern, Classic,
-Minimal, Ledger, Harbor, Sunrise and Graphite. Pick one from the thumbnail
+Twenty-three templates ship: Studio (default), Slate, Nocturne, Fern,
+Terracotta, Cocoa, Ember, Volt, Charcoal, Paper, Classic, Minimal, Ledger, Academic, Swiss, Centred, Harbor,
+Sunrise, Graphite, Blueprint, Console, Timeline and Journal. Pick one from the thumbnail
 gallery under **Design → Templates…**.
 
 **Design** also lets you override the accent colour, font pairing, density,

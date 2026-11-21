@@ -461,7 +461,8 @@ export function parsePdfContent(content: PdfContent): ParsedCv {
       if (title) config.title = title;
       if (sidebar) {
         const inSide = section.region === 'side';
-        if (inSide !== SKELETONS.sidebar.sidebarSections.includes(id)) config.sidebar = inSide;
+        const skeleton = SKELETONS[sidebar.side === 'right' ? 'sidebar-right' : 'sidebar'];
+        if (inSide !== skeleton.sidebarSections.includes(id)) config.sidebar = inSide;
       }
       found.push(config);
     }

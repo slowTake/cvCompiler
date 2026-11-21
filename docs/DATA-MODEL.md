@@ -169,6 +169,9 @@ are quietly dropped, and the rest of the file loads.
 
 | Skeleton      | Templates |
 | ------------- | --------- |
-| `sidebar`     | `studio` (default), `slate`, `nocturne`, `fern` |
-| `single`      | `classic`, `minimal`, `ledger` |
-| `header-band` | `harbor`, `sunrise`, `graphite` |
+| `sidebar`     | `studio` (default), `slate`, `nocturne`, `fern`, `terracotta`, `cocoa`, `ember`, `volt` |
+| `sidebar-right` | `charcoal`, `paper` |
+| `single`      | `classic`, `minimal`, `ledger`, `academic`, `swiss`, `centred` |
+| `header-band` | `harbor`, `sunrise`, `graphite`, `blueprint`, `console` |
+| `timeline`    | `timeline` |
+| `split`       | `journal` |

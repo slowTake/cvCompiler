@@ -1,0 +1,44 @@
+/* Cocoa — light sidebar with brown ribbon headings beside a dark main column. */
+.cv-theme-cocoa {
+  --cv-page: #4b4541;
+  --cv-ink: #f1ece7;
+  --cv-muted: #c9bfb6;
+  --cv-rule: #6a625c;
+  --cv-accent-ink: #e0c2ae;
+  --cv-name-size: 2.1em;
+  --cv-name-weight: 700;
+  --cv-name-tracking: 0.04em;
+  --cv-name-transform: uppercase;
+  --cv-heading-size: 0.95em;
+  --cv-heading-weight: 700;
+  --cv-heading-color: #ffffff;
+  --cv-heading-rule: 1px solid #6a625c;
+  --cv-title-direction: row;
+  --cv-org-color: #c9bfb6;
+  --cv-org-weight: 400;
+  --cv-bullet: '•';
+  --cv-bullet-color: #e0c2ae;
+  --cv-icon-color: #e0c2ae;
+  --cv-link-marker-color: #e0c2ae;
+  --cv-chip-bg: #5b544f;
+  --cv-chip-border: none;
+  --cv-chip-color: #f1ece7;
+  --cv-sidebar-bg: #f2f0ee;
+  --cv-sidebar-ink: #2d2926;
+  --cv-sidebar-muted: #6a625c;
+  --cv-sidebar-rule: #d9d3cd;
+  --cv-sidebar-accent-ink: var(--cv-accent);
+  --cv-sidebar-name-color: #2d2926;
+  --cv-sidebar-role-color: var(--cv-accent);
+  --cv-sidebar-icon-color: var(--cv-accent);
+  --cv-sidebar-heading-color: #ffffff;
+  --cv-sidebar-heading-bg: var(--cv-accent);
+  --cv-sidebar-heading-rule: none;
+  --cv-sidebar-heading-bar: 0 solid transparent;
+  --cv-sidebar-chip-bg: transparent;
+  --cv-sidebar-chip-border: none;
+  --cv-sidebar-chip-color: #2d2926;
+  --cv-sidebar-bullet-color: var(--cv-accent);
+  --cv-sidebar-link-marker-color: var(--cv-accent);
+  --cv-sidebar-heading-pad: 0.25em 0.6em;
+}

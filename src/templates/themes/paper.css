@@ -1,0 +1,40 @@
+/* Paper — soft grey page, plain medium-weight headings, narrow details column. */
+.cv-theme-paper {
+  --cv-page: #f5f5f3;
+  --cv-ink: #2a2b2d;
+  --cv-muted: #6a6c70;
+  --cv-rule: #dcdcd8;
+  --cv-accent-ink: var(--cv-accent);
+  --cv-name-size: 1.9em;
+  --cv-name-weight: 600;
+  --cv-name-tracking: -0.01em;
+  --cv-role-size: 1em;
+  --cv-role-weight: 400;
+  --cv-role-color: var(--cv-muted);
+  --cv-identity-rule: none;
+  --cv-heading-size: 1.05em;
+  --cv-heading-weight: 600;
+  --cv-heading-color: var(--cv-ink);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0;
+  --cv-entry-head-direction: column;
+  --cv-title-direction: row;
+  --cv-org-prefix: '– ';
+  --cv-org-color: var(--cv-ink);
+  --cv-org-weight: 400;
+  --cv-meta-direction: row;
+  --cv-meta-align: baseline;
+  --cv-meta-text-align: left;
+  --cv-bullet: '•';
+  --cv-bullet-color: var(--cv-ink);
+  --cv-icon-display: none;
+  --cv-link-marker: '';
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-sep: ',';
+  --cv-skill-group-direction: column;
+  --cv-sidebar-bg: transparent;
+  --cv-sidebar-inset-x: 8mm;
+  --cv-sidebar-pad-x: 4mm;
+}

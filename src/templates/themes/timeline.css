@@ -1,0 +1,29 @@
+/* Timeline — a vertical rail with a dot per entry, quiet sans-serif. */
+.cv-theme-timeline {
+  --cv-ink: #1f2430;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 88%, #000000);
+  --cv-name-size: 2.4em;
+  --cv-name-weight: 700;
+  --cv-name-tracking: -0.025em;
+  --cv-role-weight: 500;
+  --cv-identity-rule: 1px solid var(--cv-rule);
+  --cv-heading-size: 0.9em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0;
+  --cv-title-direction: row;
+  --cv-org-prefix: '· ';
+  --cv-org-color: var(--cv-muted);
+  --cv-org-weight: 500;
+  --cv-date-size: 0.85em;
+  --cv-bullet: '–';
+  --cv-bullet-color: var(--cv-muted);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 8.5em;
+  --cv-chip-bg: var(--cv-accent-faint);
+  --cv-chip-border: none;
+  --cv-chip-radius: 999px;
+  --cv-chip-pad: 0.05em 0.65em;
+  --cv-timeline-rail: var(--cv-timeline-rail-width) solid color-mix(in srgb, var(--cv-accent) 35%, var(--cv-page));
+  --cv-timeline-dot: var(--cv-accent);
+}

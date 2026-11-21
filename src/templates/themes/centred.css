@@ -1,0 +1,33 @@
+/* Centred — name centred over a hairline, centred headings, inline skills. */
+.cv-theme-centred {
+  --cv-ink: #25262b;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 85%, #000000);
+  --cv-identity-align: center;
+  --cv-identity-text-align: center;
+  --cv-identity-rule: 1px solid var(--cv-accent);
+  --cv-name-size: 2.6em;
+  --cv-name-weight: 600;
+  --cv-name-tracking: 0.01em;
+  --cv-role-color: var(--cv-muted);
+  --cv-role-weight: 400;
+  --cv-heading-size: 0.92em;
+  --cv-heading-align: center;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px solid var(--cv-rule);
+  --cv-heading-pad: 0 0 0.45em;
+  --cv-title-direction: row;
+  --cv-org-prefix: '· ';
+  --cv-org-color: var(--cv-muted);
+  --cv-org-weight: 400;
+  --cv-icon-display: none;
+  --cv-link-marker: '';
+  --cv-bullet: '•';
+  --cv-bullet-color: var(--cv-accent);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 8em;
+  --cv-skill-name-suffix: ':';
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-sep: ' ·';
+}

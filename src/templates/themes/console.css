@@ -1,0 +1,41 @@
+/* Console — dark mono page, boxed skills, hairline panels. */
+.cv-theme-console {
+  --cv-page: #1b1c1e;
+  --cv-ink: #e4e6e8;
+  --cv-muted: #9aa0a6;
+  --cv-rule: #3b3e42;
+  --cv-accent-ink: #7fd1b9;
+  --cv-name-size: 2.2em;
+  --cv-name-weight: 700;
+  --cv-name-tracking: -0.02em;
+  --cv-name-color: #ffffff;
+  --cv-role-color: var(--cv-accent-ink);
+  --cv-role-weight: 400;
+  --cv-heading-size: 0.82em;
+  --cv-heading-weight: 500;
+  --cv-heading-color: var(--cv-muted);
+  --cv-heading-rule: 1px solid #4b4f54;
+  --cv-org-prefix: '|| ';
+  --cv-title-direction: row;
+  --cv-org-color: var(--cv-muted);
+  --cv-org-weight: 400;
+  --cv-date-font: var(--cv-font-heading);
+  --cv-date-size: 0.8em;
+  --cv-bullet: '+';
+  --cv-bullet-color: var(--cv-accent-ink);
+  --cv-icon-color: var(--cv-accent-ink);
+  --cv-link-marker-color: var(--cv-accent-ink);
+  --cv-band-bg: #26282b;
+  --cv-band-ink: #e4e6e8;
+  --cv-band-muted: #aeb3b8;
+  --cv-band-name-color: #ffffff;
+  --cv-band-role-color: #7fd1b9;
+  --cv-band-icon-color: #7fd1b9;
+  --cv-band-border: 1px solid #4b4f54;
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 9em;
+  --cv-chip-bg: transparent;
+  --cv-chip-border: 1px solid #5a5f65;
+  --cv-chip-radius: 1px;
+  --cv-chip-color: var(--cv-ink);
+}

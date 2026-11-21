@@ -1,0 +1,47 @@
+/* Ember — near-black page, copper accents, pill skills, heavy name. */
+.cv-theme-ember {
+  --cv-page: #1e1c1b;
+  --cv-ink: #eeeae6;
+  --cv-muted: #aaa29b;
+  --cv-rule: #3d3936;
+  --cv-accent-ink: #e0a96a;
+  --cv-name-size: 2.5em;
+  --cv-name-weight: 800;
+  --cv-name-transform: uppercase;
+  --cv-name-tracking: 0.01em;
+  --cv-name-color: #ffffff;
+  --cv-role-size: 1em;
+  --cv-role-weight: 400;
+  --cv-role-color: var(--cv-muted);
+  --cv-heading-size: 0.95em;
+  --cv-heading-color: #ffffff;
+  --cv-heading-rule: 1px solid #55504b;
+  --cv-title-direction: row;
+  --cv-org-color: var(--cv-muted);
+  --cv-org-weight: 400;
+  --cv-bullet: '•';
+  --cv-bullet-color: var(--cv-accent-ink);
+  --cv-icon-color: var(--cv-accent-ink);
+  --cv-link-marker-color: var(--cv-accent-ink);
+  --cv-chip-bg: #e9e6e2;
+  --cv-chip-border: none;
+  --cv-chip-color: #231f1d;
+  --cv-chip-radius: 999px;
+  --cv-chip-pad: 0.05em 0.7em;
+  --cv-sidebar-bg: #272422;
+  --cv-sidebar-divider: 1px solid #4a4541;
+  --cv-sidebar-ink: #eeeae6;
+  --cv-sidebar-muted: #aaa29b;
+  --cv-sidebar-rule: #4a4541;
+  --cv-sidebar-accent-ink: #e0a96a;
+  --cv-sidebar-name-color: #ffffff;
+  --cv-sidebar-role-color: #e0a96a;
+  --cv-sidebar-icon-color: #e0a96a;
+  --cv-sidebar-heading-color: #ffffff;
+  --cv-sidebar-heading-rule: 1px solid #55504b;
+  --cv-sidebar-chip-bg: #e9e6e2;
+  --cv-sidebar-chip-border: none;
+  --cv-sidebar-chip-color: #231f1d;
+  --cv-sidebar-bullet-color: #e0a96a;
+  --cv-sidebar-link-marker-color: #e0a96a;
+}

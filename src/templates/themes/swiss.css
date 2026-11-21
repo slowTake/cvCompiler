@@ -1,0 +1,36 @@
+/* Swiss — large grotesk name, one hard accent, flush-left grid, lots of air. */
+.cv-theme-swiss {
+  --cv-ink: #111111;
+  --cv-muted: #5c5c5c;
+  --cv-rule: #d9d9d9;
+  --cv-accent-ink: var(--cv-accent);
+  --cv-name-size: 3.3em;
+  --cv-name-weight: 800;
+  --cv-name-tracking: -0.05em;
+  --cv-role-size: 1.2em;
+  --cv-role-weight: 500;
+  --cv-role-color: var(--cv-accent);
+  --cv-identity-rule: 4px solid var(--cv-ink);
+  --cv-heading-size: 1em;
+  --cv-heading-weight: 800;
+  --cv-heading-color: var(--cv-ink);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0;
+  --cv-entry-title-size: 1.05em;
+  --cv-entry-title-weight: 700;
+  --cv-org-color: var(--cv-accent);
+  --cv-org-weight: 600;
+  --cv-date-size: 0.85em;
+  --cv-bullet: '■';
+  --cv-bullet-color: var(--cv-accent);
+  --cv-icon-color: var(--cv-ink);
+  --cv-link-marker-color: var(--cv-accent);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 8em;
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-sep: ' /';
+  --cv-pad-x: 16mm;
+  --cv-section-gap: 7mm;
+}

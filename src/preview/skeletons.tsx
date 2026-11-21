@@ -33,6 +33,26 @@ function SidebarSkeleton({ doc, sections }: SkeletonProps) {
   );
 }
 
+function SidebarRightSkeleton({ doc, sections }: SkeletonProps) {
+  const side = sections.filter((s) => isInSidebar(SKELETONS['sidebar-right'], s));
+  const main = sections.filter((s) => !isInSidebar(SKELETONS['sidebar-right'], s));
+  return (
+    <>
+      <div className="cv-fill cv-fill-page" />
+      <div className="cv-fill cv-fill-sidebar" />
+      <div className="cv-content">
+        <div className="cv-col cv-main">
+          <div className="cv-block">
+            <IdentityBlock identity={doc.identity} />
+          </div>
+          {renderSections(doc, main)}
+        </div>
+        <aside className="cv-col cv-aside">{renderSections(doc, side)}</aside>
+      </div>
+    </>
+  );
+}
+
 function SingleSkeleton({ doc, sections }: SkeletonProps) {
   return (
     <>
@@ -67,4 +87,8 @@ export const SKELETON_COMPONENTS: Record<SkeletonId, ComponentType<SkeletonProps
   sidebar: SidebarSkeleton,
   single: SingleSkeleton,
   'header-band': HeaderBandSkeleton,
+  'sidebar-right': SidebarRightSkeleton,
+  // Same markup as the single column; the stylesheet draws the rail and the label column.
+  timeline: SingleSkeleton,
+  split: SingleSkeleton,
 };

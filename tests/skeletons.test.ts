@@ -31,3 +31,18 @@ describe('sidebar placement', () => {
     expect(toggleSidebar(sidebar, section('languages'))).toEqual(section('languages', { sidebar: false }));
   });
 });
+
+describe('right sidebar placement', () => {
+  const right = SKELETONS['sidebar-right'];
+
+  it('puts skills, education and languages in the side column; about stays in the main one', () => {
+    expect(['skills', 'education', 'languages'].every((id) => isInSidebar(right, section(id as SectionConfig['id'])))).toBe(true);
+    expect(isInSidebar(right, section('about'))).toBe(false);
+    expect(isInSidebar(right, section('experience'))).toBe(false);
+  });
+
+  it('measures toggles against its own defaults', () => {
+    expect(toggleSidebar(right, section('education'))).toEqual(section('education', { sidebar: false }));
+    expect(toggleSidebar(right, section('about'))).toEqual(section('about', { sidebar: true }));
+  });
+});

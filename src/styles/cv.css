@@ -50,6 +50,8 @@
   --cv-heading-rule: 1px solid var(--cv-rule);
   --cv-heading-pad: 0 0 0.35em;
   --cv-heading-radius: 0;
+  --cv-heading-variant: normal;
+  --cv-heading-align: left;
 
   /* Entries */
   --cv-entry-head-direction: row;
@@ -105,6 +107,9 @@
   /* Sidebar skeleton */
   --cv-sidebar-bg: var(--cv-accent-faint);
   --cv-sidebar-divider: none;
+  --cv-sidebar-inset-x: 0mm;
+  --cv-sidebar-inset-y: 0mm;
+  --cv-sidebar-radius: 0;
   --cv-sidebar-ink: var(--cv-ink);
   --cv-sidebar-muted: var(--cv-muted);
   --cv-sidebar-rule: var(--cv-rule);
@@ -116,11 +121,23 @@
   --cv-sidebar-heading-bg: var(--cv-heading-bg);
   --cv-sidebar-heading-rule: var(--cv-heading-rule);
   --cv-sidebar-heading-bar: var(--cv-heading-bar);
+  --cv-sidebar-heading-pad: var(--cv-heading-pad);
   --cv-sidebar-chip-bg: var(--cv-chip-bg);
   --cv-sidebar-chip-border: var(--cv-chip-border);
   --cv-sidebar-chip-color: var(--cv-chip-color);
   --cv-sidebar-link-marker-color: var(--cv-link-marker-color);
   --cv-sidebar-bullet-color: var(--cv-bullet-color);
+
+  /* Timeline skeleton */
+  --cv-timeline-rail-width: 1.5px;
+  --cv-timeline-rail: var(--cv-timeline-rail-width) solid var(--cv-accent-soft);
+  --cv-timeline-gap: 5mm;
+  --cv-timeline-dot: var(--cv-accent);
+  --cv-timeline-dot-size: 2.4mm;
+
+  /* Split skeleton */
+  --cv-split-label: 30mm;
+  --cv-split-gap: 6mm;
 
   /* Header band skeleton */
   --cv-band-bg: var(--cv-accent);
@@ -192,9 +209,13 @@
 }
 
 .cv-fill-sidebar {
-  width: var(--cv-sidebar-width);
+  top: var(--cv-sidebar-inset-y);
+  bottom: var(--cv-sidebar-inset-y);
+  left: var(--cv-sidebar-inset-x);
+  width: calc(var(--cv-sidebar-width) - var(--cv-sidebar-inset-x));
   background: var(--cv-sidebar-bg);
   border-right: var(--cv-sidebar-divider);
+  border-radius: var(--cv-sidebar-radius);
 }
 
 .cv-content {
@@ -227,7 +248,29 @@
   grid-template-columns: var(--cv-sidebar-width) minmax(0, 1fr);
 }
 
+.cv-skeleton-sidebar-right .cv-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--cv-sidebar-width);
+}
+
+/* An inset sidebar card keeps its content inside the card. */
 .cv-skeleton-sidebar .cv-aside {
+  margin-left: var(--cv-sidebar-inset-x);
+}
+
+.cv-skeleton-sidebar-right .cv-aside {
+  margin-right: var(--cv-sidebar-inset-x);
+}
+
+/* Right sidebar: the fill moves to the right edge. */
+.cv-skeleton-sidebar-right .cv-fill-sidebar {
+  right: var(--cv-sidebar-inset-x);
+  left: auto;
+  border-right: none;
+  border-left: var(--cv-sidebar-divider);
+}
+
+:is(.cv-skeleton-sidebar, .cv-skeleton-sidebar-right) .cv-aside {
   padding-inline: calc(var(--cv-sidebar-pad-x) * var(--cv-density));
   color: var(--cv-sidebar-ink);
   --cv-ink: var(--cv-sidebar-ink);
@@ -241,6 +284,7 @@
   --cv-heading-bg: var(--cv-sidebar-heading-bg);
   --cv-heading-rule: var(--cv-sidebar-heading-rule);
   --cv-heading-bar: var(--cv-sidebar-heading-bar);
+  --cv-heading-pad: var(--cv-sidebar-heading-pad);
   --cv-chip-bg: var(--cv-sidebar-chip-bg);
   --cv-chip-border: var(--cv-sidebar-chip-border);
   --cv-chip-color: var(--cv-sidebar-chip-color);
@@ -251,7 +295,7 @@
   --cv-org-color: var(--cv-sidebar-accent-ink);
 }
 
-.cv-skeleton-sidebar .cv-aside .cv-name {
+:is(.cv-skeleton-sidebar, .cv-skeleton-sidebar-right) .cv-aside .cv-name {
   font-size: calc(var(--cv-name-size) * 0.86);
 }
 
@@ -274,6 +318,58 @@
   padding-top: calc(var(--cv-pad-y) * var(--cv-density) * 0.75);
 }
 
+/* ---- Skeleton: timeline -------------------------------------------------- */
+/* A rail down the left of every entry, with a dot at its top. Entries touch,
+   so the rail runs unbroken through a section; the gap becomes bottom padding. */
+.cv-skeleton-timeline .cv-section {
+  gap: 0;
+}
+
+.cv-skeleton-timeline .cv-entry {
+  position: relative;
+  margin-left: calc(var(--cv-timeline-dot-size) / 2);
+  padding-left: var(--cv-timeline-gap);
+  border-left: var(--cv-timeline-rail);
+}
+
+.cv-skeleton-timeline .cv-block:not(:last-child) .cv-entry {
+  padding-bottom: calc(var(--cv-entry-gap) * var(--cv-density) * var(--cv-section-spacing, 1));
+}
+
+.cv-skeleton-timeline .cv-entry::before {
+  content: '';
+  position: absolute;
+  top: 0.35em;
+  left: calc(var(--cv-timeline-dot-size) / -2 - var(--cv-timeline-rail-width) / 2);
+  width: var(--cv-timeline-dot-size);
+  height: var(--cv-timeline-dot-size);
+  border-radius: 50%;
+  background: var(--cv-timeline-dot);
+}
+
+/* Items other than entries (skills, about) stay flush with the heading. */
+.cv-skeleton-timeline .cv-section:not(.cv-section-experience, .cv-section-education, .cv-section-projects) {
+  gap: calc(var(--cv-entry-gap) * var(--cv-density) * var(--cv-section-spacing, 1));
+}
+
+/* ---- Skeleton: split ----------------------------------------------------- */
+/* The first block holds the heading plus the first item: heading goes left,
+   item right. Later blocks line up under the first item. */
+.cv-skeleton-split .cv-section > .cv-block:first-child {
+  display: grid;
+  grid-template-columns: var(--cv-split-label) minmax(0, 1fr);
+  column-gap: var(--cv-split-gap);
+  align-items: start;
+}
+
+.cv-skeleton-split .cv-section > .cv-block:first-child > .cv-heading {
+  margin: 0;
+}
+
+.cv-skeleton-split .cv-section > .cv-block:not(:first-child) {
+  margin-left: calc(var(--cv-split-label) + var(--cv-split-gap));
+}
+
 /* ---- Identity ------------------------------------------------------------ */
 .cv-identity {
   display: flex;
@@ -283,7 +379,7 @@
   text-align: var(--cv-identity-text-align);
 }
 
-.cv-skeleton-single .cv-identity {
+:is(.cv-skeleton-single, .cv-skeleton-timeline, .cv-skeleton-split, .cv-skeleton-sidebar-right) .cv-identity {
   padding-bottom: calc(var(--cv-section-gap) * var(--cv-density) * 0.6);
   border-bottom: var(--cv-identity-rule);
 }
@@ -317,8 +413,7 @@
   gap: 0.3em;
 }
 
-.cv-skeleton-single .cv-contact,
-.cv-skeleton-header-band .cv-contact {
+:is(.cv-skeleton-single, .cv-skeleton-timeline, .cv-skeleton-split, .cv-skeleton-header-band, .cv-skeleton-sidebar-right) .cv-contact {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: var(--cv-identity-align);
@@ -380,6 +475,8 @@
   font-weight: var(--cv-heading-weight);
   letter-spacing: var(--cv-heading-tracking);
   text-transform: var(--cv-heading-transform);
+  font-variant-caps: var(--cv-heading-variant);
+  text-align: var(--cv-heading-align);
   line-height: 1.3;
   break-after: avoid;
 }
