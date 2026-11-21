@@ -1,12 +1,9 @@
 import {
-  Download,
   FileText,
   FolderGit2,
   FolderOpen,
   Printer,
-  RotateCcw,
   Save,
-  Sparkles,
   Upload,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -24,7 +21,6 @@ import {
   supportsFileSystemAccess,
   writeToHandle,
 } from './persistence/fileAccess';
-import { demoDocument, hasPrivateDocument, loadPrivateDocument } from './persistence/initialData';
 import { readRepoSave, supportsRepoSaves, writeRepoSave } from './persistence/repoSaves';
 import { useCvDocument } from './persistence/useCvDocument';
 import { Preview } from './preview/Preview';
@@ -184,19 +180,6 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     if (confirmDiscard()) setRepoDialog(true);
   }, [confirmDiscard]);
 
-  const loadDemo = useCallback(() => {
-    if (!confirmDiscard()) return;
-    replace(demoDocument(), null);
-    notify('Loaded the demo CV');
-  }, [confirmDiscard, replace, notify]);
-
-  const loadPrivate = useCallback(async () => {
-    if (!confirmDiscard()) return;
-    const next = await loadPrivateDocument();
-    if (next) replace(next, { name: 'cv.private.json (dev)' });
-    else notify('data/cv.private.json is missing or invalid', { tone: 'error' });
-  }, [confirmDiscard, replace, notify]);
-
   // Keyboard shortcuts. Read the latest callbacks through a ref.
   const actions = useRef({ save, saveAs, open, importCv });
   actions.current = { save, saveAs, open, importCv };
@@ -331,31 +314,6 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
                 </button>
                 <span className="ui-toolbar-sep" />
               </>
-            )}
-            <button
-              type="button"
-              className="ui-btn ui-btn-ghost"
-              onClick={() => void importCv()}
-              title="Import a CV from its .json file or a PDF. You can also drop a file anywhere."
-            >
-              <Upload size={15} /> Import CV…
-            </button>
-            <button type="button" className="ui-btn ui-btn-ghost" onClick={exportJson} title="Download as JSON">
-              <Download size={15} /> Export
-            </button>
-            <span className="ui-toolbar-sep" />
-            <button type="button" className="ui-btn ui-btn-ghost" onClick={loadDemo} title="Replace with the demo CV">
-              <RotateCcw size={15} /> Demo
-            </button>
-            {hasPrivateDocument && (
-              <button
-                type="button"
-                className="ui-btn ui-btn-ghost"
-                onClick={() => void loadPrivate()}
-                title="Load data/cv.private.json (dev only)"
-              >
-                <Sparkles size={15} /> Private
-              </button>
             )}
             <button type="button" className="ui-btn ui-btn-primary" onClick={() => window.print()}>
               <Printer size={15} /> Print / PDF
