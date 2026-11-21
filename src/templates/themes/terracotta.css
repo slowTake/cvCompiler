@@ -1,0 +1,30 @@
+/* Terracotta — cream page, warm brown sidebar, serif headings. */
+.cv-theme-terracotta {
+  --cv-page: #fbf6ee;
+  --cv-ink: #3a2a22;
+  --cv-muted: #7d675b;
+  --cv-rule: #e8dccd;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 90%, #000000);
+  --cv-heading-size: 0.95em;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: 1px solid #e2d3bf;
+  --cv-name-weight: 600;
+  --cv-bullet: '•';
+  --cv-sidebar-bg: #5a3a2c;
+  --cv-sidebar-ink: #f6ebdc;
+  --cv-sidebar-muted: #d2bba7;
+  --cv-sidebar-rule: #7a5645;
+  --cv-sidebar-accent-ink: #f0c3a4;
+  --cv-sidebar-name-color: #fff7ea;
+  --cv-sidebar-role-color: #f0c3a4;
+  --cv-sidebar-icon-color: #f0c3a4;
+  --cv-sidebar-heading-color: #f0c3a4;
+  --cv-sidebar-heading-rule: 1px solid #7a5645;
+  --cv-sidebar-chip-bg: #6b4637;
+  --cv-sidebar-chip-border: 1px solid #7a5645;
+  --cv-sidebar-chip-color: #f6ebdc;
+  --cv-sidebar-link-marker-color: #f0c3a4;
+  --cv-sidebar-bullet-color: #f0c3a4;
+  --cv-chip-bg: #f3e6d4;
+  --cv-chip-border: 1px solid #e6d3bb;
+}

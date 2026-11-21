@@ -1,0 +1,35 @@
+/* Journal — section labels in a narrow left column, content on the right. */
+.cv-theme-journal {
+  --cv-ink: #202125;
+  --cv-accent-ink: color-mix(in srgb, var(--cv-accent) 85%, #000000);
+  --cv-name-size: 2.7em;
+  --cv-name-weight: 300;
+  --cv-name-tracking: -0.03em;
+  --cv-role-weight: 400;
+  --cv-role-color: var(--cv-muted);
+  --cv-identity-rule: 1px solid var(--cv-ink);
+  --cv-heading-size: 0.8em;
+  --cv-heading-weight: 600;
+  --cv-heading-color: var(--cv-accent-ink);
+  --cv-heading-rule: none;
+  --cv-heading-pad: 0.2em 0 0;
+  --cv-entry-head-direction: column;
+  --cv-title-direction: row;
+  --cv-org-prefix: '· ';
+  --cv-org-color: var(--cv-ink);
+  --cv-org-weight: 400;
+  --cv-meta-direction: row;
+  --cv-meta-align: baseline;
+  --cv-meta-text-align: left;
+  --cv-meta-sep: '· ';
+  --cv-date-size: 0.85em;
+  --cv-bullet: '–';
+  --cv-bullet-color: var(--cv-muted);
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 7em;
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-sep: ',';
+  --cv-split-label: 32mm;
+}

@@ -1,0 +1,46 @@
+/* Volt — charcoal page, electric lime headings, mono labels over a sans body. */
+.cv-theme-volt {
+  --cv-page: #2b2d2f;
+  --cv-ink: #e8eae6;
+  --cv-muted: #a9aea6;
+  --cv-rule: #4a4e4a;
+  --cv-accent-ink: #b6f23a;
+  --cv-name-size: 2.5em;
+  --cv-name-weight: 800;
+  --cv-name-tracking: -0.02em;
+  --cv-name-color: #b6f23a;
+  --cv-role-size: 1em;
+  --cv-role-weight: 400;
+  --cv-role-color: var(--cv-muted);
+  --cv-heading-size: 0.88em;
+  --cv-heading-color: #b6f23a;
+  --cv-heading-rule: 1px solid #5a5f5a;
+  --cv-title-direction: column;
+  --cv-org-color: var(--cv-muted);
+  --cv-org-weight: 400;
+  --cv-date-color: #b6f23a;
+  --cv-date-font: var(--cv-font-heading);
+  --cv-date-size: 0.8em;
+  --cv-bullet: '•';
+  --cv-bullet-color: #b6f23a;
+  --cv-icon-color: #b6f23a;
+  --cv-link-marker-color: #b6f23a;
+  --cv-chip-bg: #383b3d;
+  --cv-chip-border: none;
+  --cv-chip-color: var(--cv-ink);
+  --cv-sidebar-bg: #2b2d2f;
+  --cv-sidebar-ink: #e8eae6;
+  --cv-sidebar-muted: #a9aea6;
+  --cv-sidebar-rule: #4a4e4a;
+  --cv-sidebar-accent-ink: #b6f23a;
+  --cv-sidebar-name-color: #b6f23a;
+  --cv-sidebar-role-color: #e8eae6;
+  --cv-sidebar-icon-color: #b6f23a;
+  --cv-sidebar-heading-color: #b6f23a;
+  --cv-sidebar-heading-rule: 1px solid #5a5f5a;
+  --cv-sidebar-chip-bg: #383b3d;
+  --cv-sidebar-chip-border: none;
+  --cv-sidebar-chip-color: #e8eae6;
+  --cv-sidebar-bullet-color: #b6f23a;
+  --cv-sidebar-link-marker-color: #b6f23a;
+}

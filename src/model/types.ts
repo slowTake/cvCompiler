@@ -29,7 +29,7 @@ export interface SectionConfig {
   /** Space between the section's items. Absent means 'normal'. */
   spacing?: Exclude<SectionSpacing, 'normal'>;
   /**
-   * Sidebar skeleton only: true puts the section in the side column, false in
+   * Sidebar skeletons only: true puts the section in the side column, false in
    * the main one. Absent means the skeleton's default (see templates/skeletons.ts).
    */
   sidebar?: boolean;

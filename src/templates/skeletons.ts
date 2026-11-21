@@ -1,6 +1,6 @@
 import type { SectionConfig, SectionId } from '../model/types';
 
-export const SKELETON_IDS = ['sidebar', 'single', 'header-band'] as const;
+export const SKELETON_IDS = ['sidebar', 'single', 'header-band', 'timeline', 'split', 'sidebar-right'] as const;
 export type SkeletonId = (typeof SKELETON_IDS)[number];
 
 export interface SkeletonInfo {
@@ -45,6 +45,27 @@ export const SKELETONS: Record<SkeletonId, SkeletonInfo> = {
     id: 'header-band',
     name: 'Header band',
     description: 'A coloured band with your name and contact over a single-column body.',
+    sidebarSections: [],
+    usesSidebarWidth: false,
+  },
+  'sidebar-right': {
+    id: 'sidebar-right',
+    name: 'Right sidebar',
+    description: 'Name, contact and about on the left; skills, education and languages in a side column on the right.',
+    sidebarSections: ['skills', 'education', 'languages'],
+    usesSidebarWidth: true,
+  },
+  timeline: {
+    id: 'timeline',
+    name: 'Timeline',
+    description: 'One column with a vertical rule and a dot for every role, school and project.',
+    sidebarSections: [],
+    usesSidebarWidth: false,
+  },
+  split: {
+    id: 'split',
+    name: 'Split',
+    description: 'Section labels in a narrow left column, content in a wide right column.',
     sidebarSections: [],
     usesSidebarWidth: false,
   },

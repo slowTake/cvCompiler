@@ -57,7 +57,7 @@ export function scoreParse(parsed: ParsedCv, expected: CvDocument, threshold = 0
   const column = (list: SectionConfig[], side: boolean) =>
     list.filter((s) => s.visible && isInSidebar(skeleton, s) === side).map((s) => s.id);
   check('section order (main)', column(expected.meta.sections, false), column(got.meta.sections, false));
-  if (skeleton.id === 'sidebar') {
+  if (skeleton.sidebarSections.length > 0) {
     check('section order (side)', column(expected.meta.sections, true), column(got.meta.sections, true));
   }
   for (const s of visible) {

@@ -47,13 +47,23 @@ export function guessTemplate(
   nameLine: Line | undefined,
 ): { templateId: string; style?: StyleOverrides; reason: string } {
   const lightName = !!nameLine?.color && hsl(nameLine.color).l > 0.75;
-  const skeleton: SkeletonId = sidebar ? 'sidebar' : lightName ? 'header-band' : 'single';
+  const skeleton: SkeletonId = sidebar
+    ? sidebar.side === 'right'
+      ? 'sidebar-right'
+      : 'sidebar'
+    : lightName
+      ? 'header-band'
+      : 'single';
   const accent = accentOf(lines);
   const accentHsl = accent ? hsl(accent) : null;
 
-  let candidates = TEMPLATES.filter((t) => t.skeleton === skeleton);
+  // Dark-page templates only match a PDF whose name is set in light text.
+  let candidates = TEMPLATES.filter((t) => t.skeleton === skeleton && (lightName || !t.dark));
   // Light text in a sidebar means a dark sidebar.
-  if (skeleton === 'sidebar' && lightName) candidates = candidates.filter((t) => t.id === 'nocturne');
+  if (sidebar && lightName) {
+    const darkSide = skeleton === 'sidebar-right' ? 'charcoal' : 'nocturne';
+    candidates = candidates.filter((t) => t.id === darkSide);
+  }
   const score = (t: TemplateDef) => {
     const c = hsl(t.defaults.accent);
     if (!accentHsl) return c.s; // No accent colour: the plainest template wins.
@@ -68,7 +78,7 @@ export function guessTemplate(
   }
 
   const layout =
-    skeleton === 'sidebar'
+    sidebar
       ? `two columns with a ${sidebar!.side} sidebar`
       : skeleton === 'header-band'
         ? 'a coloured header band'

@@ -1,0 +1,37 @@
+/* Academic — dense serif, small-caps headings, no colour. Prints well in black and white. */
+.cv-theme-academic {
+  --cv-ink: #141414;
+  --cv-muted: #4d4d4d;
+  --cv-accent-ink: var(--cv-ink);
+  --cv-base-size: 9.8pt;
+  --cv-line-height: 1.4;
+  --cv-name-size: 2em;
+  --cv-name-weight: 600;
+  --cv-name-tracking: 0.01em;
+  --cv-role-color: var(--cv-muted);
+  --cv-role-weight: 400;
+  --cv-identity-rule: 0.5pt solid var(--cv-ink);
+  --cv-heading-size: 1.08em;
+  --cv-heading-weight: 600;
+  --cv-heading-variant: small-caps;
+  --cv-heading-rule: 0.5pt solid var(--cv-ink);
+  --cv-title-direction: row;
+  --cv-org-prefix: ', ';
+  --cv-org-color: var(--cv-ink);
+  --cv-org-weight: 400;
+  --cv-org-style: italic;
+  --cv-date-color: var(--cv-ink);
+  --cv-date-size: 0.95em;
+  --cv-bullet: '·';
+  --cv-bullet-color: var(--cv-ink);
+  --cv-icon-display: none;
+  --cv-link-marker: '';
+  --cv-skill-group-direction: row;
+  --cv-skill-name-width: 9em;
+  --cv-skill-name-suffix: ':';
+  --cv-chip-bg: transparent;
+  --cv-chip-border: none;
+  --cv-chip-pad: 0;
+  --cv-chip-sep: ',';
+  --cv-chip-color: var(--cv-ink);
+}
