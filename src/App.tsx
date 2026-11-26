@@ -48,6 +48,7 @@ const MOD = isMac ? '⌘' : 'Ctrl+';
 
 const warnBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
 const hasFiles = (e: DragEvent) => !!e.dataTransfer?.types.includes('Files');
+const isPdf = (file: File) => file.type === 'application/pdf' || /\.pdf$/iu.test(file.name);
 
 interface ImportProblem {
   fileName: string;
@@ -195,7 +196,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   const importFile = useCallback(
     async (file: File) => {
       try {
-        if (file.type === 'application/pdf' || /\.pdf$/iu.test(file.name)) {
+        if (isPdf(file)) {
           notify("PDF import isn't available. Open the CV's .json file instead.", { tone: 'error' });
           return;
         }
@@ -257,7 +258,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
       e.preventDefault();
       setDragging(false);
       const file = e.dataTransfer?.files[0];
-      if (file && dropped.current.confirmDiscard()) void dropped.current.importFile(file);
+      // A PDF is only refused, so there is nothing to discard for it.
+      if (file && (isPdf(file) || dropped.current.confirmDiscard())) void dropped.current.importFile(file);
     };
     window.addEventListener('dragover', over);
     window.addEventListener('dragleave', leave);
@@ -380,7 +382,6 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
             <Preview doc={shownDoc} onEdit={setEditTarget} />
           </div>
         </main>
-
 
         {repoDialog && <RepoOpenDialog onPick={(n) => void openFromRepo(n)} onClose={() => setRepoDialog(false)} />}
 
