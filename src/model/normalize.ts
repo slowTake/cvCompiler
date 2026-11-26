@@ -3,6 +3,7 @@ import { defaultSections, isSectionId } from './defaults';
 import { descriptionFrom } from './description';
 import { newId } from './id';
 import { sanitizeStyle, STYLE_KEYS } from './style';
+import { ORIGINAL_VERSION_ID } from './versions';
 import {
   CONTACT_KINDS,
   CV_SCHEMA_VERSION,
@@ -12,6 +13,7 @@ import {
   type ContactKind,
   type CvDocument,
   type CvMeta,
+  type CvVersion,
   type EducationEntry,
   type ExperienceEntry,
   type Identity,
@@ -206,8 +208,7 @@ function normalizeSections(ctx: Ctx, raw: unknown, path: string): SectionConfig[
   return out;
 }
 
-function normalizeMeta(ctx: Ctx, raw: unknown, fallbackTitle: string): CvMeta {
-  const path = 'meta';
+function normalizeMeta(ctx: Ctx, raw: unknown, fallbackTitle: string, path = 'meta'): CvMeta {
   const meta: CvMeta = {
     title: fallbackTitle,
     templateId: DEFAULT_TEMPLATE.id,
@@ -239,7 +240,33 @@ function normalizeMeta(ctx: Ctx, raw: unknown, fallbackTitle: string): CvMeta {
   }
 
   meta.sections = normalizeSections(ctx, raw.sections, join(path, 'sections'));
+  const excluded = nonEmpty(textList(ctx, raw, 'excluded', path));
+  if (excluded) meta.excluded = [...new Set(excluded)];
   return meta;
+}
+
+/** Extra versions. A broken one is dropped rather than failing the whole file. */
+function normalizeVersions(ctx: Ctx, raw: unknown, base: CvMeta): CvVersion[] | undefined {
+  if (raw === undefined || raw === null) return undefined;
+  if (!Array.isArray(raw)) {
+    ctx.drop('versions', `expected a list, got ${describe(raw)}`);
+    return undefined;
+  }
+  const seen = new Set<string>([ORIGINAL_VERSION_ID]);
+  const out: CvVersion[] = [];
+  raw.forEach((item, i) => {
+    const path = join('versions', i);
+    if (!isObj(item) || !isObj(item.meta)) {
+      ctx.drop(path, 'expected an object with a meta object');
+      return;
+    }
+    const inner = new Ctx();
+    const meta = normalizeMeta(inner, item.meta, base.title, join(path, 'meta'));
+    ctx.dropped.push(...inner.dropped, ...inner.errors);
+    const name = optText(ctx, item, 'name', path) ?? `Version ${i + 2}`;
+    out.push({ id: idFor(item, seen), name, meta });
+  });
+  return out.length > 0 ? out : undefined;
 }
 
 function contactKind(ctx: Ctx, raw: Obj, path: string): ContactKind {
@@ -347,6 +374,8 @@ export function normalizeCv(input: unknown): ParseResult {
     compact({ id, name: reqText(ctx, raw, 'name', p), level: optText(ctx, raw, 'level', p) }),
   );
 
+  const versions = normalizeVersions(ctx, input.versions, meta);
+
   if (ctx.errors.length > 0) return { ok: false, errors: ctx.errors };
 
   return {
@@ -361,6 +390,7 @@ export function normalizeCv(input: unknown): ParseResult {
       projects,
       experience,
       languages,
+      ...(versions ? { versions } : {}),
     },
   };
 }

@@ -6,13 +6,28 @@ import {
   Save,
   Upload,
 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Editor } from './editor/Editor';
+import { VersionsContext } from './editor/versionsContext';
 import { RepoOpenDialog } from './editor/RepoOpenDialog';
 import { usePdfImport } from './editor/usePdfImport';
 import type { EditTarget } from './model/editTarget';
 import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
 import type { CvDocument } from './model/types';
+import {
+  addVersion,
+  editorView,
+  fromEditorView,
+  hasVersion,
+  isIncluded,
+  ORIGINAL_VERSION_ID,
+  removeVersion,
+  renameVersion,
+  renderedVersion,
+  toggleIncluded,
+  versionTabs,
+} from './model/versions';
+import { loadUiState, saveUiState } from './persistence/cache';
 import { chooseCvFile, downloadText, fileNameFor } from './persistence/download';
 import {
   ensureWritePermission,
@@ -25,6 +40,7 @@ import { readRepoSave, supportsRepoSaves, writeRepoSave } from './persistence/re
 import { useCvDocument } from './persistence/useCvDocument';
 import { Preview } from './preview/Preview';
 import { PrintRoot } from './preview/PrintRoot';
+import { VersionTabs } from './preview/VersionTabs';
 import { Modal } from './ui/Modal';
 import { useToast } from './ui/toast';
 
@@ -46,6 +62,33 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
   const [repoDialog, setRepoDialog] = useState(false);
   const [dragging, setDragging] = useState(false);
+
+  // Versions: shared content, each with its own design and selection of entries.
+  const [chosenVersion, setChosenVersion] = useState(() => loadUiState('activeVersion', ORIGINAL_VERSION_ID));
+  useEffect(() => saveUiState('activeVersion', chosenVersion), [chosenVersion]);
+  const versionId = hasVersion(doc, chosenVersion) ? chosenVersion : ORIGINAL_VERSION_ID;
+  const tabs = useMemo(() => versionTabs(doc), [doc]);
+  const editorDoc = useMemo(() => editorView(doc, versionId), [doc, versionId]);
+  const shownDoc = useMemo(() => renderedVersion(doc, versionId), [doc, versionId]);
+  const updateEditor = useCallback(
+    (fn: (d: CvDocument) => CvDocument) => update((d) => fromEditorView(d, versionId, fn(editorView(d, versionId)))),
+    [update, versionId],
+  );
+  const versionsCtx = useMemo(
+    () => ({
+      versions: tabs,
+      activeId: versionId,
+      isIncluded: (v: string, item: string) => isIncluded(doc, v, item),
+      toggle: (v: string, item: string) => update((d) => toggleIncluded(d, v, item)),
+    }),
+    [tabs, versionId, doc, update],
+  );
+  const newVersion = useCallback(() => {
+    // Computed outside the updater so the new id is known (and StrictMode's double call can't add two).
+    const added = addVersion(doc, versionId);
+    update(() => added.doc);
+    setChosenVersion(added.id);
+  }, [doc, versionId, update]);
 
   const confirmDiscard = useCallback(
     () => !dirty || window.confirm('You have unsaved changes. Discard them?'),
@@ -230,7 +273,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
   }, []);
 
   // The PDF's default file name comes from document.title.
-  const title = doc.meta.title.trim() || doc.identity.name.trim() || 'CV';
+  const title = shownDoc.meta.title.trim() || doc.identity.name.trim() || 'CV';
   useEffect(() => {
     const original = document.title;
     const before = () => (document.title = title);
@@ -324,10 +367,20 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
         <main className="ui-split">
           <div className="ui-pane ui-pane-form">
             {/* A fresh Editor per loaded document drops pending Undo actions. */}
-            <Editor key={generation} doc={doc} update={update} editTarget={editTarget} />
+            <VersionsContext.Provider value={versionsCtx}>
+              <Editor key={generation} doc={editorDoc} update={updateEditor} editTarget={editTarget} />
+            </VersionsContext.Provider>
           </div>
           <div className="ui-pane ui-pane-preview">
-            <Preview doc={doc} onEdit={setEditTarget} />
+            <VersionTabs
+              tabs={tabs}
+              activeId={versionId}
+              onSelect={setChosenVersion}
+              onAdd={newVersion}
+              onRename={(id, name) => update((d) => renameVersion(d, id, name))}
+              onRemove={(id) => update((d) => removeVersion(d, id))}
+            />
+            <Preview doc={shownDoc} onEdit={setEditTarget} />
           </div>
         </main>
 
@@ -365,7 +418,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           </div>
         </div>
       )}
-      <PrintRoot doc={doc} />
+      <PrintRoot doc={shownDoc} />
     </>
   );
 }

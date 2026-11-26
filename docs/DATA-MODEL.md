@@ -19,6 +19,7 @@ All text is plain text. There are no photos, binary data or rich text.
 | `projects`   | [Project](#project)[]       | no |                                             |
 | `education`  | [Education](#education)[]   | no |                                             |
 | `languages`  | [Language](#language)[]     | no |                                             |
+| `versions`   | [Version](#versions)[]      | no | Extra versions of the CV. Omitted when there are none. |
 
 Every list entry has an `id` string. It keeps list editing stable. Files
 without ids, or with ids repeated in one list, still load: missing or
@@ -32,6 +33,7 @@ repeated ids are replaced with fresh ones.
 | `templateId` | string               | A template id from the registry (see below). Unknown ids fall back to `studio`. |
 | `style`      | [StyleOverrides](#styleoverrides) | Optional. A missing field means "use the template default". |
 | `sections`   | SectionConfig[]      | Order, visibility, headings and spacing of CV sections.         |
+| `excluded`   | string[]             | Optional. Ids of entries (from any list, contacts and links included) this version leaves out. |
 
 ### SectionConfig
 
@@ -68,6 +70,25 @@ Overrides survive template switches. In the editor, setting a control back
 to the current template's value removes that override, and "Reset to template"
 removes `style` entirely. Invalid values are dropped; out-of-range numbers
 are clamped and rounded.
+
+## Versions
+
+One file can hold several versions of a CV. They all share the same content
+(`identity` and the entry lists); each has its own [Meta](#meta): template,
+style, section order and visibility, and the entries it leaves out
+(`excluded`). The top-level `meta` is the original version.
+
+```json
+"versions": [
+  { "id": "k3x9a", "name": "Consulting", "meta": { "templateId": "classic", "excluded": ["x-1"], "...": "..." } }
+]
+```
+
+- `meta` is required and read like the top-level `meta`. A version without
+  one is dropped, not fatal. `name` defaults to "Version N".
+- A new version in the editor is a copy of the version shown at the time.
+- Preview, print and the data embedded in the PDF only carry the version
+  shown, without `versions` or `excluded`.
 
 ## Identity
 
