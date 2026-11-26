@@ -181,20 +181,6 @@ The CV preview reads only `--cv-*` custom properties, and the editor's own
 UI uses a separate `--ui-*` set, so a theme can't restyle the editor. Tests
 enforce this: theme files may only declare `--cv-*` properties.
 
-## Shelved features
-
-**PDF import** (dropping a PDF to get the CV back) is shelved. It relied on an
-invisible link that put a compressed copy of the whole CV into every exported
-PDF, including those sent to employers. That was too much risk for too little
-benefit.
-
-The last commit with the feature is `d3eb26e`. To bring it back, restore from
-it `src/pdf/`, `src/editor/PdfReview.tsx`, `src/editor/usePdfImport.tsx`, the
-`cv-embed` link in `src/preview/PrintRoot.tsx`, the related tests and
-fixtures, `e2e/`, `scripts/` (`npm run e2e:pdf`) and the `pdfjs-dist`
-dependency. Decide first whether the embedded copy should return at all, or
-only as an opt-in.
-
 ## License
 
 [MIT](LICENSE)
