@@ -610,11 +610,11 @@ textarea {
 }
 
 /* Repeated rows keep their labels for screen readers only. */
-.ui-entry-list-compact .ui-entry-row:not(:first-child) .ui-field {
+.ui-entry-list-compact .ui-entry-row-wrap:not(:first-child) .ui-field {
   position: relative;
 }
 
-.ui-entry-list-compact .ui-entry-row:not(:first-child) .ui-field > label {
+.ui-entry-list-compact .ui-entry-row-wrap:not(:first-child) .ui-field > label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -625,6 +625,82 @@ textarea {
 
 .ui-entry-list-compact .ui-entry-controls {
   padding-bottom: 2px;
+}
+
+/* Which versions an entry appears in */
+.ui-entry-row-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ui-include {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--ui-border);
+}
+
+.ui-entry-row-wrap .ui-include {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.ui-include-label {
+  margin-right: 2px;
+  color: var(--ui-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ui-include-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 160px;
+  padding: 1px 8px;
+  overflow: hidden;
+  border: 1px dashed var(--ui-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-include-chip:hover {
+  border-color: var(--ui-accent);
+}
+
+.ui-include-chip.is-on {
+  border: 1px solid var(--ui-accent);
+  background: var(--ui-accent-soft);
+  color: var(--ui-ink);
+}
+
+.ui-include-chip.is-current {
+  font-weight: 650;
+}
+
+.ui-entry.is-left-out .ui-entry-summary {
+  color: var(--ui-muted);
+  text-decoration: line-through;
+}
+
+.ui-entry-badge {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--ui-border);
+  color: var(--ui-muted);
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .ui-add {
@@ -859,11 +935,112 @@ textarea {
   font-size: 12px;
 }
 
+/* ---- Version tabs -------------------------------------------------------- */
+.ui-version-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 10px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-panel-2);
+  scrollbar-width: thin;
+}
+
+.ui-version-tab {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  max-width: 200px;
+  margin-bottom: -1px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--ui-radius-sm) var(--ui-radius-sm) 0 0;
+  color: var(--ui-muted);
+}
+
+.ui-version-tab:hover {
+  background: var(--ui-border);
+}
+
+.ui-version-tab.is-active {
+  border-color: var(--ui-border);
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.ui-version-tab-name {
+  min-width: 0;
+  padding: 6px 4px 6px 12px;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-version-tab:not(:has(.ui-version-tab-close)) .ui-version-tab-name {
+  padding-right: 12px;
+}
+
+.ui-version-tab.is-active .ui-version-tab-name {
+  font-weight: 600;
+}
+
+.ui-version-tab-input {
+  width: 140px;
+  margin: 3px 4px 3px 8px;
+  padding: 2px 6px;
+  border: 1px solid var(--ui-accent);
+  border-radius: 4px;
+  background: var(--ui-panel);
+}
+
+.ui-version-tab-close {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ui-muted);
+  cursor: pointer;
+}
+
+.ui-version-tab-close:hover {
+  background: var(--ui-border-strong);
+  color: var(--ui-ink);
+}
+
+.ui-version-add {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 0 3px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ui-muted);
+  cursor: pointer;
+}
+
+.ui-version-add:hover {
+  background: var(--ui-border);
+  color: var(--ui-ink);
+}
+
 /* ---- Preview ------------------------------------------------------------- */
 .ui-preview {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  height: 100%;
   min-height: 0;
 }
 

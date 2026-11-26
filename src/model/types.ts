@@ -65,6 +65,15 @@ export interface CvMeta {
   templateId: string;
   style?: StyleOverrides;
   sections: SectionConfig[];
+  /** Ids of entries (any list, contacts and links too) this version leaves out. */
+  excluded?: string[];
+}
+
+/** An extra version of the CV: same content, its own design and selection. */
+export interface CvVersion {
+  id: string;
+  name: string;
+  meta: CvMeta;
 }
 
 export const CONTACT_KINDS = [
@@ -156,6 +165,8 @@ export interface CvDocument {
   projects: ProjectEntry[];
   experience: ExperienceEntry[];
   languages: LanguageEntry[];
+  /** Versions beyond the original, whose meta is `meta`. See model/versions.ts. */
+  versions?: CvVersion[];
 }
 
 export type ListSectionKey = 'skills' | 'education' | 'projects' | 'experience' | 'languages';

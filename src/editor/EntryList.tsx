@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { insertAt, moveItem, removeAt, replaceAt } from '../model/list';
 import { useToast } from '../ui/toast';
 import { focusWithin, useEditFocus } from './editFocus';
+import { IncludeIn, useVersions } from './versionsContext';
 
 interface EntryListProps<T extends { id: string }> {
   items: T[];
@@ -31,6 +32,7 @@ export function EntryList<T extends { id: string }>({
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
   const listRef = useRef<HTMLDivElement>(null);
   const { target, done } = useEditFocus();
+  const versions = useVersions();
 
   // A click on one of our entries in the preview: expand it, then focus the field.
   const [focusing, setFocusing] = useState<{ entryId: string; field?: string } | null>(null);
@@ -138,15 +140,23 @@ export function EntryList<T extends { id: string }>({
         const update = (next: T) => onChange(replaceAt(items, index, next));
         if (compact) {
           return (
-            <div className="ui-entry-row" key={item.id} data-entry-id={item.id}>
-              <div className="ui-entry-row-fields">{renderItem(item, update)}</div>
-              {controls(index, label)}
+            <div className="ui-entry-row-wrap" key={item.id}>
+              <div className="ui-entry-row" data-entry-id={item.id}>
+                <div className="ui-entry-row-fields">{renderItem(item, update)}</div>
+                {controls(index, label)}
+              </div>
+              <IncludeIn itemId={item.id} label={label} />
             </div>
           );
         }
         const isOpen = open.has(item.id);
+        const leftOut = !!versions && !versions.isIncluded(versions.activeId, item.id);
         return (
-          <div className={`ui-entry${isOpen ? ' is-open' : ''}`} key={item.id} data-entry-id={item.id}>
+          <div
+            className={`ui-entry${isOpen ? ' is-open' : ''}${leftOut ? ' is-left-out' : ''}`}
+            key={item.id}
+            data-entry-id={item.id}
+          >
             <div className="ui-entry-head">
               <button
                 type="button"
@@ -156,10 +166,16 @@ export function EntryList<T extends { id: string }>({
               >
                 <ChevronRight size={16} className="ui-chevron" />
                 <span className="ui-entry-summary">{label}</span>
+                {leftOut && <span className="ui-entry-badge">Not in this version</span>}
               </button>
               {controls(index, label)}
             </div>
-            {isOpen && <div className="ui-entry-body">{renderItem(item, update)}</div>}
+            {isOpen && (
+              <div className="ui-entry-body">
+                {renderItem(item, update)}
+                <IncludeIn itemId={item.id} label={label} />
+              </div>
+            )}
           </div>
         );
       })}
