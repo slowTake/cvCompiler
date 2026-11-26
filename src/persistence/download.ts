@@ -10,12 +10,12 @@ export function downloadText(filename: string, text: string, type = 'application
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Opens the browser's file chooser for a CV: JSON or PDF. Resolves null if nothing was chosen. */
+/** Opens the browser's file chooser for a CV's JSON. Resolves null if nothing was chosen. */
 export function chooseCvFile(): Promise<File | null> {
   return new Promise((resolve) => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json,application/json,.pdf,application/pdf';
+    input.accept = '.json,application/json';
     input.addEventListener('change', () => resolve(input.files?.[0] ?? null), { once: true });
     input.addEventListener('cancel', () => resolve(null), { once: true });
     input.click();

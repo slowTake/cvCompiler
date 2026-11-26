@@ -10,7 +10,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Editor } from './editor/Editor';
 import { VersionsContext } from './editor/versionsContext';
 import { RepoOpenDialog } from './editor/RepoOpenDialog';
-import { usePdfImport } from './editor/usePdfImport';
 import type { EditTarget } from './model/editTarget';
 import { formatIssues, parseCvJson, type CvIssue } from './model/normalize';
 import type { CvDocument } from './model/types';
@@ -49,6 +48,7 @@ const MOD = isMac ? '⌘' : 'Ctrl+';
 
 const warnBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
 const hasFiles = (e: DragEvent) => !!e.dataTransfer?.types.includes('Files');
+const isPdf = (file: File) => file.type === 'application/pdf' || /\.pdf$/iu.test(file.name);
 
 interface ImportProblem {
   fileName: string;
@@ -192,16 +192,14 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     }
   }, [source, json, exportJson, saveAs, saveToRepo, markSaved, notify, fail]);
 
-  // A PDF has no editable copy behind it, so its import starts out unsaved.
-  const pdf = usePdfImport(
-    useCallback((next: CvDocument) => replace(next, { name: fileNameFor(next.meta.title) }, false), [replace]),
-  );
-
-  /** Imports a chosen or dropped file: a CV's JSON, or a PDF. */
+  /** Imports a chosen or dropped file: a CV's JSON. PDF import is shelved (see README). */
   const importFile = useCallback(
     async (file: File) => {
       try {
-        if (file.type === 'application/pdf' || /\.pdf$/iu.test(file.name)) return await pdf.start(file);
+        if (isPdf(file)) {
+          notify("PDF import isn't available. Open the CV's .json file instead.", { tone: 'error' });
+          return;
+        }
         const next = parseOrReport(file.name, await file.text());
         if (!next) return;
         replace(next, { name: file.name });
@@ -210,7 +208,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
         fail('Import', err);
       }
     },
-    [pdf, parseOrReport, replace, notify, fail],
+    [parseOrReport, replace, notify, fail],
   );
 
   const importCv = useCallback(async () => {
@@ -242,7 +240,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Drop a .json or .pdf anywhere to import it.
+  // Drop a .json anywhere to import it.
   const dropped = useRef({ confirmDiscard, importFile });
   dropped.current = { confirmDiscard, importFile };
   useEffect(() => {
@@ -260,7 +258,8 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
       e.preventDefault();
       setDragging(false);
       const file = e.dataTransfer?.files[0];
-      if (file && dropped.current.confirmDiscard()) void dropped.current.importFile(file);
+      // A PDF is only refused, so there is nothing to discard for it.
+      if (file && (isPdf(file) || dropped.current.confirmDiscard())) void dropped.current.importFile(file);
     };
     window.addEventListener('dragover', over);
     window.addEventListener('dragleave', leave);
@@ -384,8 +383,6 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           </div>
         </main>
 
-        {pdf.dialog}
-
         {repoDialog && <RepoOpenDialog onPick={(n) => void openFromRepo(n)} onClose={() => setRepoDialog(false)} />}
 
         {problem && (
@@ -414,7 +411,7 @@ export function App({ initial }: { initial: { doc: CvDocument; clean: boolean } 
           <div className="ui-drop-card">
             <Upload size={22} />
             <strong>Drop a CV to import it</strong>
-            <span className="ui-muted">A .json file or a PDF. It never leaves this computer.</span>
+            <span className="ui-muted">A cvCompiler .json file. It never leaves this computer.</span>
           </div>
         </div>
       )}
