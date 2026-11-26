@@ -87,8 +87,8 @@ style, section order and visibility, and the entries it leaves out
 - `meta` is required and read like the top-level `meta`. A version without
   one is dropped, not fatal. `name` defaults to "Version N".
 - A new version in the editor is a copy of the version shown at the time.
-- Preview, print and the data embedded in the PDF only carry the version
-  shown, without `versions` or `excluded`.
+- Preview and print show only the selected version; `versions` and
+  `excluded` never reach them.
 
 ## Identity
 

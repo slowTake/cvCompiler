@@ -61,8 +61,7 @@ Keep the real copy in a file:
 - **Chrome / Edge / Brave / Arc:** click **Open…** to bind a `.json` file,
   then **Save** (Ctrl/⌘+S) writes straight back to it. **Save as…** picks a
   new file.
-- **Any browser:** drop a `.json` file or a PDF onto the app to load it (see
-  [Edit a PDF later](#5-edit-a-pdf-later)). Where **Save** has no file to
+- **Any browser:** drop a `.json` file onto the app to load it. Where **Save** has no file to
   write to (Firefox and Safari outside dev), it downloads the JSON.
 - **Under `npm run dev`:** **Save to repo** writes the JSON to the `saves/`
   folder of your checkout (git-ignored), and **Open from repo** lists what is
@@ -86,25 +85,6 @@ Click **Print / PDF** (or press Ctrl/⌘+P) and in the print dialog set:
 Entries never split across pages and the preview shows the same page breaks
 as the PDF.
 
-### 5. Edit a PDF later
-
-Lost the JSON and only have the PDF? Drop the file anywhere on the
-app.
-
-- **A PDF exported from cvCompiler** comes back exactly: text, template,
-  colours and section layout. Every export carries a compressed copy of your
-  CV inside an invisible link. Sections you hid are left out of it, so they
-  come back empty.
-- **A PDF that was changed after export** (in Acrobat, say) is detected. You
-  choose between the original cvCompiler version and reading the visible text.
-- **Any other PDF** is read from its text and shown on a review screen beside
-  the PDF. Uncertain fields are marked, text that didn't fit anywhere is listed
-  so you can place it, and you can swap or move entries before loading.
-  Scanned PDFs (pictures of a page) have no text to read and can't be imported.
-
-The PDF is read on your computer and never uploaded. An imported PDF starts
-out unsaved, so save it to get an editable JSON copy.
-
 ## Scripts and setup
 
 Requires Node 18.18 or newer.
@@ -121,7 +101,6 @@ npm run dev        # http://localhost:5173
 | `npm run preview` | Serve the production build locally            |
 | `npm run lint`    | oxlint (warnings fail the run)                |
 | `npm test`        | Vitest unit tests                             |
-| `npm run e2e:pdf` | PDF round trip in real Firefox and Chromium (see below) |
 
 ## Saving your CV
 
@@ -135,8 +114,8 @@ places it can live:
    write permission, because files opened for reading are read-only until you
    allow it. The top bar shows the bound file name and a **● Unsaved** marker
    while you have changes that aren't on disk.
-2. **Drop a file (every browser).** Drop a CV's JSON, or a PDF, onto the app
-   to load it. In Firefox and Safari, ⌘S / Ctrl+S downloads the JSON. Loading checks
+2. **Drop a file (every browser).** Drop a CV's JSON onto the app to load
+   it. In Firefox and Safari, ⌘S / Ctrl+S downloads the JSON. Loading checks
    the file and lists clear errors for broken structure (with the JSON path
    of each problem). Invalid optional values are dropped quietly.
 3. **Browser storage (automatic).** Every change is cached in `localStorage`
@@ -162,36 +141,26 @@ preview simulates the same page breaks, so the page count and break points
 you see should closely match the PDF. The PDF's default file name comes from
 the document title (*Document & sections → Document title*).
 
-## PDF import
-
-`src/pdf/` turns a PDF back into a CV document. pdf.js loads on first use
-and reads the file in a local web worker.
-
-- **Embedded data** (`embed.ts`). The print view has one empty, 2px link whose
-  URL is `https://cvcompiler.invalid/#cv1.` plus the visible document,
-  zlib-compressed and base64url-encoded. Browsers can't add attachments or
-  metadata to a printed PDF, but they do keep links, and a link target isn't
-  part of the text layer, so ATS parsers and copy-paste never see it. It must
-  stay empty (any text inside leaks into the PDF's text) and painted
-  (Chromium drops `opacity: 0` links). On import, the PDF's words are compared
-  with the embedded document to catch PDFs edited after export.
-- **Text parsing** (`layout.ts`, `parse.ts`, `guessTemplate.ts`). Lines are
-  rebuilt from positions (column gutter, baselines, wide gaps), then headings,
-  entries, dates, chips and contacts are recognised by style and position
-  rather than wording. The template is guessed from the layout and accent
-  colour. Anything uncertain becomes a flag, and anything unplaced is kept for
-  the review screen.
+The PDF holds only what you see: the browser prints the CV's text and links,
+and nothing else from the document is written into it.
 
 The CV page sets `font-variant-ligatures: none`: Firefox writes ligature
 glyphs ("fi", "ffl") into PDFs without text behind them, which would turn
 "offline" into "oine" for every ATS reading the file.
 
-`npm run e2e:pdf` (with `npm run dev` running) prints the demo CV in every
-template with Firefox (via geckodriver) and Chromium (Brave by default; set
-`CHROMIUM_BIN`), imports each PDF and checks the result. It also covers a CV
-typeset outside cvCompiler (`e2e/external-cv.html`) and a PDF edited after
-export. `-- --fixtures` refreshes `tests/fixtures/pdf/`, the extracted text
-that the unit tests parse, so they run without a browser.
+## Shelved features
+
+**PDF import** (dropping a PDF to get the CV back) is shelved. It relied on an
+invisible link in every exported PDF that carried the whole CV as compressed
+JSON, which meant every PDF sent to an employer quietly included that data.
+That was too much risk for too little benefit, so printed PDFs no longer carry
+it and the import code was removed. The last commit with the feature is
+`d3eb26e` on `main`: `src/pdf/`, `src/editor/PdfReview.tsx`,
+`src/editor/usePdfImport.tsx`, the `cv-embed` link in
+`src/preview/PrintRoot.tsx`, its tests and fixtures, `e2e/`, `scripts/`
+(`npm run e2e:pdf`) and the `pdfjs-dist` dependency. To bring it back, restore
+those from that commit, and decide first whether the embedded copy should
+come back at all or be opt-in.
 
 ## Templates
 
@@ -251,11 +220,8 @@ src/templates/        registry, skeleton metadata, theme token blocks
 src/preview/          CV renderer, skeleton components, pagination, print root
 src/editor/           form: one component per section, plus shared fields
 src/persistence/      localStorage cache, File System Access, import/export
-src/pdf/              PDF import: embedded data, text extraction and parsing
 src/styles/           cv.css (CV structure), ui.css (editor), print.css
-tests/                Vitest suites (fixtures/pdf: text from real browser PDFs)
-e2e/                  print harness and test CV for the PDF round trip
-scripts/              print-pdf.mjs and e2e-pdf.ts (npm run e2e:pdf)
+tests/                Vitest suites
 ```
 
 ## Running it

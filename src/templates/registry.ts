@@ -18,8 +18,6 @@ export interface TemplateDef {
   name: string;
   description: string;
   skeleton: SkeletonId;
-  /** Dark page (or dark main column): only offered as an import match for PDFs with light text. */
-  dark?: boolean;
   /** Where the accent colour is drawn, for the contrast warning. Defaults to the page. */
   accentOn?: 'sidebar';
   defaults: ResolvedStyle;
@@ -297,7 +295,6 @@ export const TEMPLATES: readonly TemplateDef[] = [
     name: 'Cocoa',
     description: 'Light sidebar with brown ribbon headings beside a dark main column.',
     skeleton: 'sidebar',
-    dark: true,
     accentOn: 'sidebar',
     defaults: {
       accent: '#8c6552',
@@ -313,7 +310,6 @@ export const TEMPLATES: readonly TemplateDef[] = [
     name: 'Ember',
     description: 'Near-black page, copper accents, pill-shaped skills and a heavy name.',
     skeleton: 'sidebar',
-    dark: true,
     defaults: {
       accent: '#b87333',
       fontPairing: 'sans',
@@ -328,7 +324,6 @@ export const TEMPLATES: readonly TemplateDef[] = [
     name: 'Volt',
     description: 'Charcoal page with electric lime headings and mono labels.',
     skeleton: 'sidebar',
-    dark: true,
     defaults: {
       accent: '#5a8f1e',
       fontPairing: 'technical',
@@ -343,7 +338,6 @@ export const TEMPLATES: readonly TemplateDef[] = [
     name: 'Console',
     description: 'Dark mono page with boxed skills and hairline panels.',
     skeleton: 'header-band',
-    dark: true,
     defaults: {
       accent: '#2f8f78',
       fontPairing: 'mono',

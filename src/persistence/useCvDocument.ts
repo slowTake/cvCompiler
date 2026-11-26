@@ -55,13 +55,10 @@ export function useCvDocument(initial: { doc: CvDocument; clean: boolean }) {
 
   const update = useCallback((fn: (d: CvDocument) => CvDocument) => setDoc(fn), []);
 
-  /**
-   * Swap in a whole document (open, import, demo). `clean`: it matches its
-   * source. A PDF import isn't clean: the PDF is no copy you can edit.
-   */
-  const replace = useCallback((next: CvDocument, nextSource: DocumentSource | null, clean = true) => {
+  /** Swap in a whole document (open, import, demo). It matches its source. */
+  const replace = useCallback((next: CvDocument, nextSource: DocumentSource | null) => {
     setDoc(next);
-    setSavedJson(clean ? serializeCv(next) : null);
+    setSavedJson(serializeCv(next));
     setSource(nextSource);
     setGeneration((g) => g + 1);
   }, []);
