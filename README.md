@@ -122,8 +122,7 @@ Entries never split across pages, and section headings stay with their first
 entry. The default PDF file name is the document title. The PDF holds only what
 you see; no copy of your CV data is hidden inside it.
 
-PDFs can't be imported, so keep the JSON file if you want to edit later (see
-[Shelved features](#shelved-features)).
+PDFs can't be imported, so keep the JSON file if you want to edit later.
 
 ## Development
 
